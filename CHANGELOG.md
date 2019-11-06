@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/brindosch/hyperion-remote/compare/v0.4.0...v0.4.1) (2019-11-06)
+
+
+### Bug Fixes
+
+* Test deploy artifacts ([1df7c68](https://github.com/brindosch/hyperion-remote/commit/1df7c6859f7ebfdf67f94a0fd0fb21defd38fd9f))
+
 # [0.4.0](https://github.com/brindosch/hyperion-remote/compare/v0.3.2...v0.4.0) (2019-11-06)
 
 
