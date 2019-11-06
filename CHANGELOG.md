@@ -1,0 +1,56 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.3.0](https://github.com/brindosch/hyperion-remote/compare/v0.2.0...v0.3.0) (2019-11-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* This is a FIXING Breaking CHANGE. Don't try to avoid this!
+
+### Bug Fixes
+
+* Breaking ([0617dff](https://github.com/brindosch/hyperion-remote/commit/0617dffc14b4a038df927dea98c4fcf77bb28d9f))
+
+## [0.2.0](https://github.com/brindosch/hyperion-remote/compare/v0.1.5...v0.2.0) (2019-11-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* This is a real problem here, we probably need help to iron that our
+
+### Common
+
+* **release:** 0.1.4 ([9a6dd31](https://github.com/brindosch/hyperion-remote/commit/9a6dd31e66d79b7ceabb5e2fcc266e4599fe6f70))
+* This is a breaking change ([f05815d](https://github.com/brindosch/hyperion-remote/commit/f05815da72a0aa8e459585c50ad721cf834b6f62))
+
+
+### Documentation
+
+* Update readme ([a3e026f](https://github.com/brindosch/hyperion-remote/commit/a3e026f2cba68add9deec648988159c51ed1f575))
+
+### [0.1.4](https://github.com/brindosch/hyperion-remote/compare/v0.1.5...v0.1.4) (2019-11-05)
+
+### [0.1.3](https://github.com/brindosch/hyperion-remote/compare/v0.1.2...v0.1.3) (2019-11-04)
+
+
+### Bug Fixes
+
+* workflow ([e8d4646](https://github.com/brindosch/hyperion-remote/commit/e8d4646d972af8265d630c9bbd48a379df82e59f))
+
+### [0.1.2](https://github.com/brindosch/hyperion-remote/compare/v0.1.1...v0.1.2) (2019-11-04)
+
+
+### Bug Fixes
+
+* Another fix ([562bea8](https://github.com/brindosch/hyperion-remote/commit/562bea8fd89e52aaad033df1643f84593077906c))
+* Another one ([1ec50ef](https://github.com/brindosch/hyperion-remote/commit/1ec50efa982165fc82d431f27fa84bc07f2a1007))
+
+### 0.1.1 (2019-11-04)
+
+
+### Features
+
+* Add changelogs ([a758012](https://github.com/brindosch/hyperion-remote/commit/a758012157d124861a0c10451ef5b8a8188f0a79))
+* Add something here ([aad2565](https://github.com/brindosch/hyperion-remote/commit/aad2565bf9e859a8af5ec6f2619c0c8e8a987815))

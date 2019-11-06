@@ -1,0 +1,130 @@
+{
+  "name": "hyperion-remote",
+  "version": "0.3.0",
+  "description": "Hyperion Remote Application",
+  "homepage": "https://www.hyperion-project.org",
+  "productName": "Hyperion Remote",
+  "author": {
+    "name": "brindosch",
+    "email": "hyperion@hyperion-project.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brindosch/hyperion-remote.git"
+  },
+  "private": true,
+  "scripts": {
+    "yarn:install": "yarn",
+    "dev:spa": "quasar dev",
+    "dev:electron": "quasar dev -m electron",
+    "dev:pwa": "quasar dev -m pwa",
+    "build:spa": "quasar build",
+    "build:electron": "quasar build -m electron",
+    "build:pwa": "quasar build -m pwa",
+    "release": "release-it",
+    "release:beta": "standard-version --prerelease beta",
+    "postrelease": "gh-release --yes --draft && git checkout .",
+    "lint": "eslint --ext .js,.vue src",
+    "lintfix": "eslint --fix --ext .js,.vue src",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "@jaames/iro": "^4.5.3",
+    "@quasar/app": "^1.2.3",
+    "@quasar/extras": "^1.3.2",
+    "axios": "^0.19.0",
+    "node-ssdp": "^4.0.0",
+    "quasar": "^1.3.0",
+    "vue-draggable-resizable": "^2.0.1",
+    "vue-i18n": "^8.15.0",
+    "vuedraggable": "^2.23.2",
+    "vuex": "^3.1.1",
+    "vuex-persist": "^2.1.1",
+    "ws": "^7.2.0"
+  },
+  "devDependencies": {
+    "@quasar/app": "^1.2.3",
+    "@quasar/quasar-app-extension-icon-genie": "^1.1.2",
+    "@release-it/conventional-changelog": "^1.1.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.3",
+    "devtron": "^1.4.0",
+    "electron": "^6.0.12",
+    "electron-builder": "^22.1.0",
+    "electron-debug": "^3.0.1",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-packager": "^14.1.0",
+    "eslint": "^6.6.0",
+    "eslint-loader": "^3.0.2",
+    "eslint-plugin-vue": "^5.2.3",
+    "gh-release": "^3.5.0",
+    "release-it": "^12.4.3",
+    "standard-version": "^7.0.0",
+    "webpack": "^4.41.2",
+    "worker-loader": "^2.0.0"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 11"
+  ],
+  "standard-version": {
+    "types": [
+      {
+        "type": "chore",
+        "section": "Common"
+      },
+      {
+        "type": "feat",
+        "section": "Features"
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "style",
+        "section": "Visual"
+      },
+      {
+        "type": "docs",
+        "section": "Documentation"
+      },
+      {
+        "type": "refactor",
+        "hidden": true
+      },
+      {
+        "type": "perf",
+        "hidden": true
+      },
+      {
+        "type": "test",
+        "hidden": true
+      }
+    ]
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore(release): v${version}",
+      "tagName": "v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md"
+      }
+    },
+    "npm": {
+      "publish": false
+    }
+  }
+}

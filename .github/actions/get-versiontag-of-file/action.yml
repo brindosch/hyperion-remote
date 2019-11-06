@@ -1,0 +1,16 @@
+name: 'Get version tag of a file'
+description: 'Get version tag of a file like package.json'
+author: 'brindosch'
+inputs:
+  glob_pattern:
+    description: 'The glob pattern for the file to search for'
+    required: true
+outputs:
+  version:
+    description: 'The found version string'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'package'
+  color: 'gray-dark'

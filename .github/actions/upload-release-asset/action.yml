@@ -1,0 +1,18 @@
+name: 'Upload Release Assets'
+description: 'Upload release assets to an existing release on your repository'
+author: 'GitHub'
+inputs:
+  glob_pattern:
+    description: 'The file search glob pattern for node.js glob'
+    required: true
+  upload_url:
+    description: 'The upload url from the on:release event payload or previous release creation'
+    required: true
+  blacklist:
+    description: 'Remove all files that have a full/partly match with blacklist strings, multiple entries splitted with |'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'package'
+  color: 'gray-dark'

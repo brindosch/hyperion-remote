@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html <% if (htmlWebpackPlugin.options.rtl) { %>dir="rtl" <% } %>lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <% if (htmlWebpackPlugin.options.ctx.prod) { %>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src *">
+  <% } %>
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta name="viewport"
+    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (htmlWebpackPlugin.options.ctx.mode.cordova || htmlWebpackPlugin.options.ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>">
+  <!-- Hide Chrome translation popup on tablet/phone due to different locale, lang attr update isn't fast enough; Disables also google-translate for webpages!-->
+  <meta name="google" value="notranslate">
+  <title><%= htmlWebpackPlugin.options.productName %></title>
+
+  <link rel="icon" type="image/png" href="statics/app-logo-128x128.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="statics/icons/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="statics/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="statics/icons/favicon-96x96.png">
+  <link rel="icon" type="image/ico" href="statics/icons/favicon.ico">
+</head>
+
+<body class="non-selectable">
+  <% if (!htmlWebpackPlugin.options.ctx.mode.electron) { %>
+  <noscript>
+    <div
+      style="position:fixed; top:0px; right:0px; text-align:center; width:100%; height:100%; background: linear-gradient(to bottom, #1e2f48 0%,#206bad 52%,#206bad 52%,#00bdce 99%)">
+      <img style="margin-top:30px;" src="statics/hyperion-logo-white.png" />
+      <h3 style="color:white;margin-top:30px;">We are sorry, you need to enable Javascript to use the Hyperion App<h3>
+    </div>
+  </noscript>
+  <% } %>
+
+  <!-- Entry App -->
+  <div id="q-app"></div>
+
+</body>
+
+</html>

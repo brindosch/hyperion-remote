@@ -1,0 +1,25 @@
+name: CI
+on:
+  #push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.type }} (${{ matrix.os }})
+    strategy:
+      matrix:
+        type: ['spa','electron']
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        node: [12]
+    steps:
+        - uses: actions/checkout@v1
+        - name: Setup node ${{ matrix.node }}
+          uses: actions/setup-node@v1
+          with:
+            node-version: ${{ matrix.node }}
+        - name: Build
+          run: |
+            npm install -g yarn
+            yarn
+            yarn build:${{ matrix.type }}
