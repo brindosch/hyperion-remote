@@ -21,9 +21,8 @@
     "build:spa": "quasar build",
     "build:electron": "quasar build -m electron",
     "build:pwa": "quasar build -m pwa",
-    "release": "release-it",
-    "release:beta": "standard-version --prerelease beta",
-    "postrelease": "gh-release --yes --draft && git checkout .",
+    "release": "release-it --ci",
+    "release:beta": "release-it --preRelease",
     "lint": "eslint --ext .js,.vue src",
     "lintfix": "eslint --fix --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
