@@ -1,3 +1,13 @@
+## [0.4.2](https://github.com/brindosch/hyperion-remote/compare/v0.4.1...v0.4.2) (2019-11-06)
+
+
+### Bug Fixes
+
+* adjust config ([c3f309c](https://github.com/brindosch/hyperion-remote/commit/c3f309c6e516de156318b0004d3598eb4799ccde))
+* editor ([d410556](https://github.com/brindosch/hyperion-remote/commit/d41055635093eb68bfcdc30ab5835f3f2b3a7e67))
+* test workspace setting ([c18ceb4](https://github.com/brindosch/hyperion-remote/commit/c18ceb4ac6863110ec7ccd61893bfb590dd10c58))
+* windows deploy ([4f71401](https://github.com/brindosch/hyperion-remote/commit/4f71401f62c5c1404af39993f53c96b390444eef))
+
 ## [0.4.1](https://github.com/brindosch/hyperion-remote/compare/v0.4.0...v0.4.1) (2019-11-06)
 
 
