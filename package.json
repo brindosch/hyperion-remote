@@ -23,6 +23,7 @@
     "build:pwa": "quasar build -m pwa",
     "release": "release-it --ci",
     "release:beta": "release-it --preRelease",
+    "git:reset": "git reset && git checkout .",
     "lint": "eslint --ext .js,.vue src",
     "lintfix": "eslint --fix --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
@@ -115,7 +116,8 @@
     },
     "github": {
       "release": true,
-      "draft": true
+      "draft": true,
+      "releaseName": "Hyperion Remote ${version}"
     },
     "plugins": {
       "@release-it/conventional-changelog": {
