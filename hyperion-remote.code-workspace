@@ -5,10 +5,6 @@
 		}
 	],
 	"settings": {
-		"terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
-		"terminal.integrated.shellArgs.windows": [
-			"-i"
-		],
 		"editor.formatOnPaste": true,
 		"editor.formatOnSave": true,
 		"eslint.autoFixOnSave": true,
