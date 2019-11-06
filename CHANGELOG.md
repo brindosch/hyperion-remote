@@ -1,3 +1,10 @@
+# [0.4.0](https://github.com/brindosch/hyperion-remote/compare/v0.3.2...v0.4.0) (2019-11-06)
+
+
+### Features
+
+* Set Github releases to drafts ([5ec67fd](https://github.com/brindosch/hyperion-remote/commit/5ec67fd302347b1214d233979f6069c0c404c2cd))
+
 ## [0.3.2](https://github.com/brindosch/hyperion-remote/compare/v0.3.1...v0.3.2) (2019-11-06)
 
 ## 0.3.1 (2019-11-06)
