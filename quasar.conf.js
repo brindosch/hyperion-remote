@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
@@ -207,7 +208,27 @@ module.exports = function (ctx) {
           target: ['snap', 'deb', 'rpm', 'tar.gz']
         },
         win: {
-          target: ['nsis', 'zip']
+          target: [
+            {
+              target: 'zip',
+              arch: [
+                'x64',
+                'ia32'
+              ],
+              artifactName: '${productName}-${version}-${arch}-win.${ext}'
+            },
+            {
+              target: 'nsis-web',
+              arch: [
+                'x64',
+                'ia32'
+              ],
+              artifactName: '${productName}-Setup-${version}.${ext}',
+              oneClick: true,
+              allowToChangeInstallationDirectory: false,
+              deleteAppDataOnUninstall: true
+            }
+          ]
         },
         mac: {
           category: 'public.app-category.utilities',
