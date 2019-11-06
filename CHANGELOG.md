@@ -1,3 +1,11 @@
+## [0.4.3](https://github.com/brindosch/hyperion-remote/compare/v0.4.2...v0.4.3) (2019-11-06)
+
+
+### Bug Fixes
+
+* change gh release name ([0d248f9](https://github.com/brindosch/hyperion-remote/commit/0d248f94d95c12a5f63946a6d74181d6a1c650f9))
+* update config ([87f298f](https://github.com/brindosch/hyperion-remote/commit/87f298fc84ae5ec220ce8db88517f5620512c441))
+
 ## [0.4.2](https://github.com/brindosch/hyperion-remote/compare/v0.4.1...v0.4.2) (2019-11-06)
 
 
