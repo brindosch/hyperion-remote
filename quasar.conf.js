@@ -185,15 +185,6 @@ module.exports = function (ctx) {
 
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
-
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
-
-        // Windows only
-        // win32metadata: { ... }
       },
 
       builder: {
@@ -202,11 +193,13 @@ module.exports = function (ctx) {
         appId: 'org.hyperion.project.remote',
         copyright: 'hyperion-project.org',
         productName: 'Hyperion Remote',
+        // LINUX
         linux: {
           synopsis: 'Hyperion Desktop Remote',
           category: 'Utility',
           target: ['snap', 'deb', 'rpm', 'tar.gz']
         },
+        // WINDOWS
         win: {
           target: [
             {
@@ -214,22 +207,24 @@ module.exports = function (ctx) {
               arch: [
                 'x64',
                 'ia32'
-              ],
-              artifactName: '${productName}-${version}-${arch}-win.${ext}'
+              ]
             },
             {
               target: 'nsis',
               arch: [
                 'x64',
                 'ia32'
-              ],
-              artifactName: '${productName}-Setup-${version}.${ext}',
-              oneClick: true,
-              allowToChangeInstallationDirectory: false,
-              deleteAppDataOnUninstall: true
+              ]
             }
           ]
         },
+        nsis: {
+          artifactName: '${productName}-Setup-${version}.${ext}',
+          oneClick: true,
+          allowToChangeInstallationDirectory: false,
+          deleteAppDataOnUninstall: true
+        },
+        // MAC
         mac: {
           category: 'public.app-category.utilities',
           type: 'distribution',
