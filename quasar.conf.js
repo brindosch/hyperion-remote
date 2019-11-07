@@ -193,6 +193,7 @@ module.exports = function (ctx) {
         appId: 'org.hyperion.project.remote',
         copyright: 'hyperion-project.org',
         productName: 'Hyperion Remote',
+        artifactName: 'Hyperion-Remote-${version}-${os}-${arch}.${ext}',
         // LINUX
         linux: {
           synopsis: 'Hyperion Desktop Remote',
@@ -219,7 +220,7 @@ module.exports = function (ctx) {
           ]
         },
         nsis: {
-          artifactName: '${productName}-Setup-${version}.${ext}',
+          artifactName: 'Hyperion-Remote-Setup-${version}-${os}.${ext}',
           oneClick: true,
           allowToChangeInstallationDirectory: false,
           deleteAppDataOnUninstall: true
