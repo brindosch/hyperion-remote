@@ -1,3 +1,10 @@
+## [0.4.4](https://github.com/brindosch/hyperion-remote/compare/v0.4.3...v0.4.4) (2019-11-07)
+
+
+### Bug Fixes
+
+* Test artifactName ([b416570](https://github.com/brindosch/hyperion-remote/commit/b416570e9f02f41d329500f35da9d5472fb81e21))
+
 ## [0.4.3](https://github.com/brindosch/hyperion-remote/compare/v0.4.2...v0.4.3) (2019-11-06)
 
 
