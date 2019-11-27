@@ -23,5 +23,5 @@ jobs:
         - name: Build
           run: |
             npm install -g yarn
-            yarn run yarn:install
+            yarn yarn:install
             yarn build:${{ matrix.type }}
