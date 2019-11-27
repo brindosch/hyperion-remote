@@ -23,7 +23,7 @@
     "build:spaembed": "cross-env SPAEMBED=true quasar build && yarn run zip:spaembed",
     "build:electron": "quasar build -m electron",
     "build:pwa": "quasar build -m pwa && yarn run zip:pwa",
-    "release": "release-it --ci",
+    "release": "release-it",
     "release:beta": "release-it --preRelease=beta",
     "git:reset": "git reset && git checkout .",
     "zip:spa": "node ./scripts/zip.js SPA",
