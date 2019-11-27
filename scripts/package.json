@@ -1,0 +1,14 @@
+{
+    "name": "utils-hyperion-remote",
+    "version": "1.0.0",
+    "description": "zip folder",
+    "main": "main.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "brindosch",
+    "license": "MIT",
+    "dependencies": {
+        "archiver": "^3.1.1"
+    }
+}

@@ -10,8 +10,6 @@ module.exports = function (ctx) {
       'i18n',
       'axios',
       'notify-defaults',
-      'vue-draggable-resizable',
-      'vuedraggable',
       ctx.mode.electron ? 'socket-electron' : 'socket',
       ctx.mode.electron ? 'ssdp-electron' : ''
     ],
@@ -31,7 +29,8 @@ module.exports = function (ctx) {
       rtl: true,
       env: {
         VERSION: JSON.stringify(require('./package.json').version),
-        BUILDDATE: JSON.stringify(new Date().toUTCString())
+        BUILDDATE: JSON.stringify(new Date().toUTCString()),
+        EMBED: JSON.stringify(process.env.SPAEMBED)
       },
       // gzip: true,
       // analyze: true,
@@ -107,7 +106,13 @@ module.exports = function (ctx) {
         'QPopupProxy',
         'QDialog',
         'QImg',
-        'QLinearProgress'
+        'QLinearProgress',
+        'QTime',
+        'QPopupEdit',
+        'QTable',
+        'QTh',
+        'QTr',
+        'QTd'
       ],
       directives: [
         'ClosePopup',
@@ -121,23 +126,24 @@ module.exports = function (ctx) {
         'Dialog',
         'Loading',
         'AppFullscreen'
-      ]
+      ],
+      config: {
+        dark: 'auto' // or Boolean true/false
+      }
     },
     // animations: 'all' --- includes all animations
     animations: [
     ],
-
     ssr: {
       pwa: false
     },
-
     pwa: {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {}, // only for NON InjectManifest
       manifest: {
-        // name: 'Quasar App',
-        // short_name: 'Quasar-PWA',
-        // description: 'Best PWA App in town!',
+        name: 'Hyperion Remote',
+        short_name: 'Hyperion-Remote',
+        description: 'Remote Control for Hyperion',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

@@ -99,3 +99,11 @@ export const getTokenAuthRequired = (state) => {
 export const getLoginState = (state) => {
   return state.loggedin
 }
+
+export const getTokenList = (state) => {
+  return state.tokenList
+}
+
+export const getPendingTokens = (state) => {
+  return state.pendingTokens
+}

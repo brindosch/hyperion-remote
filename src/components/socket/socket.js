@@ -33,18 +33,10 @@ export const disconnect = () => {
 
 // Data request methods
 export const getServerInfo = () => {
-  send('serverinfo', undefined, { subscribe: ['components-update', 'effects-update', 'adjustment-update', 'instance-update', 'leds-update'] }) // "plugins-update"
+  send('serverinfo', undefined, { subscribe: ['components-update', 'effects-update', 'adjustment-update', 'instance-update', 'leds-update', 'token-update'] }) // "plugins-update"
 }
 export const getSysInfo = () => {
   send('sysinfo')
-}
-
-export const getServerSchema = () => {
-  send('config', 'getschema')
-}
-
-export const getServerConfig = () => {
-  send('config', 'getconfig')
 }
 
 // get methods
@@ -52,7 +44,7 @@ export const setAdminAuthRequired = () => {
   send('authorize', 'adminRequired')
 }
 export const setTokenAuthRequired = () => {
-  send('authorize', 'required')
+  send('authorize', 'tokenRequired')
 }
 
 // set methods
@@ -81,7 +73,7 @@ export const setCompState = (component, state) => {
 }
 export const setColor = (c, duration) => {
   duration = (duration === undefined) ? 0 : duration
-  send('color', undefined, { color: [c.r, c.g, c.b], priority: sstore.getters['common/getPriority'], origin: sstore.getters['common/getOriginName'] })
+  send('color', undefined, { color: c, priority: sstore.getters['common/getPriority'], origin: sstore.getters['common/getOriginName'] })
 }
 
 export const setImage = (data, duration, name) => {
@@ -101,27 +93,62 @@ export const setAdjustment = (id, type, value) => {
 }
 export const setPluginState = (id, state) => {
   let subc = state ? 'start' : 'stop'
-  send('plugin', subc, { id: id })
+  send('plugin', subc, { id })
 }
 export const setClear = (priority) => {
   priority = (priority === undefined) ? sstore.getters['common/getPriority'] : priority
-  send('clear', undefined, { priority: priority })
+  send('clear', undefined, { priority })
 }
 export const setLogEnable = (state) => {
   if (sstore.getters['api/getLoginState']) { send('logging', (state ? 'start' : 'stop')) }
 }
-export const setInstance = (nr) => {
-  send('instance', 'switchTo', { instance: nr })
+export const setInstance = (instance) => {
+  send('instance', 'switchTo', { instance })
 }
-export const setInstanceState = (newState, inst) => {
+export const setInstanceState = (newState, instance) => {
   const subc = newState ? 'startInstance' : 'stopInstance'
-  send('instance', subc, { instance: inst })
+  send('instance', subc, { instance })
 }
 export const setLedStream = (state) => {
   if (sstore.getters['api/getLoginState']) { send('ledcolors', (state ? 'ledstream-start' : 'ledstream-stop')) }
 }
 export const setImageStream = (state) => {
   if (sstore.getters['api/getLoginState']) { send('ledcolors', (state ? 'imagestream-start' : 'imagestream-stop')) }
+}
+
+// ADMIN ONLY METHODS
+export const getServerSchema = () => {
+  send('config', 'getschema')
+}
+export const getServerConfig = () => {
+  send('config', 'getconfig')
+}
+export const getTokenList = () => {
+  send('authorize', 'getTokenList')
+}
+export const getPendingTokens = () => {
+  send('authorize', 'getPendingTokenRequests')
+}
+export const handleTokenRequest = (id, accept) => {
+  send('authorize', 'answerRequest', { id, accept })
+}
+export const createToken = (comment) => {
+  send('authorize', 'createToken', { comment })
+}
+export const renameToken = (id, comment) => {
+  send('authorize', 'renameToken', { id, comment })
+}
+export const deleteToken = (id) => {
+  send('authorize', 'deleteToken', { id })
+}
+export const deleteInstance = (instance) => {
+  send('instance', 'deleteInstance', { instance })
+}
+export const renameInstance = (instance, name) => {
+  send('instance', 'saveName', { instance, name })
+}
+export const createInstance = (name) => {
+  send('instance', 'createInstance', { name })
 }
 
 export const handleInstanceUpdate = (type, data) => {
@@ -161,6 +188,8 @@ export const startApiInit = (authHandled) => {
 
   // admin requires more data
   if (admin) {
+    getTokenList()
+    getPendingTokens()
     getServerSchema()
     getServerConfig()
   }
@@ -218,7 +247,7 @@ function _onmessage (msg) {
     console.error('Failed to parse Hyperion response json', e, msg)
     return
   }
-  if (process.env.DEV) console.log('RECEIVE', data)
+  if (process.env.DEV || sstore.getters['common/getDebugState']) console.log('RECEIVE', data)
   // eval success
   if (typeof (data.success) !== 'undefined' && !data.success && data.command !== 'instance-switchTo' && data.command !== 'authorize-login' && data.command !== 'authorize-requestToken') {
     notify.error(i18n.t('conn.respFailure') + ': cmd: ' + data.command + ': ' + JSON.stringify(data.error), 'wifi')
@@ -236,8 +265,14 @@ function _onmessage (msg) {
       initialized = true; srouter.replace(sstore.getters['temp/getLastPage']).catch(() => { }); break
     // auth commands
     case 'authorize-adminRequired': sstore.commit('api/setAdminAuthRequired', data.info.adminRequired); handleAuthRequired(data.info.adminRequired); break
-    case 'authorize-required': sstore.commit('api/setTokenAuthRequired', data.info.required); handleAuthRequired(data.info.required); break
+    case 'authorize-tokenRequired': sstore.commit('api/setTokenAuthRequired', data.info.required); handleAuthRequired(data.info.required); break
     case 'authorize-login': handleAuthResponse(data); break
+    // admin commands
+    case 'authorize-getTokenList': sstore.commit('api/setTokenList', data.info); break
+    case 'token-update': sstore.commit('api/setTokenList', data.data); break
+    case 'authorize-getPendingTokenRequests': sstore.dispatch('api/setPendingTokens', data.info); break
+    case 'authorize-tokenRequest': sstore.dispatch('api/setPendingTokens', data.info); break
+    //case 'authorize-createToken' handled in TokenHandler
     // update commands
     case 'components-update': sstore.commit('api/setComponentsUpdate', data.data); break
     case 'effects-update': sstore.commit('api/updateEffects', data.effects); break
@@ -293,6 +328,6 @@ export function send (command, subcommand, data, tan = 1) {
   let obj = { command, subcommand, tan }
   if (data) { Object.assign(obj, data) }
 
-  if (process.env.DEV) console.log('SEND', obj)
+  if (process.env.DEV || sstore.getters['common/getDebugState']) console.log('SEND', obj)
   ws.send(obj)
 }

@@ -1,7 +1,5 @@
 <template>
-  <div class="flex flex-center">
-    <h5>SOME TEXT HERE AS ADMIN</h5>
-  </div>
+  <router-view />
 </template>
 
 <style>
@@ -9,7 +7,7 @@
 
 <script>
 export default {
-  name: 'PageLedLayout',
+  name: 'PageSettings',
   data () {
     return {
     }

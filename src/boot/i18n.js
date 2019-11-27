@@ -1,5 +1,5 @@
 import VueI18n from 'vue-i18n'
-import messages from 'src/i18n/en-us'
+import messages from 'src/lang/en-us.json'
 
 var i18n = null
 

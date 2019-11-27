@@ -1,9 +1,30 @@
-export const getCurrentLocale = (state) => {
-  return state.uiSettings.locale
+
+export const getLang = (state) => {
+  return state.syncSettings.lang
 }
 
 export const isDarkTheme = (state) => {
   return state.uiSettings.darkTheme
+}
+
+export const getDarkMode = (state) => {
+  return state.syncSettings.darkMode
+}
+
+export const getDarkModeOptions = (state) => {
+  return ['platform', 'time', 'enabled', 'disabled']
+}
+
+export const getDarkTimespan = (state) => {
+  return state.syncSettings.darkTimespan
+}
+
+export const getDarkStartTime = (state) => {
+  return state.syncSettings.darkTimespan[0]
+}
+
+export const getDarkEndTime = (state) => {
+  return state.syncSettings.darkTimespan[1]
 }
 
 export const getThemeColor = (state) => {
@@ -46,4 +67,12 @@ export const getStreamQuality = (state) => {
 
 export const getAdminAppMode = (state) => {
   return state.uiSettings.adminAppMode
+}
+
+export const getFavColors = (state) => {
+  return state.syncSettings.favColors
+}
+
+export const getDebugState = (state) => {
+  return state.debug
 }

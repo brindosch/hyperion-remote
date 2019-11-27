@@ -1,12 +1,15 @@
 <template>
   <div>
-    <q-list :dark="isDarkTheme">
+    <q-list style="max-width:400px">
       <template v-for="(comp, index) in getComponents">
-        <q-item :key="index">
+        <q-item
+          :key="index"
+          tag="label"
+        >
           <q-item-section>
             {{$t('remote.comp.'+comp.name)}}
           </q-item-section>
-          <q-item-section>
+          <q-item-section side>
             <q-toggle
               :disable="comp.name != 'ALL' && !getHyperionEnable"
               :value="comp.enabled"

@@ -32,35 +32,41 @@
     <!-- Targets -->
     <q-tab-panels
       v-model="modSelectedTab"
-      :class="isDarkTheme ? 'bg-dark' : 'bg-white'"
       animated
     >
       <q-tab-panel
+        class="q-pa-none"
         keep-alive
         name="tab-1"
       >
         <h-colorpicker />
       </q-tab-panel>
       <q-tab-panel
+        class="q-pa-none"
         keep-alive
         name="tab-2"
       >
         <list-adjustments />
       </q-tab-panel>
       <q-tab-panel
+        class="q-pa-none"
         keep-alive
         name="tab-3"
       >
         <list-components />
       </q-tab-panel>
       <q-tab-panel
+        class="q-pa-none"
         :disable="this.$store.getters['api/getPlugins'] === undefined"
         keep-alive
         name="tab-4"
       >
         <h-plugins-list />
       </q-tab-panel>
-      <q-tab-panel name="tab-5">
+      <q-tab-panel
+        name="tab-5"
+        class="q-pa-none"
+      >
         <h-led-visual />
       </q-tab-panel>
     </q-tab-panels>
@@ -100,22 +106,19 @@ export default {
     setSelectedTab (val) { this.$store.commit('common/setSelectedRemoteTab', val) },
     requestClear () { this.$socket.setClear() },
     handleSwipe (obj) {
-      if (Math.abs(obj.distance.x) > 0.5 * this.windowWidth || Math.abs(obj.distance.x) > 200)
-        {(obj.direction === "right") ? this.selectTabDirection('left') : this.selectTabDirection('right')}
+      if (Math.abs(obj.distance.x) > 0.5 * this.windowWidth || Math.abs(obj.distance.x) > 200) { (obj.direction === 'right') ? this.selectTabDirection('left') : this.selectTabDirection('right') }
     },
     selectTabDirection (name = 'right') {
       // switch to the right/left neighbor tab based on current tab
       // 1. Get current tab, may be undefined if not found. In this case we do nothing
       const currTab = this.__getTabByName(this.$store.getters['common/getSelectedRemoteTab'])
-      if (!currTab)
-        {return}
+      if (!currTab) { return }
       // 2. get an array of all possible tabs (filter hidden,disabled tabs and other DOM elements)
       const tabs = this.__getAvailableTabs()
       // 3. Get target tab, may be undefined if not found
       const tab = (name === 'right') ? tabs[tabs.indexOf(currTab) + 1] : tabs[tabs.indexOf(currTab) - 1]
       // 4. set the new tab
-      if (tab)
-        {this.setSelectedTab(tab.name)}
+      if (tab) { this.setSelectedTab(tab.name) }
       // this.$refs.tabs.selectTab(tab.name)
     },
     __getAvailableTabs () {

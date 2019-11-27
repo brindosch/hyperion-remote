@@ -11,10 +11,7 @@
       :color="streaming ? 'red' : 'white'"
       icon="videocam"
     >
-      <q-list
-        :dark="isDarkTheme"
-        :class="{'bg-matmenu':isDarkTheme}"
-      >
+      <q-list>
         <template v-for="(item, index) in streamQualityList">
           <q-item
             clickable
@@ -51,10 +48,7 @@
       no-backdrop-dismiss
       v-model="showSelectionDialog"
     >
-      <q-card
-        style="width: 800px; max-width: 80vw;"
-        :class="{'bg-dark text-white':isDarkTheme}"
-      >
+      <q-card style="width: 800px; max-width: 80vw;">
         <q-card-section class="text-h6 text-center">
           {{$t('streamer.select')}}
         </q-card-section>

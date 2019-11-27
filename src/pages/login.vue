@@ -5,13 +5,24 @@
   >
     <div
       class="text-center"
-      style="padding:20px"
+      style="padding:20px; backdrop-filter: blur(10px);"
     >
       <img src="statics/hyperion-logo-white.png" />
       <div style="margin-top:20px;">
         <q-input
+          v-model="username"
+          dark
+          type="text"
+          name="username"
+          spellcheck="false"
+          color="white"
+          label="Username"
+          stack-label
+          style="display:none"
+        />
+        <q-input
           :autofocus="$q.platform.is.desktop"
-          v-model="logininput"
+          v-model="password"
           dark
           :type="isPwd ? 'password' : 'text'"
           spellcheck="false"
@@ -19,6 +30,7 @@
           :label="getAdminAppMode ? $t('login.password') : $t('login.token')"
           stack-label
           :hint="getAdminAppMode ? $t('login.passwordHint') : $t('login.tokenHint')"
+          hide-hint
           @keyup.enter="login"
         >
           <template v-slot:append>
@@ -50,6 +62,7 @@
         </q-btn>
         <br>
         <q-btn
+          v-if="!$store.getters['temp/isEmbed']"
           :label="$t('btn.disconnect')"
           outline
           color="white"
@@ -60,11 +73,11 @@
         </q-btn>
       </div>
       <q-toggle
-        style="position: absolute; right:0px;bottom:0px"
-        class="text-white"
+        v-if="!$store.getters['temp/isEmbed']"
+        class="text-white q-pa-md"
         v-model="modAdminMode"
         color="red"
-        :label="'(PRE ALPHA) '+$t('login.adminmode')"
+        :label="'(WIP) '+$t('login.adminmode')"
         left-label
       />
     </div>
@@ -81,7 +94,7 @@
         <q-card-section>
           <div class="text-h6">{{$t('btn.createToken')}}</div>
         </q-card-section>
-        <q-card-section style="opacity:0.8;">
+        <q-card-section style="color:rgba(255,255,255,0.9)">
           {{$t('login.tokWizMsg')}}.<br />
           {{$t('login.tokWizMsg2')}}
           <br /><br />
@@ -90,7 +103,7 @@
           {{$t('login.code')}}: <strong>{{tokenId}}</strong>
           <br /><br />
           <q-linear-progress
-            dark
+            :dark="false"
             stripe
             style="height: 10px"
             :value="requestTimerCount"
@@ -137,7 +150,8 @@ export default {
       tokenId: '',
       tokenComment: '',
       showTokenDialog: false,
-      logininput: ''
+      password: '',
+      username: 'Hyperion'
     }
   },
   props: {
@@ -194,7 +208,7 @@ export default {
       const admin = this.$store.getters['common/getAdminAppMode']
 
       if (typeof (index) === 'object') {
-        admin ? this.$socket.login(this.logininput) : this.$socket.loginToken(this.logininput)
+        admin ? this.$socket.login(this.password) : this.$socket.loginToken(this.password)
       } else if (typeof (index) === 'string') {
         admin ? this.$socket.login(index) : this.$socket.loginToken(index)
       } else {
@@ -205,11 +219,11 @@ export default {
       const admin = this.$store.getters['common/getAdminAppMode']
 
       if (admin) {
-        if (this.logininput.length < 8) {
+        if (this.password.length < 8) {
           return false
         }
       } else {
-        if (this.logininput.length !== 36) {
+        if (this.password.length !== 36) {
           return false
         }
       }
@@ -217,7 +231,7 @@ export default {
     },
     getLoginCred (login) {
       let type = this.getAdminAppMode ? 'password' : 'token'
-      this.$store.dispatch('connection/getLastPassword', { type: type }).then((pw) => { this.logininput = pw; if (login) this.login(pw) })
+      this.$store.dispatch('connection/getLastPassword', { type: type }).then((pw) => { this.password = pw; if (login) this.login(pw) })
     },
     createToken () {
       let uuid = uid()
@@ -236,7 +250,7 @@ export default {
     handleRequestTokenResponse (data) {
       this.createTokenAbort()
       if (data.success) {
-        this.logininput = data.info.token
+        this.password = data.info.token
         this.login(data.info.token)
         notify.success(this.$t('login.tokCreaSucc'))
       } else {

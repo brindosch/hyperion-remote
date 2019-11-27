@@ -12,8 +12,6 @@
           <q-select
             :label="$t('remote.adjust.index')"
             :hint="$t('remote.adjust.indexHelp')"
-            :dark="isDarkTheme"
-            :options-dark="isDarkTheme"
             bottom-slots
             v-model="currentSelectedIndex"
             :options="getIndexOptions"
@@ -27,17 +25,16 @@
         v-for="(value, index) in getAdjustments"
         :key="index"
         v-show="currentSelectedIndex == index"
-        style="margin:10px"
+        style="padding:10px"
       >
         <q-item
           v-for="(key) in sortedKeys"
           :key="key+index"
         >
           <q-item-section>
-            <q-item-label :class="isDarkTheme ? 'text-light':''">{{ Array.isArray(value[key]) ? $t('colors.'+key) : $t('remote.adjust.'+key) }}</q-item-label>
+            <q-item-label>{{ Array.isArray(value[key]) ? $t('colors.'+key) : $t('remote.adjust.'+key) }}</q-item-label>
             <q-input
               v-if="Array.isArray(value[key])"
-              :dark="isDarkTheme"
               spellcheck="false"
             >
               <!-- :value="'rgb('+value[key][0]+','+value[key][1]+','+value[key][2]+')'" @input="setAdjustment(value['id'],key,$event)" -->
@@ -54,7 +51,6 @@
                     <q-color
                       :value="'rgb('+value[key][0]+','+value[key][1]+','+value[key][2]+')'"
                       @input="setAdjustment(value['id'],key,$event)"
-                      :dark="isDarkTheme"
                       format-model="rgb"
                       style="min-width:300px;min-height:300px"
                       no-header
@@ -72,7 +68,6 @@
               :max="4"
               :step="0.1"
               label
-              :dark="isDarkTheme"
             />
             <q-slider
               v-else-if="key.includes('brightness')"
@@ -82,7 +77,6 @@
               :max="100"
               :step="1"
               label
-              :dark="isDarkTheme"
             />
           </q-item-section>
         </q-item>

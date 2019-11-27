@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <router-view />
+    <h5>SOME TEXT HERE AS ADMIN</h5>
   </q-page>
 </template>
 
@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'PageConfig',
+  name: 'PageLedLayout',
   data () {
     return {
     }

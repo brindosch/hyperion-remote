@@ -5,11 +5,26 @@
   >
     <div
       class="text-center"
-      style="padding:20px"
+      style="padding:20px; backdrop-filter: blur(10px);"
     >
       <img src="statics/hyperion-logo-white.png" />
-      <div style="margin-top:20px;">
+      <div v-if="$store.getters['temp/isEmbed']">
+        <q-btn
+          :label="$t('label.reconnect')"
+          outline
+          color="white"
+          dark
+          @click="connect"
+          style="margin-top:20px;"
+          :loading="getConnectionState"
+        ></q-btn>
+      </div>
+      <div
+        style="margin-top:20px;"
+        v-if="!$store.getters['temp/isEmbed']"
+      >
         <q-input
+          :autofocus="$q.platform.is.desktop"
           v-model="address"
           dark
           spellcheck="false"
@@ -18,6 +33,7 @@
           stack-label
           :placeholder="isPageHTTPS ? '192.168.0.20:8092' : '192.168.0.20:8090'"
           :hint="isPageHTTPS ? $t('conn.usehttps',{ port: '8092' }) :''"
+          hide-hint
           @keyup.enter="connect"
         >
           <template v-slot:prepend>
@@ -25,14 +41,13 @@
           </template>
         </q-input>
         <q-btn
-          :autofocus="$q.platform.is.desktop"
           :disable="address.length == 0"
           outline
           color="white"
           dark
           style="margin-top:25px"
           @click="connect"
-          :label="$t('btn.connect')"
+          :label="$t('label.connect')"
           :loading="getConnectionState"
         />
         <q-btn
@@ -49,7 +64,7 @@
       </div>
       <div
         class="text-white text-center"
-        v-if="getStoredConnections.length"
+        v-if="getStoredConnections.length && !$store.getters['temp/isEmbed']"
         style="padding-top:15px"
       >
         <q-list dark>
@@ -62,21 +77,20 @@
               <div>
                 {{entry.address}}
               </div>
-              <q-btn-group flat>
+              <q-btn-group
+                flat
+                style="margin-top:5px"
+              >
                 <q-btn
-                  style="margin-top:5px"
-                  size="small"
                   outline
                   @click="connect(index+1)"
-                  :label="$t('btn.connect')"
+                  :label="$t('label.connect')"
                   :loading="getConnectionState"
                 />
                 <q-btn
-                  style="margin-top:5px"
-                  size="small"
                   outline
                   @click="deleteEntry(index+1)"
-                  icon="delete"
+                  icon="fas fa-trash-alt"
                 />
               </q-btn-group>
             </div>
@@ -110,12 +124,19 @@ export default {
       default: true
     }
   },
+  created () {
+    if (process.env.EMBED) {
+      const loc = document.location
+      const port = loc.port === '' ? (loc.protocol === 'https:' ? '433' : '80') : loc.port
+      this.address = `${loc.protocol}//${loc.hostname}:${port}`
+    }
+  },
   mounted () {
     // auto connection on startup
     // to prevent reconnect on user requested disconnect(); autoConnect is overwritten by router props
-    if (this.autoConnect && this.$store.getters['connection/getAutoConnect'] && this.$store.getters['connection/getLastAddress'] !== '') {
-      this.connect(this.$store.getters['connection/getLastAddress'])
-    } else if ((this.$q.platform.is.cordova || this.$q.platform.is.electron) && this.$store.getters['connection/getLastAddress'] === '') {
+    if (this.autoConnect && this.$store.getters['connection/getAutoConnect'] && this.address !== '') {
+      this.connect()
+    } else if ((this.$q.platform.is.cordova || this.$q.platform.is.electron) && this.address === '') {
       // do a ssdp search for server if we don't have an address
       this.searchSSDP()
     }
@@ -141,7 +162,7 @@ export default {
       } else if (typeof (index) === 'string') {
         this.$socket.connect(index)
       } else {
-        this.$socket.connect(this.$store.state.connection.storedConnections[index].address)
+        this.$socket.connect(this.address)
       }
     },
     searchSSDP () {

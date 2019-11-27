@@ -22,7 +22,7 @@ function onSSDPResponse (headers, statusCode, rinfo) {
       url.port = url.protocol === 'https:' ? '433' : '80'
     }
     let host = url.hostname + ':' + url.port
-    let name = headers.SERVER.split(' ').pop().replace('/', ' V') + ' (' + host + ')'
+    let name = headers.SERVER.split(' ').pop().replace('/', ' V') + ' (' + headers['HYPERION-NAME'] + ')'
     // check if the host address already exists
     if (ssdpList.findIndex(ientry => ientry.value === host) === -1) { ssdpList.push({ label: name, value: host }) }
   }

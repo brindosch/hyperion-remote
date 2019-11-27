@@ -7,8 +7,9 @@ import { Notify } from 'quasar'
  */
 export function error (header, icon, msg = null) {
   Notify.create({
-    message: msg ? header+': '+msg : header,
-    icon: icon
+    message: msg ? header + ': ' + msg : header,
+    icon: icon,
+    color: 'negative'
   })
 }
 
@@ -19,7 +20,7 @@ export function error (header, icon, msg = null) {
  */
 export function success (header, icon, msg = null) {
   Notify.create({
-    message: msg ? header+': '+msg : header,
+    message: msg ? header + ': ' + msg : header,
     icon: icon,
     color: 'positive'
   })

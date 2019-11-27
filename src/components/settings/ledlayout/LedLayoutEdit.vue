@@ -14,11 +14,7 @@
         context-menu
         target=".layout-editor-qmenu"
       >
-        <q-list
-          :dark="isDarkTheme"
-          :class="{'bg-matmenu':isDarkTheme}"
-          dense
-        >
+        <q-list dense>
           <q-item
             :disable="!canUndo"
             clickable
@@ -100,6 +96,30 @@
           <q-separator />
           <q-item
             clickable
+            v-close-popup="lastActive != -1"
+            :disable="lastActive == -1"
+            @click.stop="handleLedName"
+          >
+            <q-item-section avatar>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{$t('conf.layout.ledName')}}</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item
+            clickable
+            v-close-popup="frameLeds.length > 0"
+            :disable="frameLeds.length == 0"
+            @click="nameLedsDialog = !nameLedsDialog"
+          >
+            <q-item-section avatar>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{$t('conf.layout.ledName')}} ...</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item
+            clickable
             v-close-popup="frameLeds.length > 0"
             :disable="frameLeds.length == 0"
             @click="moveVisible = !moveVisible"
@@ -107,7 +127,7 @@
             <q-item-section avatar>
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{$t('conf.layout.order')}}</q-item-label>
+              <q-item-label>{{$t('conf.layout.ledOrder')}} ...</q-item-label>
             </q-item-section>
           </q-item>
           <q-item
@@ -119,7 +139,7 @@
 
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{$t('conf.layout.ledVisible')}}</q-item-label>
+              <q-item-label>{{$t('conf.layout.ledVisible')}} ...</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -133,7 +153,6 @@
               <q-radio
                 class="q-pl-sm"
                 dense
-                :dark="isDarkTheme"
                 v-model="axisOption"
                 val="x"
               />
@@ -151,7 +170,6 @@
               <q-radio
                 class="q-pl-sm"
                 dense
-                :dark="isDarkTheme"
                 v-model="axisOption"
                 val="y"
               />
@@ -169,7 +187,6 @@
               <q-radio
                 class="q-pl-sm"
                 dense
-                :dark="isDarkTheme"
                 v-model="axisOption"
                 val="both"
               />
@@ -200,8 +217,8 @@
       </q-menu>
 
       <vue-draggable-resizable
-        class="flex flex-center lle-default"
-        :class="{'lle-visibility':!isVisible(i),'cursor-pointer': isVisible(i) }"
+        class="flex flex-center"
+        :class="{'lle-visibility':!isVisible(i),'cursor-pointer': isVisible(i) ,'lle-default': currentActive != i}"
         class-name-active="lle-active"
         class-name-handle="editor-handle"
         v-for="(led, i) in frameLeds"
@@ -220,41 +237,112 @@
         @deactivated="onDeactivated(i)"
         :parent="true"
       >
-        <div>{{i+1}}</div>
+        <div>{{i+1}}
+        </div>
+        <template v-if="led.name">
+          <q-tooltip>{{led.name}}</q-tooltip>
+        </template>
       </vue-draggable-resizable>
 
     </div>
-    <w-qdialog v-model="moveVisible">
-      <template v-slot="header">
-        Trash Text Here
-      </template>
-      <!--
-        <template v-slot="content">
+    <q-dialog v-model="moveVisible">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">{{$t('conf.layout.ledOrder')}}</div>
+        </q-card-section>
+        <q-card-section class="q-dialog__message">
+          {{$t('conf.layout.ledOrderMsg')}}
+        </q-card-section>
+        <q-card-section>
           <draggable
             v-model="frameLeds"
-            group="people"
+            class="row"
+            group="ledlayoutorder"
+            ghost-class="favourite-ghost"
+            :animation='150'
           >
             <div
               v-for="(el, i) in frameLeds"
+              class="grid-item row justify-center items-center cursor-pointer"
+              :class="$q.dark.isActive ? 'bg-grey-8' : 'bg-grey-3'"
               :key="i"
-            >{{i}}</div>
+            >{{i+1}}
+              <template v-if="el.name">
+                <q-tooltip>{{el.name}}</q-tooltip>
+              </template>
+            </div>
           </draggable>
-        </template>
-        -->
-    </w-qdialog>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            :label="$q.lang.label.ok"
+            v-close-popup
+            color="primary"
+          ></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog
+      v-model="nameLedsDialog"
+      @before-hide="calcFrameLedsToLed"
+    >
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">{{$t('conf.layout.ledName')}}</div>
+        </q-card-section>
+        <q-card-section class="q-dialog__message">
+          {{$t('conf.layout.ledNameMsg2')}}
+        </q-card-section>
+        <q-card-section>
+          <div class="row">
+            <div
+              v-for="(el, i) in frameLeds"
+              class="grid-item row justify-center items-center cursor-pointer"
+              :class="$q.dark.isActive ? 'bg-grey-8' : 'bg-grey-3'"
+              :key="i"
+            >{{i+1}}
+              <template v-if="el.name">
+                <q-tooltip>{{el.name}}</q-tooltip>
+              </template>
+              <q-popup-edit
+                v-model="frameLeds[i].name"
+                :title="$t('conf.layout.ledName')+' '+(i+1)"
+              >
+                <q-input
+                  v-model="frameLeds[i].name"
+                  dense
+                  autofocus
+                />
+              </q-popup-edit>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            :label="$q.lang.label.ok"
+            color="primary"
+            v-close-popup
+          ></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
+import VueDraggableResizable from 'vue-draggable-resizable'
+import draggable from 'vuedraggable'
 import { cutNumber } from 'src/utils'
 import { undoredo, freeze, getRandomHash, dialog, stringToNumber } from 'components/mixins'
-import { WQDialog } from 'components/wrap'
 
 export default {
   name: 'PageLedLayout',
   mixins: [undoredo, freeze, getRandomHash, dialog, stringToNumber],
   components: {
-    'w-qdialog': WQDialog
+    'vue-draggable-resizable': VueDraggableResizable,
+    draggable
   },
   data () {
     return {
@@ -263,6 +351,7 @@ export default {
       lastActive: -1,
       visibleLeds: [],
       moveVisible: false,
+      nameLedsDialog: false,
       currLeds: [],
       frameLeds: [], // leds calculated to frame size + vue-draggable-resizeable vals
       frameWidth: 100,
@@ -312,7 +401,7 @@ export default {
       })
       this.currLeds = cLeds
     },
-    calcFrameLedToLed ({ x, y, width, height }) {
+    calcFrameLedToLed ({ x, y, width, height, name }) {
       // calc position of led back to Led Layout values
       let hmin, hmax, vmin, vmax
 
@@ -320,7 +409,7 @@ export default {
       hmax = cutNumber((x + width) / this.frameWidth)
       vmin = cutNumber(y / this.frameHeight)
       vmax = cutNumber((y + height) / this.frameHeight)
-      return { hmin, hmax, vmin, vmax }
+      return { hmin, hmax, vmin, vmax, name }
     },
     calcLedsToFrame () {
       let fLeds = []
@@ -331,13 +420,14 @@ export default {
     },
     calcLedToFrameLed (led) {
       // calc position of LED based on Led Layout to frame width/height rounded to Pixels
-      let x, y, width, height, id
+      let x, y, width, height, id, name
       id = this.getRandomHash()
       x = Math.round(led.hmin * this.frameWidth)
       y = Math.round(led.vmin * this.frameHeight)
       width = Math.round((led.hmax - led.hmin) * this.frameWidth)
       height = Math.round((led.vmax - led.vmin) * this.frameHeight)
-      return { x, y, width, height, id }
+      name = led.name
+      return { x, y, width, height, id, name }
     },
     resetLayout (skipDialog) {
       if (!skipDialog) {
@@ -374,7 +464,6 @@ export default {
       this.storeUndoItem(this.frameLeds)
       this.currLeds.push({ hmin: 0.4, hmax: 0.6, vmin: 0.4, vmax: 0.6 })
       this.calcLedsToFrame()
-      // this.frameLeds.push(this.calcLedToFrameLed({ hmin: 0.4, hmax: 0.6, vmin: 0.4, vmax: 0.6 }))
       this.$q.notify(this.$t('conf.layout.ledAdded', { lednr: '(' + this.currLeds.length + ')' }))
       this.currentActive = this.currLeds.length - 1
       this.lastActive = this.currLeds.length - 1
@@ -386,6 +475,17 @@ export default {
       // translate from led number to index pos and filter
       const res = this.stringExpToInteger(data).map(v => v - 1)
       this.visibleLeds = res.filter(val => this.frameLeds[val] !== undefined)
+    },
+    handleLedName () {
+      if (this.lastActive === -1) { return }
+      const la = this.lastActive
+      this.openPromptDialog({ title: this.$t('conf.layout.ledName'), msg: this.$t('conf.layout.ledNameMsg', { lednr: this.lastActive + 1 }) }).onOk((data) => { this._handleLedName(data, la) })
+    },
+    _handleLedName (data, la) {
+      if (data === undefined || data.trim() === '') { return }
+      this.storeUndoItem(this.frameLeds)
+      this.$set(this.frameLeds[la], 'name', data)
+      this.$set(this.currLeds[la], 'name', data)
     },
     removeLed () {
       if (this.lastActive === -1) { return }

@@ -1,0 +1,136 @@
+<template>
+  <svg
+    class="iro__wheel"
+    width={
+    width
+    }
+    height={
+    width
+    }
+    style={{
+          overflow: 'visible',
+          display: 'block'
+        }}
+  >
+    <defs>
+      <radialGradient
+        id={
+        this.uid
+        }
+      >
+        <stop
+          offset="0%"
+          stop-color="#fff"
+        />
+        <stop
+          offset="100%"
+          stop-color="#fff"
+          stop-opacity="0"
+        />
+      </radialGradient>
+    </defs>
+    <g
+      class="iro__wheel__hue"
+      stroke-width={
+      radius
+      }
+      fill="none"
+    >
+      { HUE_STEPS.map(angle => (
+      <path
+        key={
+        angle
+        }
+        d={
+        createArcPath(cX,
+        cY,
+        radius /
+        2,
+        angle,
+        angle
+        +
+        1.5)
+        }
+        stroke={
+        `hsl(${this._transformAngle(angle)},
+        100%,
+        50%)`
+        }
+      />
+      ))}
+    </g>
+    <circle
+      class="iro__wheel__saturation"
+      cx={
+      cX
+      }
+      cy={
+      cY
+      }
+      r={
+      radius
+      }
+      fill={
+      `url(${resolveUrl('#'
+      +
+      this.uid)})`
+      }
+    />
+    { props.wheelLightness && (
+    <circle
+      class="iro__wheel__lightness"
+      cx={
+      cX
+      }
+      cy={
+      cY
+      }
+      r={
+      radius
+      }
+      fill="#000"
+      opacity={
+      1
+      -
+      hsv.v /
+      100
+      }
+    />
+    )}
+    <IroHandle
+      r={
+      handleRadius
+      }
+      url={
+      props.handleSvg
+      }
+      origin={
+      props.handleOrigin
+      }
+      x={
+      cX
+      +
+      handleDist
+      *
+      Math.cos(handleAngle)
+      }
+      y={
+      cY
+      +
+      handleDist
+      *
+      Math.sin(handleAngle)
+      }
+    />
+  </svg>
+</template>
+
+<script>
+export default {
+  data () {
+    return: {
+
+    }
+  }
+}
+</script>

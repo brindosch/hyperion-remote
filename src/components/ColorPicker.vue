@@ -1,21 +1,28 @@
 <template>
+
   <div
-    class="flex flex-center"
+    class="row"
     ref="page"
   >
-    <q-resize-observer @resize="onResize" />
-    <div style="position:relative">
-      <q-btn
-        round
-        unelevated
-        @click="requestClear"
-        style="position:absolute;right:10px"
-        :color="$store.getters['common/getThemeColor']"
-      >
-        <q-icon name="clear" />
-      </q-btn>
-      <div ref="m_colorpicker"></div>
-      <q-list :dark="isDarkTheme">
+    <div class="col-xs-12 col-md-6 q-pa-md">
+      <q-resize-observer @resize="onResize" />
+      <div class="relative-position">
+        <q-btn
+          round
+          unelevated
+          @click="requestClear"
+          class="absolute-top-right"
+          :color="$store.getters['common/getThemeColor']"
+        >
+          <q-icon name="clear" />
+        </q-btn>
+        <div class="flex flex-center">
+          <div ref="m_colorpicker"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-md-6 q-pt-sm">
+      <q-list>
         <q-item>
           <q-item-section side>
             <q-icon name="brightness_low" />
@@ -25,7 +32,6 @@
               v-model="modBrightness"
               :min="0"
               :max="100"
-              :dark="isDarkTheme"
               label
               :label-value="modBrightness + '%'"
             />
@@ -36,12 +42,15 @@
         </q-item>
         <q-item>
           <q-item-section>
+            <favourite-colors :showEdit="true" />
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section>
             <q-select
               :hint="$t('remote.effects.help')"
               :label="$t('remote.effects.title')"
               bottom-slots
-              :dark="isDarkTheme"
-              :options-dark="isDarkTheme"
               :options="getEffects"
               v-model="currEffect"
               emit-value
@@ -52,6 +61,7 @@
       </q-list>
     </div>
   </div>
+
 </template>
 
 <style>
@@ -59,10 +69,12 @@
 
 <script>
 import iro from '@jaames/iro'
+import FavouriteColors from './FavouriteColors'
 import { throttle } from '../utils'
 
 export default {
   name: 'ColorPicker',
+  components: { 'favourite-colors': FavouriteColors },
   data () {
     return {
       colorPicker: null,
@@ -105,17 +117,14 @@ export default {
       this.$store.commit('common/setColor', val)
     },
     onResize (size) {
-      if (this.currWidth !== size.width && (size.width < 500 || this.colorPicker === null)) {
-        if (this.colorPicker !== null) {
-          if (this.colorPicker.el.firstChild) { this.colorPicker.el.removeChild(this.colorPicker.el.firstChild) }
-        }
-        if (this.colorPicker === null && size.width > 500) {
-          size.width = 500
-        }
-        this.currWidth = size.width
+      if (size.width > 400) {
+        size.width = 400
+      }
+      let newWidth = size.width - 32
+      if (this.colorPicker === null) {
         // https://rakujira.jp/projects/iro/docs/guide.html#Getting-Started
         this.colorPicker = new iro.ColorPicker(this.$refs.m_colorpicker, {
-          width: size.width,
+          width: newWidth,
           color: this.currColor,
           padding: 2,
           display: 'relative',
@@ -124,10 +133,13 @@ export default {
         })
         // throttle the change events, fires also the last trigger
         this.colorPicker.on('input:change', throttle((color) => {
-          this.$socket.setColor(color.rgb)
+          this.$socket.setColor([color.rgb.r, color.rgb.g, color.rgb.b])
           this.currColor = color.rgb
         }, 100)
         )
+      } else if (this.currWidth !== newWidth) {
+        this.currWidth = newWidth
+        this.colorPicker.resize(newWidth, 0)
       }
     }
   }

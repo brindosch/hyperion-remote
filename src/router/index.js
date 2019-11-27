@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store'
-import { i18n } from '../boot/i18n'
 import { Loading, QSpinnerGears } from 'quasar'
 
 import routes from './routes'
@@ -78,8 +77,6 @@ Router.beforeEach((to, from, next) => {
   Loading.show({
     delay: 300,
     spinner: QSpinnerGears,
-    message: i18n.t('conn.spinnerFetchData'),
-    messageColor: 'white',
     spinnerSize: 150,
     spinnerColor: 'white',
     customClass: 'bg-hyperion'

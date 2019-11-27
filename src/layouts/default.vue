@@ -1,5 +1,6 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpr fFf">
+    <!-- v-touch-swipe.mouse="onSwipeEvent" -->
     <q-header elevated>
       <!-- Frameless electron window, add controls min/max/close/drag app to keep it usable -->
       <top-bar-electron />
@@ -37,10 +38,7 @@
           icon="more_vert"
         >
           <q-menu>
-            <q-list
-              :dark="isDarkTheme"
-              :class="{'bg-matmenu':isDarkTheme}"
-            >
+            <q-list>
               <q-item
                 clickable
                 v-close-popup
@@ -54,6 +52,7 @@
                 </q-item-section>
               </q-item>
               <q-item
+                v-if="!$store.getters['temp/isEmbed']"
                 clickable
                 v-close-popup
                 @click.native="disconnect"
@@ -78,6 +77,19 @@
                   {{$t('btn.toggleFullscreen')}}
                 </q-item-section>
               </q-item>
+              <q-item
+                v-if="getAdminAppMode && $store.getters['api/getPendingTokens'].length > 0"
+                clickable
+                v-close-popup
+                @click="openTokenHandler"
+              >
+                <q-item-section avatar>
+                  <q-icon name="fas fa-key" />
+                </q-item-section>
+                <q-item-section>
+                  {{$t('conf.auth.pendToks')}}
+                </q-item-section>
+              </q-item>
             </q-list>
           </q-menu>
         </q-btn>
@@ -89,12 +101,11 @@
       v-model="leftDrawerOpen"
       show-if-above
       side="left"
-      :bordered="!isDarkTheme"
-      :content-class="{'bg-grey-9' : isDarkTheme}"
+      bordered
+      :content-class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
       :breakpoint="992"
     >
       <q-list
-        :dark="isDarkTheme"
         link
         inset-delimiter
       >
@@ -121,21 +132,60 @@
             {{$t('pages.control')}}
           </q-item-section>
         </q-item>
-        <q-item
+        <q-expansion-item
           v-if="getAdminAppMode"
-          clickable
-          to="/config"
+          expand-separator
+          icon="settings"
+          :header-class="{'q-router-link--active': $route.path.includes('settings')}"
+          :default-opened="$route.path.includes('settings')"
+          :label="$t('pages.settings')"
+          :content-inset-level="1"
         >
-          <q-item-section avatar>
-            <q-icon name="settings" />
-          </q-item-section>
-          <q-item-section>
-            {{$t('pages.config')}}
-          </q-item-section>
-        </q-item>
+          <q-item
+            clickable
+            to="/settings/authorization"
+          >
+            <q-item-section>
+              {{$t('pages.authorization')}}
+            </q-item-section>
+          </q-item>
+          <q-item
+            clickable
+            to="/settings/instance"
+          >
+            <q-item-section>
+              {{$t('pages.instance')}}
+            </q-item-section>
+          </q-item>
+          <q-item
+            clickable
+            to="/settings/ledlayout"
+          >
+            <q-item-section>
+              {{$t('pages.ledlayout')}}
+            </q-item-section>
+          </q-item>
+          <q-item
+            clickable
+            to="/settings/leddevice"
+          >
+            <q-item-section>
+              {{$t('pages.leddevice')}}
+            </q-item-section>
+          </q-item>
+          <q-item
+            clickable
+            to="/settings/app"
+          >
+            <q-item-section>
+              {{$t('pages.app')}}
+            </q-item-section>
+          </q-item>
+        </q-expansion-item>
         <q-item
+          v-if="!getAdminAppMode"
           clickable
-          to="/settings"
+          to="/settings/app"
         >
           <q-item-section avatar>
             <q-icon name="settings" />
@@ -159,7 +209,7 @@
     </q-drawer>
 
     <!-- Page Container router view -->
-    <q-page-container :class="{ 'bg-dark': isDarkTheme}">
+    <q-page-container>
       <router-view />
     </q-page-container>
 
@@ -187,11 +237,15 @@
         :color="$store.getters['common/getThemeColor']"
       />
     </q-page-scroller>
+    <token-handler
+      v-if="getAdminAppMode"
+      ref="tokenhandler"
+    ></token-handler>
   </q-layout>
 </template>
 
 <script>
-import { BtnStreamer, BtnInstanceControl, TopBarElectron } from '../components'
+import { BtnStreamer, BtnInstanceControl, TopBarElectron, TokenHandler } from 'components'
 import { openURL } from 'quasar'
 import { qcolor } from '../utils'
 
@@ -200,28 +254,35 @@ export default {
   components: {
     'btn-streamer': BtnStreamer,
     'btn-instance-control': BtnInstanceControl,
-    'top-bar-electron': TopBarElectron
+    'top-bar-electron': TopBarElectron,
+    'token-handler': TokenHandler
   },
   data () {
     return {
       leftDrawerOpen: window.innerWidth > 950
     }
   },
-  mounted () {
-    this.$q.addressbarColor.set()
+  created () {
+    // set status bar color for this layout
+    let hc = qcolor.toHex(this.$store.getters['common/getThemeColor'])
+    this.$q.addressbarColor.set(hc)
     if (this.$q.platform.is.cordova && cordova.platformId === 'android') {
       // eslint-disable-next-line no-undef
-      StatusBar.backgroundColorByHexString(qcolor.toHex(this.$store.getters['common/getThemeColor']))
+      StatusBar.backgroundColorByHexString(hc)
     }
   },
   computed: {
-    isDarkTheme () { return this.$store.getters['common/isDarkTheme'] },
     getAdminAppMode () { return this.$store.getters['common/getAdminAppMode'] }
   },
   methods: {
     openURL,
     disconnect () { this.$socket.disconnect() },
-    logout () { this.$socket.logout() }
+    logout () { this.$socket.logout() },
+    openTokenHandler () { this.$refs.tokenhandler.open() },
+    onSwipeEvent (e) {
+      // if direction is left starting from right screen edge handle 'left swipe gesture'
+      if (e.direction === 'left' && (this.$q.screen.width - 50 > e.evt.clientX)) { console.log(e.evt.clientX); this.$q.notify(String(e.evt.clientX)) }
+    }
   }
 }
 </script>

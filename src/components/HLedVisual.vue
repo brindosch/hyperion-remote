@@ -13,6 +13,40 @@
         style="position: absolute; left: 0; top: 0;; z-index: 2"
       ></canvas>
       <div ref="flowHelper"></div>
+      <q-menu context-menu>
+        <q-list dense>
+          <q-item
+            tag="label"
+            clickable
+            v-close-popup
+          >
+            <q-item-section>
+              {{$t('btn.toggleLeds')}}
+            </q-item-section>
+            <q-item-section side>
+              <q-toggle
+                @input="toggleLedsStream"
+                :value="streamingLeds"
+              ></q-toggle>
+            </q-item-section>
+          </q-item>
+          <q-item
+            tag="label"
+            clickable
+            v-close-popup
+          >
+            <q-item-section>
+              {{$t('btn.toggleImage')}}
+            </q-item-section>
+            <q-item-section side>
+              <q-toggle
+                @input="toggleImageStream"
+                :value="streamingImage"
+              ></q-toggle>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-menu>
     </div>
     <div class="q-mt-md">
       <q-btn

@@ -7,29 +7,23 @@
     icon="compare_arrows"
   >
     <q-menu>
-      <q-list
-        :dark="isDarkTheme"
-        :class="{'bg-matmenu':isDarkTheme}"
-      >
+      <q-list>
         <template v-for="(val,index) in getAvailableInstances">
           <q-item
-            :dark="isDarkTheme"
             :key="index"
             :clickable="getActiveInstance.instance != val.instance && val.running"
           >
-            <q-item-section
-              @click="handleInstanceSwitch(val.instance)"
-              side
-            >
+            <q-item-section side>
               <q-radio
-                :dark="isDarkTheme"
+                @click.native="val.running && handleInstanceSwitch(val.instance)"
                 :value="getActiveInstance.instance == val.instance"
                 :val="true"
+                :disable="!val.running"
               />
             </q-item-section>
             <q-item-section
-              @click="handleInstanceSwitch(val.instance)"
               style="white-space: nowrap"
+              @click="val.running && handleInstanceSwitch(val.instance)"
             >
               <q-item-label>{{val.friendly_name}}</q-item-label>
             </q-item-section>
@@ -59,7 +53,6 @@ export default {
     getActiveInstance () { return this.$store.getters['api/getActiveInstanceData'] },
     getAvailableInstances () {
       return this.$store.getters['api/getInstances']
-      // .filter(entry => entry.running) }
     }
   },
   methods: {

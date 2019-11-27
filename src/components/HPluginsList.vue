@@ -1,8 +1,5 @@
 <template>
-  <q-list
-    :bordered="!isDarkTheme"
-    :class="{'text-white':isDarkTheme}"
-  >
+  <q-list :bordered="!isDarkTheme">
     <q-item-section>
       {{$t('remote.plugins.subTitle')}}
     </q-item-section>

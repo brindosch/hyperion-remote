@@ -6,10 +6,6 @@ export const getConnectingState = (state) => {
   return state.connecting
 }
 
-export const getSupportedLocales = (state) => {
-  return state.supportedLocales
-}
-
 export const getAvailThemeColors = (state) => {
   return state.availThemeColors
 }
@@ -36,4 +32,8 @@ export const getLastLedColors = (state) => {
 
 export const getPreventAutoDisconnect = (state) => {
   return state.preventAutoDisconnect
+}
+
+export const isEmbed = (state) => {
+  return process.env.EMBED
 }

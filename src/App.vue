@@ -1,8 +1,8 @@
 <template>
-  <!-- class bg-white is a overwrite for electron, which default startup background color is on all pages, which are not set to white  -->
+  <!-- As of Nov 2019 - FF/Chrome on Android don't like scroll proberty -->
   <div
     id="q-app"
-    class="grey-2 scroll"
+    :class="{'scroll':!$q.platform.is.mobile}"
   >
     <router-view />
   </div>

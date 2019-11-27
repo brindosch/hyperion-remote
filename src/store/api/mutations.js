@@ -74,3 +74,20 @@ export const setTokenAuthRequired = (state, val) => {
 export const setLoginState = (state, val) => {
   state.loggedin = val
 }
+
+export const setTokenList = (state, val) => {
+  state.tokenList = val
+}
+
+export const setPendingToken = (state, val) => {
+  state.pendingTokens.push(val)
+}
+
+export const removePendingToken = (state, val) => {
+  const arr = state.pendingTokens.filter((el) => el.id == val)
+  const ind = state.pendingTokens.findIndex((el) => el.id == val)
+  if (ind > -1) {
+    clearTimeout(arr[0].timer)
+    state.pendingTokens.splice(ind, 1)
+  }
+}

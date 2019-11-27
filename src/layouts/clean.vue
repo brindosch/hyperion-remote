@@ -27,6 +27,7 @@
         @click="closeApp"
       />
     </span>
+    <season-overlay />
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -34,9 +35,15 @@
 </template>
 
 <script>
+import { SeasonOverlay } from 'components/gadgets'
+
 export default {
   name: 'LayoutClean',
-  mounted () {
+  components: {
+    'season-overlay': SeasonOverlay
+  },
+  created () {
+    // apply layout statusbar color
     this.$q.addressbarColor.set('#1e2f48')
     if (this.$q.platform.is.cordova && cordova.platformId === 'android') {
       // eslint-disable-next-line no-undef

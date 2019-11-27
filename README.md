@@ -10,31 +10,41 @@
  - Desktop App: Hyperion Server detection, ~auto updates~
 
 ## Dev/ToDo notes
- - General: https://www.npmjs.com/package/conventional-github-releaser
- - General: setup CI/CD for Electron Linux/Mac/Windows
+ - General: ~setup CI/CD for Electron Linux/Mac/Windows~
+ - General: Tune Packages meta and code signing
+ - General: deploy PWA
+ - General: ~Create SPA EMBED version~ & package
+ - General: Rework undoredo https://quasar.dev/vue-directives/mutation
+ - General: Add copyToClipboard component (browser,electron,capacitor?)
+ - i18n: ~modernize loading & reusability~
+ - i18n: ~compatible with POEditor~
+ - PWA: offline caching, update dialog
  - Electron: v7 sendSync replacement
- - Electron: Packager - Add Update System
+ - Electron: Builder - Add Update System
  - Electron: Check app icon on windows (low res?!)
  - Electron: Use native dialogs? (Create wrapper)
- - Quasar: V1.3 use/test dark mode plugin
+ - Quasar: ~V1.3 use/test dark mode plugin Add option ui in settings, logic in common/darkMode(Options)~
  - Menu: Move to overlay mode?
  - Router: Cache pages on visit
  - Router: preserve scroll position does not work
- - Left sidebar: Add touch gesture for open close
- - Right side gesture: Show panel/led visualization & other based on option
+ - Right side gesture: Show led visualization & other based on option
  - Control
  -  - Tabs: touch slide gesture
  -  - Fix adjsutment, better visualization of color pickers?
  -  - Add Priority selection
- -  - Color: Add favourite colors palette
- -  - Color: Add support for color pattern(!)
+ -  - Color: ~Add favourite colors palette~
+ -  - Color: ~Add support for color pattern(!)~
  -  - Color: Add single Image support
+ -  - Effect: support for favourite effects
+ -  - Priorities: Add table component
  -  Config
  -  - Create entire config section (admin)
  -  Settings: Recreate it more material like (toggle without wrapping). Move help text to an overlay help instead
- -  Settings: Add option to switch between dark/light mode based on current time
+ -  Settings: ~Add option to switch between dark/light mode based on current time~
+ -  Settings: Add option to switch between dark/light mode based on lang/lat (gps)
  -  Server: Add UI settings object, provide app option to disable sync/receive of them
- -  Theme: ios 
+ -  Server: Add Color pattern effect?
+ -  Theme: ios, win
 
 ## Development instructions
  - [Development](./.github/DEV.md)
@@ -56,7 +66,7 @@ Please follow this style for PRs and commits
  - **Use with a scope**: chore(deps): Update dependency XY
 
 ### Message body
-You can add a message body like to
+You can add a message body
 ```
 fix: This bug is fixed
 
@@ -79,7 +89,7 @@ BREAKING CHANGE: Place here your information of the break
 ```
 
 ## Tools
- -  Changelog creator: [standard-version](https://github.com/conventional-changelog/standard-version)
+ -  [release-it](https://github.com/release-it/release-it)
 
 ### Created with
   - [Quasar Framework](https://quasar.dev)

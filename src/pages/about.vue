@@ -34,10 +34,7 @@
             <td @click="openURL('https://hyperion-project.org')"><span style="cursor:pointer;color:lightblue">www.hyperion-project.org</span></td>
           </tr>
         </table>
-        <q-separator
-          :dark="isDarkTheme"
-          style="margin:10px 0"
-        />
+        <q-separator style="margin:10px 0" />
         <p>Hyperion Server</p>
         <table>
           <template v-for="(entry, key) in getHyperionInfo">
@@ -50,10 +47,7 @@
             </tr>
           </template>
         </table>
-        <q-separator
-          :dark="isDarkTheme"
-          style="margin:10px 0"
-        />
+        <q-separator style="margin:10px 0" />
         <p>Hyperion Server OS</p>
         <table>
           <template v-for="(entry, key) in getOSInfo">
@@ -78,8 +72,6 @@
               multiple
               use-chips
               clearable
-              :dark="isDarkTheme"
-              :options-dark="isDarkTheme"
               v-model="modActiveFilters"
               :options="getLogFilterOptions"
               emit-value
@@ -95,11 +87,7 @@
               icon="more_vert"
             >
               <q-menu>
-                <q-list
-                  :dark="isDarkTheme"
-                  :bordered="!isDarkTheme"
-                  :class="{'bg-dark':isDarkTheme}"
-                >
+                <q-list :bordered="!isDarkTheme">
                   <q-item
                     tag="label"
                     clickable
@@ -131,7 +119,7 @@
         </q-item>
         <div class="allow-select q-pa-md">
           <div
-            :class="{'bg-dark':isDarkTheme,'text-grey-6':isDarkTheme}"
+            :class="{'text-grey-6':isDarkTheme}"
             style="max-height:500px;overflow-y: auto"
             ref="log_scroller"
           >

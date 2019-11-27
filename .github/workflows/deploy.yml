@@ -22,12 +22,12 @@ jobs:
       - name: Build
         run: |
           npm install -g yarn
-          yarn
+          yarn run yarn:install
           yarn build:${{ matrix.type }}
       - name: Upload Release Artifacts
         uses: ./.github/actions/upload-release-asset
         with:
-          glob_pattern: '**/*yperion*emote*[0-999].[0-999].[0-999]*'
+          glob_pattern: '**/Hyperion-Remote*[0-999].[0-999].[0-999]*'
           blacklist: 'blockmap'
           upload_url: ${{ github.event.release.upload_url }}
         env:
@@ -44,7 +44,54 @@ jobs:
         - name: Build
           run: |
             npm install -g yarn
-            yarn
+            yarn run yarn:install
             yarn build:spa
-        - name: Upload Release Artifacts
-          run: echo ${{github.event.action}}
+      - name: Upload Release Artifacts
+        uses: ./.github/actions/upload-release-asset
+        with:
+          glob_pattern: '**/Hyperion-Remote*[0-999].[0-999].[0-999]*'
+          upload_url: ${{ github.event.release.upload_url }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build-spaembed:
+    runs-on: ubuntu-latest
+    name: spaembed (ubuntu-latest)
+    steps:
+        - uses: actions/checkout@v1
+        - name: Setup node 12
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12
+        - name: Build
+          run: |
+            npm install -g yarn
+            yarn run yarn:install
+            yarn build:spaembed
+      - name: Upload Release Artifacts
+        uses: ./.github/actions/upload-release-asset
+        with:
+          glob_pattern: '**/Hyperion-Remote*[0-999].[0-999].[0-999]*'
+          upload_url: ${{ github.event.release.upload_url }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build-pwa:
+    runs-on: ubuntu-latest
+    name: pwa (ubuntu-latest)
+    steps:
+        - uses: actions/checkout@v1
+        - name: Setup node 12
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12
+        - name: Build
+          run: |
+            npm install -g yarn
+            yarn run yarn:install
+            yarn build:pwa
+      - name: Upload Release Artifacts
+        uses: ./.github/actions/upload-release-asset
+        with:
+          glob_pattern: '**/Hyperion-Remote*[0-999].[0-999].[0-999]*'
+          upload_url: ${{ github.event.release.upload_url }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -39,10 +39,6 @@ export default {
       },
       {
         enabled: false,
-        name: 'UDPLISTENER'
-      },
-      {
-        enabled: false,
         name: 'BOBLIGHTSERVER'
       },
       {
@@ -72,5 +68,7 @@ export default {
   activeLogFilters: [],
   adminAuthRequired: true,
   tokenAuthRequired: true,
-  loggedin: false
+  loggedin: false,
+  tokenList: [],
+  pendingTokens: []
 }
