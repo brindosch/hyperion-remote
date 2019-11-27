@@ -1,3 +1,12 @@
+## [0.4.5](https://github.com/brindosch/hyperion-remote/compare/v0.4.4...v0.4.5) (2019-11-27)
+
+
+### Bug Fixes
+
+* release-it ci issue with flag ([5889ffa](https://github.com/brindosch/hyperion-remote/commit/5889ffac211e910a70ee9f65d90514246f61aa3e))
+* release-it no clean working dir ([b96bf23](https://github.com/brindosch/hyperion-remote/commit/b96bf23a4ff15934fa84e1131e8acd12ccc38d5e))
+* update app ([f732b97](https://github.com/brindosch/hyperion-remote/commit/f732b97ab65f7e6c65650b2daead1ef2dbfbb5f1))
+
 ## [0.4.4](https://github.com/brindosch/hyperion-remote/compare/v0.4.3...v0.4.4) (2019-11-07)
 
 
