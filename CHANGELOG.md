@@ -1,3 +1,10 @@
+## [0.4.6](https://github.com/brindosch/hyperion-remote/compare/v0.4.5...v0.4.6) (2019-11-27)
+
+
+### Bug Fixes
+
+* yml format ([14e5dac](https://github.com/brindosch/hyperion-remote/commit/14e5daccff71471e33f3deff104f65b96e07f9b9))
+
 ## [0.4.5](https://github.com/brindosch/hyperion-remote/compare/v0.4.4...v0.4.5) (2019-11-27)
 
 
