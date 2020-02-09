@@ -1,3 +1,5 @@
+## [0.4.7](https://github.com/brindosch/hyperion-remote/compare/v0.4.6...v0.4.7) (2020-02-09)
+
 ## [0.4.6](https://github.com/brindosch/hyperion-remote/compare/v0.4.5...v0.4.6) (2019-11-27)
 
 
