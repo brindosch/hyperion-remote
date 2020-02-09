@@ -4,7 +4,7 @@
 // forceSSL: If set to true, use always WSS
 
 export class Websocket {
-  constructor (obj) {
+  constructor(obj) {
     this.closeRequested = false
     this.ws = null
     this.url = null
@@ -22,9 +22,6 @@ export class Websocket {
       if (this._isConnected()) { this.closeRequested = true }
       this.ws.close(1000)
       this.ws = null
-      // go to connect page, disable autoConnect
-      this.storeCommit('temp/setConnectedState', false)
-      this.router({ name: 'connect', params: { autoConnect: false } })
     }
   }
 
@@ -36,6 +33,31 @@ export class Websocket {
       this.ws.send(JSON.stringify(data) + '\n')
     }
   }
+  // Send to Hyperion, will skip the send if currently not connected
+  // A newline is appended to split the commands (e.g. send more than one cmd at a time in one websocket package)
+  // @param data     JSON   The data to send
+  async sendAsync (data) {
+    if (this.ws !== null && this._isConnected()) {
+      return new Promise((resolve, reject) => {
+        let cmd = data.command
+        let subc = data.subcommand
+        if (subc)
+          cmd = `${cmd}-${subc}`
+        let func = (e) => {
+          const rdata = JSON.parse(e.data)
+          if (rdata.command == cmd) {
+            this.ws.removeEventListener('message', func)
+            resolve(rdata)
+          }
+        }
+        // after 5 sec we resolve false
+        setTimeout(() => { resolve(false); this.ws.removeEventListener('message', func) }, 5000)
+        this.ws.addEventListener('message', func)
+
+        this.ws.send(JSON.stringify(data) + '\n')
+      })
+    }
+  }
   connect (newUrl) {
     if (this.ws !== null) {
       if (this._isConnected()) { this.closeRequested = true }
@@ -44,7 +66,7 @@ export class Websocket {
     }
 
     // reconnect means undefined newUrl
-    if (newUrl !== undefined) {
+    if (newUrl !== undefined && newUrl !== null) {
       // reset ssl, if the WebScoket fails with exception or without (CERT_ERR) there is no reset
       this.ssl = false
       this.url = newUrl
@@ -60,9 +82,11 @@ export class Websocket {
         // failed to parse
       }
 
+
       // we might want to force ssl
       if (this.forceSSL) { this.ssl = true }
     }
+
 
     if (process.env.DEV) { console.log('Connecting to socket:', this.url) }
 
@@ -114,7 +138,7 @@ export class Websocket {
     if (this.maxRecAttempts > this.currentRecAttempts) {
       // it may be required to delay the attempts
       const now = new Date().getTime()
-      const delay = ((now - this.lastConnectionTryTime) < 1000) ? 2000 : 0
+      const delay = ((now - this.lastConnectionTryTime) < 1000) ? 2000 : 250
       setTimeout(this.connect.bind(this), delay)
       return
     }
@@ -122,8 +146,6 @@ export class Websocket {
     this._notifyErrorAndRelease()
     // dispatch the event
     this.onclose(e)
-    // navigate back to connect page
-    this.router('/connect')
   }
   // internal onerror handler
   _onerror = e => {
@@ -166,10 +188,6 @@ export class Websocket {
   storeCommit (path, val) {
     // reimplement in child class
     console.error('storeCommit not implemented!')
-  }
-  router (path, val) {
-    // reimplement in child class
-    console.error('router not implemented!')
   }
   notify (type, msg, icon) {
     // reimplement in child class

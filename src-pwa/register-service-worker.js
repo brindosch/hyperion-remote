@@ -36,9 +36,16 @@ register(process.env.SERVICE_WORKER_FILE, {
   },
 
   updated (/* registration */) {
-    if (process.env.DEV) {
-      console.log('New content is available; please refresh.')
-    }
+    console.log('New content is available; please refresh.')
+    Notify.create({
+      message: i18n.t('messages.update_available'),
+      icon: 'cloud_download',
+      closeBtn: i18n.t('labels.update'),
+      timeout: 10000,
+      onDismiss () {
+        location.reload(true)
+      }
+    })
   },
 
   offline () {

@@ -22,11 +22,6 @@ class WindowWebSocket extends Websocket {
     ev.data = { path: path, value: val }
     this.wsEvents.dispatchEvent(ev)
   }
-  router (path, val) {
-    let ev = new Event('router')
-    ev.data = { path: path, value: val }
-    this.wsEvents.dispatchEvent(ev)
-  }
   notify (type, msg, icon) {
     let ev = new Event('notify')
     ev.data = { type: type, msg: msg, icon: icon }
@@ -61,6 +56,14 @@ function send (data) {
   ws.send(data)
 }
 /*
+ * Send to Hyperion, will skip the send if currently not connected
+ * A newline is appended to split the commands (e.g. send more than one cmd at a time in one websocket package)
+ * @param data     JSON   The data to send
+ */
+async function sendAsync (data) {
+  return ws.sendAsync(data)
+}
+/*
  * Listen to websocket events, included are special events (see wsWorker)
  * @param type      The event name
  * @param callback  The method to callback
@@ -77,4 +80,4 @@ function removeEventListener (type, callback) {
   wsEvents.removeEventListener(type, callback)
 }
 
-export { connect, disconnect, send, addEventListener, removeEventListener }
+export { connect, disconnect, send, sendAsync, addEventListener, removeEventListener }

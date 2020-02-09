@@ -1,5 +1,4 @@
 import store from '../store'
-import CleanLayout from 'layouts/clean'
 import DefaultLayout from 'layouts/default'
 
 export default [
@@ -40,10 +39,9 @@ export default [
         ],
         meta: { icon: 'info', title: 'pages.config' },
         beforeEnter: (to, from, next) => {
-          // if we come from login/connect, we are not allowed to navigate as non admin. '/' and '/app' are allowed targets
+          // prevent navigation to routes that are just for admin app mode
           if (!['/settings', '/settings/app'].includes(to.path)) {
-            const notAdminNext = ['/login', '/connect'].includes(from.fullPath) ? '/' : false
-            store.state.common.uiSettings.adminAppMode ? next() : next(notAdminNext)
+            store.state.common.uiSettings.adminAppMode ? next() : next('/')
           } else {
             next()
           }
@@ -51,18 +49,9 @@ export default [
       }
     ]
   },
-  { // loads clean as alternate layout if one of the childs matches
-    // Pages of clean layout don't use meta object
-    path: '/',
-    component: CleanLayout,
-    children: [
-      { path: 'connect', name: 'connect', component: () => import('pages/connect'), props: true },
-      { path: 'login', name: 'login', component: () => import('pages/login'), props: true }
-    ]
-  },
   { // Always leave this as last one
     path: '*',
-    component: CleanLayout,
+    component: () => import('layouts/clean'),
     children: [
       { path: '', name: '404', component: () => import('pages/404') }
     ]

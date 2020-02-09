@@ -306,11 +306,18 @@
                 <q-tooltip>{{el.name}}</q-tooltip>
               </template>
               <q-popup-edit
-                v-model="frameLeds[i].name"
+                buttons
+                v-model="currLedName"
                 :title="$t('conf.layout.ledName')+' '+(i+1)"
+                :validate="ledNameValidation"
+                @hide="ledNameValidation"
+                @save="saveName(i,$event)"
+                @before-show="currLedName = frameLeds[i].name || ''"
               >
                 <q-input
-                  v-model="frameLeds[i].name"
+                  v-model="currLedName"
+                  :error="ledNameError"
+                  :error-message="ledNameErrorMsg"
                   dense
                   autofocus
                 />
@@ -335,17 +342,20 @@
 import VueDraggableResizable from 'vue-draggable-resizable'
 import draggable from 'vuedraggable'
 import { cutNumber } from 'src/utils'
-import { undoredo, freeze, getRandomHash, dialog, stringToNumber } from 'components/mixins'
+import { undoredo, freeze, getRandomHash, dialogMixin, stringToNumber } from 'components/mixins'
 
 export default {
   name: 'PageLedLayout',
-  mixins: [undoredo, freeze, getRandomHash, dialog, stringToNumber],
+  mixins: [undoredo, freeze, getRandomHash, dialogMixin, stringToNumber],
   components: {
     'vue-draggable-resizable': VueDraggableResizable,
     draggable
   },
   data () {
     return {
+      currLedName: '',
+      ledNameErrorMsg: '',
+      ledNameError: false,
       axisOption: 'both',
       currentActive: -1,
       lastActive: -1,
@@ -356,11 +366,6 @@ export default {
       frameLeds: [], // leds calculated to frame size + vue-draggable-resizeable vals
       frameWidth: 100,
       frameHeight: 100
-    }
-  },
-  computed: {
-    isDarkTheme () {
-      return this.$store.getters['common/isDarkTheme']
     }
   },
   mounted () {
@@ -429,9 +434,11 @@ export default {
       name = led.name
       return { x, y, width, height, id, name }
     },
-    resetLayout (skipDialog) {
+    async resetLayout (skipDialog) {
       if (!skipDialog) {
-        this.openConfirmDialog({ title: this.$t('conf.layout.reset'), msg: this.$t('conf.layout.confResetMsg') }).onOk(() => { this._performReset() })
+        const res = await this.openConfirmDialog({ title: this.$t('conf.layout.reset'), msg: this.$t('conf.layout.confResetMsg') })
+        if (res)
+          this._performReset()
         return
       }
       this._performReset()
@@ -468,24 +475,24 @@ export default {
       this.currentActive = this.currLeds.length - 1
       this.lastActive = this.currLeds.length - 1
     },
-    handleVisibleLeds () {
-      this.openPromptDialog({ title: this.$t('conf.layout.ledVisible'), msg: this.$t('conf.layout.ledVisibleMsg'), model: this.visibleLeds.map(x => x + 1).toString() }).onOk((data) => { this._handleVisibleLeds(data) })
+    async handleVisibleLeds () {
+      const data = await this.openPromptDialog({ title: this.$t('conf.layout.ledVisible'), msg: this.$t('conf.layout.ledVisibleMsg'), model: this.visibleLeds.map(x => x + 1).toString() })
+      if (data) {
+        // translate from led number to index pos and filter
+        const res = this.stringExpToInteger(data).map(v => v - 1)
+        this.visibleLeds = res.filter(val => this.frameLeds[val] !== undefined)
+      }
     },
-    _handleVisibleLeds (data) {
-      // translate from led number to index pos and filter
-      const res = this.stringExpToInteger(data).map(v => v - 1)
-      this.visibleLeds = res.filter(val => this.frameLeds[val] !== undefined)
-    },
-    handleLedName () {
+    async handleLedName () {
       if (this.lastActive === -1) { return }
       const la = this.lastActive
-      this.openPromptDialog({ title: this.$t('conf.layout.ledName'), msg: this.$t('conf.layout.ledNameMsg', { lednr: this.lastActive + 1 }) }).onOk((data) => { this._handleLedName(data, la) })
-    },
-    _handleLedName (data, la) {
-      if (data === undefined || data.trim() === '') { return }
-      this.storeUndoItem(this.frameLeds)
-      this.$set(this.frameLeds[la], 'name', data)
-      this.$set(this.currLeds[la], 'name', data)
+      let data = await this.openPromptDialog({ title: this.$t('conf.layout.ledName'), msg: this.$t('conf.layout.ledNameMsg', { lednr: this.lastActive + 1 }) })
+
+      if (data) {
+        this.storeUndoItem(this.frameLeds)
+        this.$set(this.frameLeds[la], 'name', data)
+        this.$set(this.currLeds[la], 'name', data)
+      }
     },
     removeLed () {
       if (this.lastActive === -1) { return }
@@ -494,24 +501,47 @@ export default {
       this.currLeds.splice(this.lastActive, 1)
       this.frameLeds.splice(this.lastActive, 1)
     },
-    removeLeds () {
-      this.openPromptDialog({ title: this.$tc('conf.layout.remove', 2), msg: this.$t('conf.layout.removeLedsMsg') }).onOk((data) => { this._removeLeds(data) })
-    },
-    _removeLeds (data) {
-      // translate from led number to index pos and filter
-      const res = this.stringExpToInteger(data).map(v => v - 1)
-      const avail = res.filter(val => this.frameLeds[val] !== undefined)
+    async removeLeds () {
+      const data = await this.openPromptDialog({ title: this.$tc('conf.layout.remove', 2), msg: this.$t('conf.layout.removeLedsMsg') })
+      if (data) {
+        // translate from led number to index pos and filter
+        const res = this.stringExpToInteger(data).map(v => v - 1)
+        const avail = res.filter(val => this.frameLeds[val] !== undefined)
 
-      if (avail.length) {
-        this.storeUndoItem(this.frameLeds)
-        this.frameLeds = this.frameLeds.filter((val, i, self) => !avail.includes(i))
-        this.currLeds = this.currLeds.filter((val, i, self) => !avail.includes(i))
-        this.visibleLeds = this.visibleLeds.filter((val, i, self) => !avail.includes(val))
-        this.$q.notify(this.$tc('conf.layout.ledRemoved', avail.length, { lednr: '(' + avail.map(x => x + 1).toString() + ')' }))
+        if (avail.length) {
+          this.storeUndoItem(this.frameLeds)
+          this.frameLeds = this.frameLeds.filter((val, i, self) => !avail.includes(i))
+          this.currLeds = this.currLeds.filter((val, i, self) => !avail.includes(i))
+          this.visibleLeds = this.visibleLeds.filter((val, i, self) => !avail.includes(val))
+          this.$q.notify(this.$tc('conf.layout.ledRemoved', avail.length, { lednr: '(' + avail.map(x => x + 1).toString() + ')' }))
+        }
       }
     },
     isVisible (i) {
       return this.visibleLeds.length === 0 || this.visibleLeds.includes(i)
+    },
+    ledNameValidation (val) {
+      if (val !== undefined) {
+        const cleanVal = val.trim()
+        if (this.frameLeds.find((el) => el.name == cleanVal)) {
+          this.ledNameError = true
+          this.ledNameErrorMsg = this.$t('validate.unique', [`"${val}"`])
+          return false
+        }
+        return true
+      }
+      this.ledNameError = false
+      this.ledNameErrorMsg = ''
+      return true
+    },
+    saveName (i, name) {
+      if (name === undefined || name.trim() === '') {
+        this.$delete(this.frameLeds[i], 'name')
+        this.$delete(this.currLeds[i], 'name')
+      } else {
+        this.$set(this.frameLeds[i], 'name', name.trim())
+        this.$set(this.currLeds[i], 'name', name.trim())
+      }
     }
   }
 }

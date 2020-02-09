@@ -49,7 +49,6 @@ export default {
     }
   },
   computed: {
-    isDarkTheme () { return this.$store.getters['common/isDarkTheme'] },
     getActiveInstance () { return this.$store.getters['api/getActiveInstanceData'] },
     getAvailableInstances () {
       return this.$store.getters['api/getInstances']

@@ -2,11 +2,14 @@
   "norevert": "This action can't be reverted!",
   "led": "LED",
   "leds": "LEDs",
+  "example": "Example",
   "base": {
-    "ledregex": "Example: '5' or '1-9' or '3,5,7,22' or '4,7,12-16'"
+    "ledregex": "@:example: '5' or '1-9' or '3,5,7,22' or '4,7,12-16'"
   },
-  "streamer": {
-    "select": "Select a screen to start streaming"
+  "app": {
+    "updateAvail": "App Update Available",
+    "updateAvailMsg": "An app update is available, do you want to install it?",
+    "upToDate": "App is already up to date"
   },
   "ui": {
     "listLabel": "User interface",
@@ -14,8 +17,6 @@
     "lang_desc": "Select a language for the user interface",
     "themeColor": "Color",
     "themeColor_desc": "Choose a theme color",
-    "startPage": "Start page",
-    "startPage_desc": "Choose a start page",
     "backToTop": "Back To Top",
     "backToTop_desc": "Show the \"Back to Top\" button, when the end of page has been reached",
     "darkMode": "Dark Mode",
@@ -23,6 +24,7 @@
     "darkMode_enabled": "@:label.enabled",
     "darkMode_disabled": "@:label.disabled",
     "darkMode_time": "Time",
+    "darkMode_gps": "GPS",
     "darkMode_desc": "By default the prefered mode of the operating system",
     "darkTimespan": "@:ui.darkMode - Timespan",
     "darkTimespan_desc": "The timespan in which the Dark Mode is enabled"
@@ -32,7 +34,9 @@
     "debug": "Enable Debug",
     "debug_desc": "Activate debugging app mode",
     "resetAppData": "Reset App Data",
-    "resetAppData_desc": "This will reset all app related data. Hyperion settings will be untouched. @:norevert"
+    "resetAppData_desc": "This will reset all app related data. Hyperion settings will be untouched. @:norevert",
+    "appUpdate": "Check for App Updates",
+    "appUpdate_desc": "@:service.appUpdate"
   },
   "colors": {
     "hyperion": "Default",
@@ -55,8 +59,6 @@
     "yellow": "Yellow"
   },
   "btn": {
-    "login": "Login",
-    "logout": "Logout",
     "createToken": "Create Token",
     "openWui": "Open Webconfiguration",
     "disconnect": "Disconnect",
@@ -76,23 +78,20 @@
     "about": "About"
   },
   "conn": {
+    "label": "Connect to a Hyperion Server",
     "connected": "Connected",
     "notconnected": "Not connected",
     "disconnected": "Disconnected",
     "connecting": "Connecting",
-    "webserverAdr": "Hyperion Webserver address",
+    "webserverAdr": "Webserver address",
     "failedMsg": "Hyperion seems not reachable at the given address",
     "storedConnections": "Previous Connections",
     "address": "Address",
     "settingsListLabel": "Connection",
-    "autoConnect": "Startup connect",
-    "autoConnect_desc": "Connect automatically on startup to the last connected Hyperion address",
     "autoDisconnect": "Background disconnect",
     "autoDisconnect_desc": "Disconnect from Hyperion when the app is in background. Reconnects automatically when back in foreground",
-    "autoLogin": "Startup login",
-    "autoLogin_desc": "Login automatically if login data is available",
     "ssdpNoResults": "No Hyperion server found",
-    "ssdpError": "Ups, failure while using SSDP discovery",
+    "ssdpError": "Error while searching for server: {0}",
     "ssdpDialogTitle": "Found Hyperion server",
     "ssdpDialogText": "Choose a server you want to connect",
     "invalidMsgAddress": "Provided address isn't legit",
@@ -100,6 +99,7 @@
     "usehttps": "You need to use the HTTPS port! (default: {port})"
   },
   "login": {
+    "required": "Login required",
     "failed": "Failed to login",
     "password": "Password",
     "passwordHint": "Password for the administration interface",
@@ -126,12 +126,23 @@
       "FORWARDER": "Forwarder",
       "BOBLIGHTSERVER": "Boblight"
     },
+    "prio": {
+      "title": "Sources",
+      "type": "Type",
+      "prio": "Priority",
+      "duration": "Duration",
+      "selected": "Selected",
+      "auto": "Auto",
+      "auto_desc": "Source selection based on priority",
+      "color": "Color",
+      "eff": "Effect"
+    },
     "effects": {
       "title": "Effect",
       "help": "Start an effect"
     },
     "colors": {
-      "editFavColors": "Edit Favourite colors",
+      "editFavColors": "Favourite colors",
       "editFavColors_desc": "Create a palette of your favourite colors or color patterns."
     },
     "adjust": {
@@ -146,6 +157,19 @@
     },
     "plugins": {
       "subTitle": "Plugins"
+    }
+  },
+  "utils": {
+    "copyToClipboard": "Copy to Clipboard",
+    "copiedToClipboard": "Copied to Clipboard",
+    "copyToClipboardFail": "Copy to Clipboard failure{0}",
+    "gps": {
+      "not": "No GPS",
+      "openBrowser": "Failed to get @:label.latitude and @:label.longitude, you can get them from an external service for your location. Do you want to open the Browser?",
+      "applied": "Applied GPS coordinates"
+    },
+    "dropzone": {
+      "title": "Add file | Add files"
     }
   },
   "system": {
@@ -185,16 +209,26 @@
     "no": "No",
     "save": "Save",
     "create": "Create",
+    "add": "Add",
     "enabled": "Enabled",
     "disabled": "Disabled",
     "connect": "Connect",
-    "reconnect": "Reconnect"
+    "login": "Login",
+    "logout": "Logout",
+    "latitude": "Latitude",
+    "longitude": "Longitude"
   },
   "capture": {
-    "small": "Small",
-    "normal": "Normal",
-    "large": "Large",
-    "insane": "Insane"
+    "selectMsg": "Select a source to start streaming",
+    "title": "Streaming",
+    "optionMsg": "Use a camera or platform specific sources and stream them to Hyperion",
+    "lessIsMore": "Lower values are ressource friendly",
+    "imageHeight": "Image Height",
+    "imageWidth": "Image Width",
+    "hz": "Framerate (FPS)",
+    "source": "Source",
+    "platform": "Platform",
+    "camera": "Camera"
   },
   "validate": {
     "minLength": "The length should be at least {0}",
@@ -239,7 +273,7 @@
       "managerTitle": "Token Manager",
       "tableLastUse": "Last Use",
       "tokenCreated": "Token Created",
-      "tokenCreatedMsg": "Keep your Token save, it's not possible to show it again.",
+      "tokenCreatedMsg": "Your Token has been created, it's not possible to show it again.",
       "delToken": "Remove Token",
       "delTokenMsg": "Are you sure to remove Token {name}? @:norevert",
       "tokReq": "Token Requested",

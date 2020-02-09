@@ -47,6 +47,11 @@ export const updateAdjustment = (state, arr) => {
   state.serverInfo.adjustment = arr
 }
 
+export const updatePriorities = (state, newState) => {
+  state.serverInfo.priorities = newState.priorities
+  state.serverInfo.priorities_autoselect = newState.priorities_autoselect
+}
+
 export const setActiveLogFilters = (state, val) => {
   state.activeLogFilters = val
 }
@@ -61,14 +66,6 @@ export const updateLeds = (state, val) => {
 
 export const setBrightness = (state, val) => {
   state.serverInfo.adjustment[0].brightness = val
-}
-
-export const setAdminAuthRequired = (state, val) => {
-  state.adminAuthRequired = val
-}
-
-export const setTokenAuthRequired = (state, val) => {
-  state.tokenAuthRequired = val
 }
 
 export const setLoginState = (state, val) => {
@@ -90,4 +87,8 @@ export const removePendingToken = (state, val) => {
     clearTimeout(arr[0].timer)
     state.pendingTokens.splice(ind, 1)
   }
+}
+
+export const setLoginReady = (state, val) => {
+  state.loginReady = val
 }

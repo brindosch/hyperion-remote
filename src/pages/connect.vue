@@ -10,7 +10,7 @@
       <img src="statics/hyperion-logo-white.png" />
       <div v-if="$store.getters['temp/isEmbed']">
         <q-btn
-          :label="$t('label.reconnect')"
+          :label="$t('label.connect')"
           outline
           color="white"
           dark
@@ -57,7 +57,7 @@
           dark
           style="margin-top:25px; margin-left:5px"
           @click="searchSSDP"
-          :loading="SSDPSearching"
+          :loading="isSSDPSearching"
         >
           <q-icon name="search" />
         </q-btn>
@@ -107,15 +107,14 @@
 
 <script>
 import { notify } from '../utils'
+import { ssdpMixin } from 'components/mixins'
 
 export default {
   name: 'PageConnect',
+  mixins: [ssdpMixin],
   data () {
     return {
-      address: this.$store.getters['connection/getLastAddress'],
-      SSDPSearching: false,
-      HYPERION_ST: 'urn:hyperion-project.org:device:basic:1',
-      ssdpList: []
+      address: this.$store.getters['connection/getLastAddress']
     }
   },
   props: {
@@ -134,9 +133,9 @@ export default {
   mounted () {
     // auto connection on startup
     // to prevent reconnect on user requested disconnect(); autoConnect is overwritten by router props
-    if (this.autoConnect && this.$store.getters['connection/getAutoConnect'] && this.address !== '') {
+    if (this.autoConnect && this.address !== '') {
       this.connect()
-    } else if ((this.$q.platform.is.cordova || this.$q.platform.is.electron) && this.address === '') {
+    } else if ((this.$q.platform.is.cordova || window.electron) && this.address === '') {
       // do a ssdp search for server if we don't have an address
       this.searchSSDP()
     }
@@ -165,49 +164,18 @@ export default {
         this.$socket.connect(this.address)
       }
     },
-    searchSSDP () {
-      this.SSDPSearching = true
-      // reset list
-      this.ssdpList = []
-      // Method is injected in global scope, cordova plugin ssdp!!
-      if (this.$q.platform.is.cordova) {
-        // eslint-disable-next-line no-undef
-        serviceDiscovery.getNetworkServices(this.HYPERION_ST, this.SSDPSearchSuccess, this.SSDPSearchFailure)
-      } else if (this.$q.platform.is.electron) {
-        // $ssdpClient injected by boot/ssdp-electron
-        this.$ssdpClient.search()
-        setTimeout(() => { this.onSSDPSearchTimeout() }, 3000)
-      }
-    },
-    SSDPSearchSuccess (devices) {
-      // some vendors answers also on our custom domain ST!
-      for (let entry of devices) {
-        if (entry.ST === this.HYPERION_ST) {
-          var parser = document.createElement('a')
-          var oParser = new DOMParser()
-          parser.href = entry.LOCATION
-          var oDOM = oParser.parseFromString(entry.xml, 'text/xml')
-          // check if xml pasrsing was IO
-          if (oDOM.documentElement.nodeName === 'parsererror') {
-            console.error('Failed to parse ssdp discover XML data for location:', entry.LOCATION)
-            continue
-          }
-          // check if the host address already exists
-          if (this.ssdpList.findIndex(ientry => ientry.value === parser.host) === -1) { this.ssdpList.push({ label: oDOM.getElementsByTagName('friendlyName')[0].innerHTML, value: parser.host }) }
-        }
-      }
-      this.showSSDPDialog()
-    },
-    onSSDPSearchTimeout () {
-      if (this.$q.platform.is.electron) {
-        this.ssdpList = this.$ssdpClient.getResults()
-      }
-      this.showSSDPDialog()
-    },
-    showSSDPDialog () {
-      this.SSDPSearching = false
+    async searchSSDP () {
+      let ssdpList = undefined
+      ssdpList = await this.searchHyperionServer().catch((error) => {
+        notify.error(this.$t('conn.ssdpError', [error]), 'wifi')
+      })
 
-      if (this.ssdpList.length === 0) {
+      // might be undefined on error
+      if (ssdpList)
+        this.showSSDPDialog(ssdpList)
+    },
+    showSSDPDialog (ssdpList) {
+      if (ssdpList.length === 0) {
         notify.error(this.$t('conn.ssdpNoResults'), 'wifi')
         return
       }
@@ -219,8 +187,8 @@ export default {
         style: { background: 'linear-gradient(rgb(32, 107, 173) 0%,  rgb(0, 150, 175) 100%)' },
         options: {
           type: 'radio',
-          model: this.ssdpList[0].value,
-          items: this.ssdpList
+          model: ssdpList[0].value,
+          items: ssdpList
         },
         cancel: { outline: true },
         'no-esc-dismiss': true,
@@ -229,10 +197,6 @@ export default {
       }).onOk(data => {
         this.connect(data)
       })
-    },
-    SSDPSearchFailure () {
-      notify.error(this.$t('conn.ssdpError'), 'wifi')
-      this.SSDPSearching = false
     },
     deleteEntry (index) { this.$store.commit('connection/deleteStoredConnection', index) }
   }

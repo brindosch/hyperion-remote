@@ -4,10 +4,10 @@
     :data="getInstanceData"
     :columns="columns"
     row-key="name"
-    hide-bottom
-    :pagination.sync="pagination"
+    :hide-bottom="getInstanceData.length <= 5"
     :dense="$q.screen.lt.md"
     flat
+    wrap-cells
   >
     <template v-slot:top-right>
       <q-btn
@@ -25,14 +25,12 @@
           :validate="nameValidation"
           @hide="nameValidation"
           @save="createToken"
-          @before-show="currName = '' && nameValidation"
+          @before-show="currName = ''"
         >
           <q-input
             v-model="currName"
             dense
             autofocus
-            counter
-            @input="nameValidation"
             :error="errorName"
             :error-message="errorMessageName"
             spellcheck="false"
@@ -53,17 +51,15 @@
             buttons
             :title="$t('conf.auth.tokenName')"
             :label-set="$t('label.save')"
-            :validate="nameValidation"
             @hide="nameValidation"
-            @save="saveName(props.row.id,$event)"
+            :validate="nameValidation"
+            @save="renameToken(props.row.id,$event)"
             @before-show="currName = props.row.comment"
           >
             <q-input
               v-model="currName"
               dense
               autofocus
-              counter
-              @input="nameValidation"
               :error="errorName"
               :error-message="errorMessageName"
               spellcheck="false"
@@ -96,12 +92,11 @@
 </template>
 
 <script>
-import { dialog } from '../../mixins'
+import { dialogMixin } from '../../mixins'
 export default {
-  mixins: [dialog],
+  mixins: [dialogMixin],
   data () {
     return {
-      pagination: { rowsPerPage: 0 },
       currName: '',
       errorName: false,
       errorMessageName: '',
@@ -130,19 +125,20 @@ export default {
       return new Date(date).toLocaleString()
     },
     createToken (comment, initial) {
-      this.$socket.createToken(comment)
+      this.$socket.createToken(comment.trim())
     },
-    saveName (id, val) {
-      this.$socket.renameToken(id, val)
+    renameToken (id, val) {
+      this.$socket.renameToken(id, val.trim())
     },
     nameValidation (val) {
       if (val !== undefined) {
-        if (val.length < 5) {
+        const cleanVal = val.trim()
+        if (cleanVal.length < 5) {
           this.errorName = true
           this.errorMessageName = this.$t('validate.minLength', [5])
           return false
         }
-        if (this.$store.getters['api/getTokenList'].find((el) => el.comment == val)) {
+        if (this.$store.getters['api/getTokenList'].find((el) => el.comment == cleanVal)) {
           this.errorName = true
           this.errorMessageName = this.$t('validate.unique', [`"${val}"`])
           return false
@@ -152,11 +148,10 @@ export default {
       this.errorMessageName = ''
       return true
     },
-    handleDelete (id, name) {
-      this.openConfirmDialog({ title: this.$t('conf.auth.delToken'), msg: this.$t('conf.auth.delTokenMsg', { name: `"${name}"` }) }).onOk(() => this._handleDelete(id))
-    },
-    _handleDelete (id) {
-      this.$socket.deleteToken(id)
+    async handleDelete (id, name) {
+      const res = await this.openConfirmDialog({ title: this.$t('conf.auth.delToken'), msg: this.$t('conf.auth.delTokenMsg', { name: `"${name}"` }) })
+      if (res)
+        this.$socket.deleteToken(id)
     }
   }
 }

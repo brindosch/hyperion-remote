@@ -63,10 +63,8 @@
         </q-card-section>
         <q-card-section class="q-dialog__message">
           <div>{{$t('conf.auth.tokenCreatedMsg')}}</div>
-          <div class="text-overline allow-select q-py-md row flex-center">
-            <div>
-              {{createdTok}}
-            </div>
+          <div class="q-py-md row flex-center">
+            <copy-to-clipboard :data="createdTok"></copy-to-clipboard>
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -84,9 +82,13 @@
 
 <script>
 import { EventBus } from 'src/utils'
+import { CopyToClipboard } from '../utils'
 
 export default {
   name: 'tokenhandle',
+  components: {
+    'copy-to-clipboard': CopyToClipboard
+  },
   data () {
     return {
       showTokenDialog: false,
@@ -110,6 +112,10 @@ export default {
         this.showTokenDialog = true
       else
         this.showTokenDialog = false
+    },
+    '$store.state.temp.openTokenHandler' (val) {
+      if (val)
+        this.showTokenDialog = true
     }
   },
   methods: {
@@ -118,7 +124,7 @@ export default {
       this.showCreatedTokenDialog = true
     },
     __handleTokenRequest (id, state) {
-      this.$socket.handleTokenRequest(req.id, state)
+      this.$socket.handleTokenRequest(id, state)
     },
     open () {
       this.showTokenDialog = true

@@ -3,28 +3,32 @@ export const getLang = (state) => {
   return state.syncSettings.lang
 }
 
-export const isDarkTheme = (state) => {
-  return state.uiSettings.darkTheme
-}
-
 export const getDarkMode = (state) => {
-  return state.syncSettings.darkMode
+  return state.syncSettings.dark.mode
 }
 
 export const getDarkModeOptions = (state) => {
-  return ['platform', 'time', 'enabled', 'disabled']
+  return ['platform', 'time', 'gps', 'enabled', 'disabled']
 }
 
 export const getDarkTimespan = (state) => {
-  return state.syncSettings.darkTimespan
+  return [state.syncSettings.dark.startTime, state.syncSettings.dark.endTime]
 }
 
 export const getDarkStartTime = (state) => {
-  return state.syncSettings.darkTimespan[0]
+  return state.syncSettings.dark.startTime
 }
 
 export const getDarkEndTime = (state) => {
-  return state.syncSettings.darkTimespan[1]
+  return state.syncSettings.dark.endTime
+}
+
+export const getDarkLat = (state) => {
+  return state.syncSettings.dark.lat
+}
+
+export const getDarkLong = (state) => {
+  return state.syncSettings.dark.long
 }
 
 export const getThemeColor = (state) => {
@@ -33,12 +37,6 @@ export const getThemeColor = (state) => {
 
 export const isBacktoTop = (state) => {
   return state.uiSettings.backToTop
-}
-
-export const getStartPage = (state, getters, rootState, rootGetters) => {
-  // check if the page of the user option still exists
-  if (rootGetters['temp/getAvailPages'].filter(entry => entry.path === state.uiSettings.startPage).length > 0) { return state.uiSettings.startPage } else state.uiSettings.startPage = '/'
-  return '/'
 }
 
 export const getOriginName = (state) => {
@@ -59,10 +57,6 @@ export const getEffBlacklist = (state) => {
 
 export const getColor = (state) => {
   return state.lastColor
-}
-
-export const getStreamQuality = (state) => {
-  return state.lastStreamQuality
 }
 
 export const getAdminAppMode = (state) => {

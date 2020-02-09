@@ -10,8 +10,7 @@ module.exports = function (ctx) {
       'i18n',
       'axios',
       'notify-defaults',
-      ctx.mode.electron ? 'socket-electron' : 'socket',
-      ctx.mode.electron ? 'ssdp-electron' : ''
+      ctx.mode.electron ? 'socket-electron' : 'socket'
     ],
     css: [
       'app.styl',
@@ -26,11 +25,15 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',
+      publicPath: JSON.stringify(process.env.SPAEMBED) ? '/next/' : undefined,
       rtl: true,
       env: {
         VERSION: JSON.stringify(require('./package.json').version),
-        BUILDDATE: JSON.stringify(new Date().toUTCString()),
-        EMBED: JSON.stringify(process.env.SPAEMBED)
+        BUILDDATE: Date.now(),
+        EMBED: JSON.stringify(process.env.SPAEMBED),
+        REPO_URL: JSON.stringify('https://github.com/brindosch/hyperion-remote/'), // with trailing slash
+        DOCS_URL: JSON.stringify('https://brindosch.github.io/'), // with trailing slash
+        SUPPORT_URL: JSON.stringify('https://github.com/brindosch/hyperion-remote/') // with trailing slash
       },
       // gzip: true,
       // analyze: true,
@@ -112,7 +115,8 @@ module.exports = function (ctx) {
         'QTable',
         'QTh',
         'QTr',
-        'QTd'
+        'QTd',
+        'QBanner'
       ],
       directives: [
         'ClosePopup',
@@ -150,29 +154,29 @@ module.exports = function (ctx) {
         theme_color: '#027be3',
         icons: [
           {
-            'src': 'statics/icons/icon-128x128.png',
-            'sizes': '128x128',
-            'type': 'image/png'
+            src: 'statics/icons/icon-128x128.png',
+            sizes: '128x128',
+            type: 'image/png'
           },
           {
-            'src': 'statics/icons/icon-192x192.png',
-            'sizes': '192x192',
-            'type': 'image/png'
+            src: 'statics/icons/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
           },
           {
-            'src': 'statics/icons/icon-256x256.png',
-            'sizes': '256x256',
-            'type': 'image/png'
+            src: 'statics/icons/icon-256x256.png',
+            sizes: '256x256',
+            type: 'image/png'
           },
           {
-            'src': 'statics/icons/icon-384x384.png',
-            'sizes': '384x384',
-            'type': 'image/png'
+            src: 'statics/icons/icon-384x384.png',
+            sizes: '384x384',
+            type: 'image/png'
           },
           {
-            'src': 'statics/icons/icon-512x512.png',
-            'sizes': '512x512',
-            'type': 'image/png'
+            src: 'statics/icons/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
           }
         ]
       }
@@ -182,6 +186,7 @@ module.exports = function (ctx) {
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
     },
     electron: {
+      nodeIntegration: false,
       bundler: 'builder', // or 'packager'
 
       extendWebpack (cfg) {
@@ -200,6 +205,16 @@ module.exports = function (ctx) {
         copyright: 'hyperion-project.org',
         productName: 'Hyperion Remote',
         artifactName: 'Hyperion-Remote-${version}-${os}-${arch}.${ext}',
+        generateUpdatesFilesForAllChannels: true,
+        detectUpdateChannel: true,
+        electronUpdaterCompatibility: '>= 2.16',
+        publish: [
+          {
+            provider: 'generic',
+            url: 'https://github.com/brindosch/hyperion-remote/releases/download/v${version}/'
+            // channel: '${channel}'// From detectUpdateChannel?
+          }
+        ],
         // LINUX
         linux: {
           synopsis: 'Hyperion Desktop Remote',
@@ -213,7 +228,8 @@ module.exports = function (ctx) {
               target: 'zip',
               arch: [
                 'x64',
-                'ia32'
+                'ia32',
+                'arm64'
               ]
             },
             {
@@ -236,7 +252,7 @@ module.exports = function (ctx) {
           category: 'public.app-category.utilities',
           type: 'distribution',
           darkModeSupport: true,
-          target: ['dmg', 'mas', 'pkg', 'tar.gz']
+          target: ['dmg', 'mas', 'pkg', 'zip']
         }
       }
     },

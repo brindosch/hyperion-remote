@@ -24,76 +24,13 @@
           <!--  <div>{{ $t('system.instCurr') }}{{' : '+getActiveInstance.friendly_name}}</div> -->
         </q-toolbar-title>
 
-        <!-- Streaming via Browser (btn) -->
-        <btn-streamer />
-
         <!-- Right side icon instance listing/control -->
         <btn-instance-control />
 
-        <!-- Right side icon (dots) top toolbar with popover -->
-        <q-btn
-          flat
-          round
-          dense
-          icon="more_vert"
-        >
-          <q-menu>
-            <q-list>
-              <q-item
-                clickable
-                v-close-popup
-                @click.native="logout"
-              >
-                <q-item-section avatar>
-                  <q-icon name="fas fa-sign-out-alt" />
-                </q-item-section>
-                <q-item-section>
-                  {{$t('btn.logout')}}
-                </q-item-section>
-              </q-item>
-              <q-item
-                v-if="!$store.getters['temp/isEmbed']"
-                clickable
-                v-close-popup
-                @click.native="disconnect"
-              >
-                <q-item-section avatar>
-                  <q-icon name="wifi" />
-                </q-item-section>
-                <q-item-section>
-                  {{$t('btn.disconnect')}}
-                </q-item-section>
-              </q-item>
-              <q-item
-                v-if="$q.fullscreen.isCapable"
-                clickable
-                v-close-popup
-                @click="$q.fullscreen.toggle()"
-              >
-                <q-item-section avatar>
-                  <q-icon :name="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'" />
-                </q-item-section>
-                <q-item-section>
-                  {{$t('btn.toggleFullscreen')}}
-                </q-item-section>
-              </q-item>
-              <q-item
-                v-if="getAdminAppMode && $store.getters['api/getPendingTokens'].length > 0"
-                clickable
-                v-close-popup
-                @click="openTokenHandler"
-              >
-                <q-item-section avatar>
-                  <q-icon name="fas fa-key" />
-                </q-item-section>
-                <q-item-section>
-                  {{$t('conf.auth.pendToks')}}
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+        <!-- Right side icon (dots) -->
+        <btn-more></btn-more>
       </q-toolbar>
+      <status-bar></status-bar>
     </q-header>
 
     <!-- Left menu -->
@@ -141,46 +78,17 @@
           :label="$t('pages.settings')"
           :content-inset-level="1"
         >
-          <q-item
-            clickable
-            to="/settings/authorization"
-          >
-            <q-item-section>
-              {{$t('pages.authorization')}}
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            to="/settings/instance"
-          >
-            <q-item-section>
-              {{$t('pages.instance')}}
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            to="/settings/ledlayout"
-          >
-            <q-item-section>
-              {{$t('pages.ledlayout')}}
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            to="/settings/leddevice"
-          >
-            <q-item-section>
-              {{$t('pages.leddevice')}}
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            to="/settings/app"
-          >
-            <q-item-section>
-              {{$t('pages.app')}}
-            </q-item-section>
-          </q-item>
+          <template v-for="page in pages">
+            <q-item
+              :key='page.route'
+              clickable
+              :to="page.route"
+            >
+              <q-item-section>
+                {{$t('pages.'+page.label)}}
+              </q-item-section>
+            </q-item>
+          </template>
         </q-expansion-item>
         <q-item
           v-if="!getAdminAppMode"
@@ -237,32 +145,51 @@
         :color="$store.getters['common/getThemeColor']"
       />
     </q-page-scroller>
-    <token-handler
-      v-if="getAdminAppMode"
-      ref="tokenhandler"
-    ></token-handler>
+    <token-handler v-if="getAdminAppMode"></token-handler>
   </q-layout>
 </template>
 
 <script>
-import { BtnStreamer, BtnInstanceControl, TopBarElectron, TokenHandler } from 'components'
-import { openURL } from 'quasar'
+import { StatusBar, BtnMore, BtnInstanceControl, TopBarElectron, TokenHandler } from 'components/default-layout'
 import { qcolor } from '../utils'
 
 export default {
   name: 'LayoutDefault',
   components: {
-    'btn-streamer': BtnStreamer,
+    'status-bar': StatusBar,
+    'btn-more': BtnMore,
     'btn-instance-control': BtnInstanceControl,
     'top-bar-electron': TopBarElectron,
     'token-handler': TokenHandler
   },
   data () {
     return {
-      leftDrawerOpen: window.innerWidth > 950
+      leftDrawerOpen: window.innerWidth > 992,
+      pages: [
+        {
+          label: 'authorization',
+          route: '/settings/authorization'
+        },
+        {
+          label: 'instance',
+          route: '/settings/instance'
+        },
+        {
+          label: 'ledlayout',
+          route: '/settings/ledlayout'
+        },
+        {
+          label: 'leddevice',
+          route: '/settings/leddevice'
+        },
+        {
+          label: 'app',
+          route: '/settings/app'
+        }
+      ]
     }
   },
-  created () {
+  mounted () {
     // set status bar color for this layout
     let hc = qcolor.toHex(this.$store.getters['common/getThemeColor'])
     this.$q.addressbarColor.set(hc)
@@ -275,10 +202,6 @@ export default {
     getAdminAppMode () { return this.$store.getters['common/getAdminAppMode'] }
   },
   methods: {
-    openURL,
-    disconnect () { this.$socket.disconnect() },
-    logout () { this.$socket.logout() },
-    openTokenHandler () { this.$refs.tokenhandler.open() },
     onSwipeEvent (e) {
       // if direction is left starting from right screen edge handle 'left swipe gesture'
       if (e.direction === 'left' && (this.$q.screen.width - 50 > e.evt.clientX)) { console.log(e.evt.clientX); this.$q.notify(String(e.evt.clientX)) }

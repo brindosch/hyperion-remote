@@ -1,21 +1,19 @@
-export const getConnectedState = (state) => {
-  return state.connected
+import enums from './enums'
+
+export const isConnected = (state) => {
+  return state.connectState == enums.conState.CONNECTED
 }
 
 export const getConnectingState = (state) => {
-  return state.connecting
+  return state.connectState == enums.conState.CONNECTING
+}
+
+export const getConnectState = (state) => {
+  return state.connectState
 }
 
 export const getAvailThemeColors = (state) => {
   return state.availThemeColors
-}
-
-export const getAvailPages = (state) => {
-  return state.availPages
-}
-
-export const getLastPage = (state, getters, rootState, rootGetters) => {
-  if (state.lastPage == null) { return rootGetters['common/getStartPage'] } else { return state.lastPage }
 }
 
 export const getLogFilterOptions = (state) => {
@@ -36,4 +34,8 @@ export const getPreventAutoDisconnect = (state) => {
 
 export const isEmbed = (state) => {
   return process.env.EMBED
+}
+
+export const getBtnMoreEntries = (state) => {
+  return state.btnMoreEntries
 }

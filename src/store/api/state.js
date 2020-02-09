@@ -1,7 +1,10 @@
+import SERVERINFO from './serverinfo'
+
 export default {
   sysInfo: {
     hyperion: {
       build: '',
+      gitremote: '',
       jsonrpc_version: '',
       time: '',
       version: '',
@@ -18,57 +21,13 @@ export default {
       wordSize: ''
     }
   },
-  serverInfo: {
-    adjustment: [{ brightness: 50 }],
-    components: [
-      {
-        enabled: true,
-        name: 'ALL'
-      },
-      {
-        enabled: true,
-        name: 'SMOOTHING'
-      },
-      {
-        enabled: true,
-        name: 'BLACKBORDER'
-      },
-      {
-        enabled: false,
-        name: 'FORWARDER'
-      },
-      {
-        enabled: false,
-        name: 'BOBLIGHTSERVER'
-      },
-      {
-        enabled: false,
-        name: 'GRABBER'
-      },
-      {
-        enabled: false,
-        name: 'V4L'
-      },
-      {
-        enabled: true,
-        name: 'LEDDEVICE'
-      }
-    ],
-    effects: [],
-    plugins: {},
-    instance: [{
-      'instance': 0,
-      'running': true,
-      'friendly_name': 'My First LED Hardware instance'
-    }]
-  },
+  serverInfo: SERVERINFO,
   serverSchema: {},
   serverConfig: {},
   logEntries: [],
   activeLogFilters: [],
-  adminAuthRequired: true,
-  tokenAuthRequired: true,
   loggedin: false,
+  loginReady: false,
   tokenList: [],
   pendingTokens: []
 }

@@ -1,5 +1,5 @@
 <template>
-  <q-list :bordered="!isDarkTheme">
+  <q-list :bordered="!$q.dark.isActive">
     <q-item-section>
       {{$t('remote.plugins.subTitle')}}
     </q-item-section>
@@ -28,7 +28,6 @@ export default {
     }
   },
   computed: {
-    isDarkTheme () { return this.$store.getters['common/isDarkTheme'] },
     getPlugins () { return Object.entries(this.$store.getters['api/getPlugins']) }
   },
   methods: {

@@ -2,11 +2,14 @@
   "norevert": "Diese Aktion kann nicht rückgängig gemacht werden!",
   "led": "LED",
   "leds": "LEDs",
+  "example": "Beispiel",
   "base": {
-    "ledregex": "Beispiel: '5' oder '1-9' oder '3,5,7,22' oder '4,7,12-16'"
+    "ledregex": "@:example: '5' oder '1-9' oder '3,5,7,22' oder '4,7,12-16'"
   },
-  "streamer": {
-    "select": "Wähle einen Bildschirm, um den Stream zu starten"
+  "app": {
+    "updateAvail": "App Update Verfügbar",
+    "updateAvailMsg": "Ein App Update ist verfügbar, möchtest du es installieren?",
+    "upToDate": "App ist auf dem aktuellen Stand"
   },
   "ui": {
     "listLabel": "Benutzeroberfläche",
@@ -14,8 +17,6 @@
     "lang_desc": "Wähle eine Sprache für die Benutzeroberfläche",
     "themeColor": "Farbe",
     "themeColor_desc": "Wähle ein Farb-Thema",
-    "startPage": "Startseite",
-    "startPage_desc": "Wähle eine Startseite",
     "backToTop": "Back To Top",
     "backToTop_desc": "Zeige den \"Back to Top\" Button, wenn das Seitenende erreicht wird",
     "darkMode": "Dunkler Modus",
@@ -23,6 +24,7 @@
     "darkMode_enabled": "@:label.enabled",
     "darkMode_disabled": "@:label.disabled",
     "darkMode_time": "Zeit",
+    "darkMode_gps": "GPS",
     "darkMode_desc": "Standardmäßig wird sich am System orientiert",
     "darkTimespan": "@:ui.darkMode - Zeitspanne",
     "darkTimespan_desc": "Innerhalb dieser Zeit wird der dunkle Modus aktiviert"
@@ -32,7 +34,9 @@
     "debug": "Aktiviere Debug",
     "debug_desc": "Aktiviere Debugging ausgaben",
     "resetAppData": "App-Daten zurücksetzen",
-    "resetAppData_desc": "Alle App-Daten werden zurückgesetzt. Die Hyperion Einstellungen werden dabei nicht verändert. @:norevert"
+    "resetAppData_desc": "Alle App-Daten werden zurückgesetzt. Die Hyperion Einstellungen werden dabei nicht verändert. @:norevert",
+    "appUpdate": "Check for App Updates",
+    "appUpdate_desc": "@:service.appUpdate"
   },
   "colors": {
     "hyperion": "Standard",
@@ -55,8 +59,6 @@
     "yellow": "Gelb"
   },
   "btn": {
-    "login": "Einloggen",
-    "logout": "Ausloggen",
     "createToken": "Token erstellen",
     "openWui": "Öffne Webkonfiguration",
     "disconnect": "Verbindung trennen",
@@ -76,23 +78,20 @@
     "about": "Über"
   },
   "conn": {
+    "label": "Verbinde zu einem Hyperion Server",
     "connected": "Verbunden",
     "notconnected": "Nicht verbunden",
     "disconnected": "Verbindung unterbrochen",
     "connecting": "Verbinde",
-    "webserverAdr": "Hyperion Webserver Adresse",
+    "webserverAdr": "Webserver Adresse",
     "failedMsg": "Hyperion ist nicht erreichbar unter dieser Adresse",
     "storedConnections": "Gespeicherte Verbindungen",
     "address": "Adresse",
     "settingsListLabel": "Verbindung",
-    "autoConnect": "Automatisch Verbinden",
-    "autoConnect_desc": "Verbinde beim Start automatisch zur zuletzt genutzten Hyperion Adresse",
     "autoDisconnect": "Automatisch Unterbrechen",
     "autoDisconnect_desc": "Unterbreche vorübergehend die Verbindung zu Hyperion, wenn die App im Hintergrund ist. Verbindet sich automatisch wieder wenn aktiv",
-    "autoLogin": "Automatisch Einloggen",
-    "autoLogin_desc": "Wenn Login Daten verfügbar sind, wird automatisch eingeloggt",
     "ssdpNoResults": "Es wurde kein Hyperion Server gefunden",
-    "ssdpError": "Suchvorgang ist fehlgeschlagen",
+    "ssdpError": "Server Suchvorgang ist fehlgeschlagen: {0}",
     "ssdpDialogTitle": "Gefundene Hyperion Server",
     "ssdpDialogText": "Wähle einen Hyperion Server, mit dem du dich verbinden möchtest",
     "invalidMsgAddress": "Die angegebene Adresse ist nicht gültig",
@@ -100,6 +99,7 @@
     "usehttps": "Du musst den HTTPS Port verwenden! (Standard: {port})"
   },
   "login": {
+    "required": "Du bist nicht eingeloggt",
     "failed": "Einloggen fehlgeschlagen",
     "password": "Passwort",
     "passwordHint": "Passwort um auf die Einstellungen von Hyperion zugreifen zu können",
@@ -126,13 +126,24 @@
       "FORWARDER": "Weiterleitung",
       "BOBLIGHTSERVER": "Boblight"
     },
+    "prio": {
+      "title": "Quellen",
+      "type": "Typ",
+      "prio": "Priorität",
+      "duration": "Dauer",
+      "selected": "Aktiv",
+      "auto": "Auto",
+      "auto_desc": "Quellenwahl anhand der Priorität",
+      "color": "Farbe",
+      "eff": "Effekt"
+    },
     "effects": {
       "title": "Effekt",
       "help": "Starte einen Effekt"
     },
     "colors": {
-      "editFavColors": "Editiere Lieblingsfarben",
-      "editFavColors_desc": "Erstelle eine Auswahl an Farben oder Farbschemas"
+      "editFavColors": "Favorisierte Farben",
+      "editFavColors_desc": "Erstelle eine Auswahl an Farben oder Farbreihen"
     },
     "adjust": {
       "subTitle": "Farbanpassungen",
@@ -146,6 +157,19 @@
     },
     "plugins": {
       "subTitle": "Plugins"
+    }
+  },
+  "utils": {
+    "copyToClipboard": "In die Zwischenablage kopieren",
+    "copiedToClipboard": "In die Zwischenablage kopiert",
+    "copyToClipboardFail": "Fehler beim Kopieren in die Zwischenablage{0}",
+    "gps": {
+      "not": "Kein GPS",
+      "openBrowser": "@:label.latitude und @:label.longitude konnten nicht bezogen werden. Du kannst sie von einem externen Service beziehen. Möchtest du den Browser öffnen?",
+      "applied": "GPS Koordination wurden angewendet"
+    },
+    "dropzone": {
+      "title": "Datei hinzufügen | Dateien hinzufügen"
     }
   },
   "system": {
@@ -185,16 +209,26 @@
     "no": "Nein",
     "save": "Speichern",
     "create": "Erstellen",
+    "add": "Hinzufügen",
     "enabled": "Aktiviert",
     "disabled": "Deaktiviert",
     "connect": "Verbinden",
-    "reconnect": "Wiederverbinden"
+    "login": "Einloggen",
+    "logout": "Ausloggen",
+    "latitude": "Längengrad",
+    "longitude": "Breitengrad"
   },
   "capture": {
-    "small": "Klein",
-    "normal": "Normal",
-    "large": "Groß",
-    "insane": "Verrückt"
+    "selectMsg": "Wähle einen Quelle, um den Stream zu starten",
+    "title": "Streamen",
+    "optionMsg": "Nutze eine Kamera oder Plattformspezifische Quelle und streame zu Hyperion",
+    "lessIsMore": "Kleine Werte schonen die Ressourcen",
+    "imageHeight": "Bildhöhe",
+    "imageWidth": "Bildbreite",
+    "hz": "Bildrate (FPS)",
+    "source": "Quelle",
+    "platform": "Plattform",
+    "camera": "Kamera"
   },
   "validate": {
     "minLength": "Die Länge sollte mindestens {0} betragen",
@@ -203,7 +237,7 @@
     "minimum": "Die Zahl sollte mindestens {0} betragen",
     "maximum": "Die Zahl sollte maximal {0} betragen",
     "between": "Die Zahl sollte zwischen {0} und {1} liegen",
-    "unique": "Die Bezeichnung {0} wird bereits benutzt",
+    "unique": "Die Bezeichnung {0} wird bereits verwendet",
     "timespan": "Die Zeitspanne ist ungültig"
   },
   "conf": {
@@ -240,7 +274,7 @@
       "managerTitle": "Token Management",
       "tableLastUse": "Zuletzt genutzt",
       "tokenCreated": "Token Erstellt",
-      "tokenCreatedMsg": "Verwahre das Token sicher. Es ist nicht möglich es noch einmal einzusehen",
+      "tokenCreatedMsg": "Dein Token wurde erstellt. Es ist nicht möglich es noch einmal einzusehen",
       "delToken": "Token Löschen",
       "delTokenMsg": "Möchtest du das Token {name} wirklich löschen? @:norevert",
       "tokReq": "Token Angefordert",

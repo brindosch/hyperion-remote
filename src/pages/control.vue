@@ -11,20 +11,24 @@
       />
       <q-tab
         name="tab-2"
-        icon="tune"
+        icon="list"
       />
       <q-tab
         name="tab-3"
         icon="list"
       />
       <q-tab
+        name="tab-4"
+        icon="tune"
+      />
+      <q-tab
         v-if="this.$store.getters['api/getPlugins'] !== undefined"
         slot="title"
-        name="tab-4"
+        name="tab-5"
         icon="fas fa-cubes"
       />
       <q-tab
-        name="tab-5"
+        name="tab-6"
         icon="movie"
       />
     </q-tabs>
@@ -46,28 +50,35 @@
         keep-alive
         name="tab-2"
       >
-        <list-adjustments />
+        <priorities-table />
       </q-tab-panel>
       <q-tab-panel
         class="q-pa-none"
         keep-alive
         name="tab-3"
       >
-        <list-components />
+        <components-list />
+      </q-tab-panel>
+      <q-tab-panel
+        class="q-pa-none"
+        keep-alive
+        name="tab-4"
+      >
+        <list-adjustments />
       </q-tab-panel>
       <q-tab-panel
         class="q-pa-none"
         :disable="this.$store.getters['api/getPlugins'] === undefined"
         keep-alive
-        name="tab-4"
+        name="tab-5"
       >
         <h-plugins-list />
       </q-tab-panel>
       <q-tab-panel
-        name="tab-5"
+        name="tab-6"
         class="q-pa-none"
       >
-        <h-led-visual />
+        <led-visual />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -77,26 +88,28 @@
 </style>
 
 <script>
-import { ColorPicker, AdjustmentsList, HPluginsList, HListComponents, HLedVisual } from '../components'
+import { ColorPicker, HPluginsList } from '../components'
+import { PrioritiesTable, LedVisualization, ComponentsList, AdjustmentsList } from 'components/control'
 
 export default {
   name: 'PageIndex',
   components: {
-    'list-components': HListComponents,
+    'components-list': ComponentsList,
     'list-adjustments': AdjustmentsList,
     'h-colorpicker': ColorPicker,
     'h-plugins-list': HPluginsList,
-    'h-led-visual': HLedVisual
+    'led-visual': LedVisualization,
+    'priorities-table': PrioritiesTable
   },
   data () {
     return {
       windowWidth: window.innerWidth
     }
   },
+  created () {
+    this.$store.commit('temp/setBtnMoreEntries', [{ label: 'remote.colors.editFavColors', event: 'favcolorsedit' }])
+  },
   computed: {
-    isDarkTheme () {
-      return this.$store.getters['common/isDarkTheme']
-    },
     modSelectedTab: {
       get () { return this.$store.getters['common/getSelectedRemoteTab'] },
       set (val) { this.$store.commit('common/setSelectedRemoteTab', val) }

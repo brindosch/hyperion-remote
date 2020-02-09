@@ -56,7 +56,8 @@ const store = new Vuex.Store({
     temp,
     api
   },
-  plugins: [vuexLocal.plugin]
+  plugins: [vuexLocal.plugin],
+  strict: process.env.DEV
 })
 
 // if we want some HMR magic for it, we handle

@@ -88,14 +88,6 @@ export const getLeds = (state) => {
   return state.serverInfo.leds
 }
 
-export const getAdminAuthRequired = (state) => {
-  return state.adminAuthRequired
-}
-
-export const getTokenAuthRequired = (state) => {
-  return state.tokenAuthRequired
-}
-
 export const getLoginState = (state) => {
   return state.loggedin
 }
@@ -106,4 +98,16 @@ export const getTokenList = (state) => {
 
 export const getPendingTokens = (state) => {
   return state.pendingTokens
+}
+
+export const getLoginReady = (state) => {
+  return state.loginReady
+}
+
+export const getPriorities = (state) => {
+  return state.serverInfo.priorities
+}
+
+export const getPrioritiesAutoSelect = (state) => {
+  return state.serverInfo.priorities_autoselect
 }

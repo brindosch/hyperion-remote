@@ -2,7 +2,6 @@ import { Dark } from 'quasar'
 
 export const setDark = (state, newState) => {
   // DANGER: just used from time eval
-  state.uiSettings.darkTheme = newState
   Dark.set(newState)
 }
 
@@ -11,36 +10,41 @@ export const setDarkMode = (state, newState) => {
   switch (newState) {
     case 'platform':
       Dark.set('auto')
-      state.uiSettings.darkTheme = Dark.isActive
       break
     case 'enabled':
       Dark.set(true)
-      state.uiSettings.darkTheme = true
       break
     case 'disabled':
       Dark.set(false)
-      state.uiSettings.darkTheme = false
       break
     case 'time':
       Dark.set(false)
-      state.uiSettings.darkTheme = false
       break
     default:
       break
   }
-  state.syncSettings.darkMode = newState
+  state.syncSettings.dark.mode = newState
 }
 
 export const setDarkTimespan = (state, newState) => {
-  state.syncSettings.darkTimespan = newState
+  state.syncSettings.dark.startTime = newState[0]
+  state.syncSettings.dark.endTime = newState[1]
 }
 
 export const setDarkStartTime = (state, newState) => {
-  state.syncSettings.darkTimespan.splice(0, 1, newState)
+  state.syncSettings.dark.startTime = newState
 }
 
 export const setDarkEndTime = (state, newState) => {
-  state.syncSettings.darkTimespan.splice(1, 1, newState)
+  state.syncSettings.dark.endTime = newState
+}
+
+export const setDarkLat = (state, newState) => {
+  state.syncSettings.dark.lat = newState
+}
+
+export const setDarkLong = (state, newState) => {
+  state.syncSettings.dark.long = newState
 }
 
 export const setThemeColor = (state, newState) => {
@@ -55,10 +59,6 @@ export const setLang = (state, newState) => {
   // DO NOT CALL!  Called from mixins/lang.js
   state.syncSettings.lang = newState
   if (document) { document.documentElement.lang = newState }
-}
-
-export const setStartPage = (state, newState) => {
-  state.uiSettings.startPage = newState
 }
 
 export const setOriginName = (state, newState) => {
@@ -79,10 +79,6 @@ export const setEffBlacklist = (state, newState) => {
 
 export const setColor = (state, newState) => {
   state.lastColor = newState
-}
-
-export const setStreamQuality = (state, newState) => {
-  state.lastStreamQuality = newState
 }
 
 export const setAdminAppMode = (state, newState) => {

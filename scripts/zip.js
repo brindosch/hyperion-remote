@@ -1,4 +1,5 @@
 // require modules
+const calcHash = require('./lib/calcHash.js')
 const fs = require('fs');
 const archiver = require('archiver');
 const package = require(process.cwd() + '/package.json')
@@ -40,6 +41,8 @@ var archive = archiver('zip', {
 // 'close' event is fired only when a file descriptor is involved
 output.on('close', function () {
     console.log(archive.pointer() + ' total bytes written');
+    // calc hash
+    calcHash(TARGET_DIR + FILENAME)
 });
 
 // good practice to catch warnings (ie stat failures and other non-blocking errors)
@@ -64,3 +67,4 @@ archive.pipe(output);
 archive.directory(SOURCE_DIR, false)
 
 archive.finalize();
+

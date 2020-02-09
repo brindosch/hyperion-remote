@@ -1,7 +1,25 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
+const { autoUpdater } = require('electron-updater')
+const log = require('electron-log')
 const path = require('path')
+import { createSplash, destroySplash } from './splash'
 import * as ssdp from './node-ssdp'
 import * as ws from './node-ws'
+
+// https://electronjs.org/docs/api/chrome-command-line-switches
+app.commandLine.appendSwitch('disable-renderer-backgrounding')
+
+// prepare logger
+log.catchErrors()
+
+// prepare autoUpdater
+log.transports.file.level = 'debug'
+autoUpdater.logger = log
+autoUpdater.autoDownload = true
+autoUpdater.autoInstallOnAppQuit = true
+autoUpdater.allowDowngrade = true
+// channel getter/setter one of 'latest' 'beta' 'alpha'
+autoUpdater.channel = 'latest'
 
 /**
  * Set `__statics` path to static files in production;
@@ -16,6 +34,7 @@ let mainWindow
 
 // init ssdp/websocket for main and proceed with app start
 function init () {
+  log.info('Hyperion Remote starting...')
   createSSDPHandler()
   createWebsocketHandler()
   createWindow()
@@ -32,78 +51,88 @@ function createWebsocketHandler () {
   ipcMain.on('send', (event, arg) => {
     ws.send(arg)
   })
+  // Async await through ipc
+  ipcMain.handle('sendAsync', async (event, ...args) => {
+    const result = await ws.sendAsync(...args)
+    return result
+  })
 
   // Async messages from ws to render thread
   ws.addEventListener('open', () => mainWindow.webContents.send('open'))
   ws.addEventListener('close', () => mainWindow.webContents.send('close'))
   ws.addEventListener('message', (val) => mainWindow.webContents.send('message', val))
   ws.addEventListener('storecommit', (val) => mainWindow.webContents.send('storecommit', val))
-  ws.addEventListener('router', (val) => mainWindow.webContents.send('router', val))
   ws.addEventListener('notify', (val) => mainWindow.webContents.send('notify', val))
 }
 
 function createSSDPHandler () {
-  // Async messages from render thread
-  ipcMain.on('ssdpstart', (event, arg) => {
-    ssdp.start()
-  })
-  // Event handler for synchronous incoming messages
-  ipcMain.on('ssdpget', (event, arg) => {
-    event.returnValue = ssdp.getResults()
+  // Async await through ipc
+  ipcMain.handle('ssdpget', async (event, ...args) => {
+    const result = await ssdp.getResults()
+    return result
   })
 }
 
+function sendStatusToWindow (msg) {
+  log.info(msg)
+  // mainWindow.webContents.send('message', msg);
+}
+
 function createWindow () {
-  // create a `splash` screen window
-  let splash = new BrowserWindow({
-    width: 491,
-    height: 260,
-    frame: false,
-    alwaysOnTop: true,
-    show: false,
-    webPreferences: {
-      devTools: false
-    }
-  })
-
-  splash.once('ready-to-show', () => {
-    splash.show()
-  })
-
-  splash.loadURL(path.join(process.env.APP_URL, 'statics/electron-splash.html'))
-
-  // update check
-  if (process.env.PROD) {
-    // checkForUpdates()
-  }
-
   // Create mainWindow
   mainWindow = new BrowserWindow({
-    minWidth: 400,
-    width: 1000,
-    minHeight: 400,
-    height: 600,
+    minWidth: 500,
+    width: 1035,
+    minHeight: 600,
+    height: 900,
     useContentSize: true,
     webPreferences: {
+      nodeIntegration: QUASAR_NODE_INTEGRATION,
+      preload: path.resolve(__dirname, 'electron-preload.js'),
+      // preload: process.env.DEV ? path.resolve(__dirname, '..', '..', 'src', 'statics', 'electron-preload.js') : path.resolve(__dirname, 'statics', 'electron-preload.js'),
+      // preload: path.resolve(__dirname, 'electron-preload.js')
       devTools: process.env.DEV,
-      nodeIntegration: true,
-      preload: path.join(__statics, 'electron-preload.js')
+      contextIsolation: false
     },
-    backgroundColor: '#1e2f48',
     frame: false,
     show: false
   })
 
+  // create a `splash` screen window
+  createSplash(mainWindow)
+  ipcMain.on('hidesplash', (event, arg) => { destroySplash(); mainWindow.show() })
+
+  // update check
+  // if (process.env.PROD) {
+  autoUpdater.on('error', (error) => {
+    sendStatusToWindow('Error' + error)
+  })
+  autoUpdater.on('checking-for-update', () => {
+    sendStatusToWindow('Checking for update...')
+  })
+  autoUpdater.on('update-available', (ev, info) => {
+    sendStatusToWindow('Update available.')
+  })
+  autoUpdater.on('update-not-available', (ev, info) => {
+    sendStatusToWindow('Update not available.')
+  })
+  autoUpdater.on('error', (ev, err) => {
+    sendStatusToWindow('Error in auto-updater.')
+  })
+  autoUpdater.on('download-progress', (ev, progressObj) => {
+    sendStatusToWindow('Download progress...')
+  })
+  autoUpdater.on('update-downloaded', (ev, info) => {
+    sendStatusToWindow('Update downloaded; will install in 5 seconds')
+  })
+  // autoUpdater.checkForUpdatesAndNotify()
+  // }
+
+  // load window
   mainWindow.loadURL(process.env.APP_URL)
 
   mainWindow.on('closed', () => {
     mainWindow = null
-  })
-
-  // if main window is ready to show, then destroy the splash window and show up the main window
-  mainWindow.once('ready-to-show', () => {
-    splash.destroy()
-    mainWindow.show()
   })
 }
 app.on('ready', init)
@@ -119,3 +148,6 @@ app.on('activate', () => {
     init()
   }
 })
+
+// restart handler
+ipcMain.on('restart', (event, arg) => { app.relaunch(); app.quit() })

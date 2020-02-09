@@ -38,14 +38,13 @@ export default {
   },
   methods: {
     minimize () {
-      this.$q.electron.remote.BrowserWindow.getFocusedWindow().minimize()
+      window.electron.minimize()
     },
     maximize () {
-      const win = this.$q.electron.remote.BrowserWindow.getFocusedWindow()
-      win.isMaximized() ? win.unmaximize() : win.maximize()
+      window.electron.isMaximized() ? window.electron.unmaximize() : window.electron.maximize()
     },
     closeApp () {
-      this.$q.electron.remote.BrowserWindow.getFocusedWindow().close()
+      window.electron.close()
     }
   }
 }

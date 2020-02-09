@@ -1,0 +1,133 @@
+# Option Questions
+# - Required? Are fields optional? 
+# - show based on other options value: Syntax? for ROOT access requires: webServer.myInteger: 28 LOCAL? myInteger:28
+# Feat: ColorPicker when parent is array and in grid mode(?) show small rectangles
+
+# Object container with props
+webServer:
+ label: A label
+ desc: A desc
+ type: object
+ layout: tabs       # Optional: Force a layout type
+ props:
+# A input field with a int value
+  - prop: myInteger
+    label: My I Opt # Optional: Label of option (or identifier for i18n). Defaults to key name (myInteger)
+    desc: Desc of   # Optional: Description of option (or identifier for i18n)
+    type: int       # Integer type (One of float/int/string)
+    min: 20         # Optional: minimum value
+    max: 30         # Optional: maximum value
+    step: 2         # Optional: Stepping, defaults to 1
+    default: 25     # Optional: Default value. Probably not optional
+    append: s       # Optional: Append a string or icon (Font Awesome) (icon prefix 'icon fas fa-wrench')
+
+# A input field with a float value
+  - prop: myFloat
+    label: A label
+    desc: A desc
+    type: float
+    min: 1.0
+    max: 5.0
+    step: 0.5       # Optional: defaults to 1.0
+
+# A input field with a string
+  - prop: myString
+    label: A label
+    desc: A desc
+    type: string
+    minLength: 5    # Optional: Minimum length of string (stripped spaces start/end)
+    maxLength: 30   # Optional: Max length of string (stripped spaces)
+
+# Select one value from a selection list. Content of enum can be combined with type: string/float/int/bool
+  - prop: mySelect
+    label: A label
+    desc: A desc
+    format:         # Might be 'format: select' or with sub options like here
+      type: select
+      addNone: true # Adds a 'No value' entry, if selected -> value is empty
+      addNoneLabel: # Optional: Add a custom label to the none entry
+    enum: [ABC, DEF, GHI]
+    enumLabels: [Alphabet A-C, Alphabet D-F, Alphabet G-I] # Optional: label for enum entries
+    default: none   # A value from 'enum'. If 'addNone' is enabled can be none
+
+# Select none or multiple values
+# Returns none or multiple values from 'enum'. Content of enum can be mixed types int/float/string/bool
+  - prop: myMultiSelect
+    label: A label
+    desc: A desc
+    format: mselect # multi select
+    enum: [ABC, DEF, GHI]
+    enumLabels: [Alphabet A-C, Alphabet D-F ,Alphabet G-I] # Optional: Labels for enum entries
+    default: ABC
+
+# A slider for float and int values where min and max is known
+  - prop: mySlider
+    label: A label
+    desc: A desc
+    format: slider  # Further slider options may possible format: type: slider anotherProp: prop
+    type: float
+    min: 1.0
+    max: 5.0
+    step: 0.5       # Optional: defaults to 1.0
+
+# A toggle to enable/disable | show/hide something. Returns a bool value
+  - prop: myToggle
+    label: A label
+    desc: A desc
+    type: bool
+
+# Get GPS coords with the following properties (latitude longitude). Uses platform specific APIs or user input
+  - prop: myGpsCoords
+    label: A label
+    desc: A desc
+    format: gps
+
+# Colorpicker RGB
+# Returns a color as array [R,G,B]  (0-255)
+  - prop: myColorPickerRGB
+    label: A label
+    desc: A desc
+    format: cpRGB   
+    default: [255,0,0]  # Optional: default color
+    
+# Colorpicker RGBA
+# Returns a color with Alpha as array [R,G,B,A] (255,0,0)
+  - prop: myColorPickerRGBA
+    label: A label
+    desc: A desc
+    format: cpRGBA  
+    default: [255,0,0]  # Optional: default color
+
+# Colorpicker HEX
+# Returns a color as HEX #ffffff
+  - prop: myColorPickerHEX
+    label: A label
+    desc: A desc
+    format: cpHEX   
+    default: '#ffffff'  # Optional: default color: The '' are required. As # is treated as comment
+
+# Colorpicker HEX(A)
+# Returns a color with Alpha as HEX #ffffff55
+  - prop: myColorPickerHEXA
+    label: A label
+    desc: A desc
+    format: cpHEXA   
+    default: '#ffffff87'  # Optional: default color: The '' are required. As # is treated as comment
+
+
+# Array container with props
+colors:
+ label: A label
+ desc: A desc
+ type: array
+ layout: tabs       # Optional: Force a layout type
+ minItems: 1        # Optional: Minimum length of array
+ maxItems: 3        # Optional: Maximum length of array
+ items:
+  - prop: gammaRed
+    label: A label
+    desc: A desc
+    type: float
+    min: 1.0
+    max: 5.0
+    step: 0.1 

@@ -4,10 +4,10 @@
     :data="getInstanceData"
     :columns="columns"
     row-key="name"
-    hide-bottom
-    :pagination.sync="pagination"
+    :hide-bottom="getInstanceData.length <= 5"
     :dense="$q.screen.lt.md"
     flat
+    wrap-cells
   >
     <template v-slot:top-right>
       <q-btn
@@ -22,17 +22,15 @@
           :title="$t('conf.instance.newName')"
           buttons
           :label-set="$t('label.create')"
-          :validate="nameValidation"
           @hide="nameValidation"
+          :validate="nameValidation"
           @save="createInstance"
-          @before-show="currName = '' && nameValidation"
+          @before-show="currName = ''"
         >
           <q-input
             v-model="currName"
             dense
             autofocus
-            counter
-            @input="nameValidation"
             :error="errorName"
             :error-message="errorMessageName"
             spellcheck="false"
@@ -62,8 +60,6 @@
               v-model="currName"
               dense
               autofocus
-              counter
-              @input="nameValidation"
               :error="errorName"
               :error-message="errorMessageName"
               spellcheck="false"
@@ -100,12 +96,11 @@
 </template>
 
 <script>
-import { dialog } from '../../mixins'
+import { dialogMixin } from '../../mixins'
 export default {
-  mixins: [dialog],
+  mixins: [dialogMixin],
   data () {
     return {
-      pagination: { rowsPerPage: 0 },
       currName: '',
       errorName: false,
       errorMessageName: '',
@@ -134,19 +129,20 @@ export default {
       this.$socket.setInstanceState(newState, inst)
     },
     createInstance (name, initial) {
-      this.$socket.createInstance(name)
+      this.$socket.createInstance(name.trim())
     },
     saveName (inst, val) {
-      this.$socket.renameInstance(inst, val)
+      this.$socket.renameInstance(inst, val.trim())
     },
     nameValidation (val) {
       if (val !== undefined) {
-        if (val.length < 5) {
+        const cleanVal = val.trim()
+        if (cleanVal.length < 5) {
           this.errorName = true
           this.errorMessageName = this.$t('validate.minLength', [5])
           return false
         }
-        if (this.$store.getters['api/getInstances'].find((el) => el.friendly_name == val)) {
+        if (this.$store.getters['api/getInstances'].find((el) => el.friendly_name == cleanVal)) {
           this.errorName = true
           this.errorMessageName = this.$t('validate.unique', [`"${val}"`])
           return false
@@ -156,11 +152,10 @@ export default {
       this.errorMessageName = ''
       return true
     },
-    handleDelete (inst, name) {
-      this.openConfirmDialog({ title: this.$t('conf.instance.delInstance'), msg: this.$t('conf.instance.delInstanceMsg', { name: `"${name}"` }) }).onOk(() => this._handleDelete(inst, name))
-    },
-    _handleDelete (inst, name) {
-      this.$socket.deleteInstance(inst)
+    async handleDelete (inst, name) {
+      const res = await this.openConfirmDialog({ title: this.$t('conf.instance.delInstance'), msg: this.$t('conf.instance.delInstanceMsg', { name: `"${name}"` }) })
+      if (res)
+        this.$socket.deleteInstance(inst)
     }
   }
 }

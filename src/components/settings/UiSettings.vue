@@ -47,23 +47,6 @@
     <q-item>
       <q-item-section>
         <q-select
-          :hint="$t('ui.startPage_desc')"
-          :label="$t('ui.startPage')"
-          bottom-slots
-          :options="getAvailPages"
-          v-model="modStartPage"
-          emit-value
-          map-options
-        >
-          <template v-slot:prepend>
-            <q-icon name="panorama" />
-          </template>
-        </q-select>
-      </q-item-section>
-    </q-item>
-    <q-item>
-      <q-item-section>
-        <q-select
           :hint="$t('ui.darkMode_desc')"
           :label="$t('ui.darkMode')"
           bottom-slots
@@ -110,9 +93,50 @@
         </q-input>
       </q-item-section>
     </q-item>
-    <q-item v-show="modDarkMode==='time'">
+    <q-item v-if="modDarkMode ==='gps'">
       <q-item-section>
         <q-input
+          :label="$t('label.longitude')"
+          v-model="modDarkLong"
+        >
+          <template v-slot:prepend>
+            <q-icon name="brightness_3" />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              name="gps_fixed"
+              class="cursor-pointer"
+              @click.stop="getLongLat"
+            >
+            </q-icon>
+          </template>
+        </q-input>
+      </q-item-section>
+    </q-item>
+    <q-item v-if="modDarkMode ==='gps'">
+      <q-item-section>
+        <q-input
+          :label="$t('label.latitude')"
+          v-model="modDarkLat"
+        >
+          <template v-slot:prepend>
+            <q-icon name="brightness_3" />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              name="gps_fixed"
+              class="cursor-pointer"
+              @click.stop="getLongLat"
+            >
+            </q-icon>
+          </template>
+        </q-input>
+      </q-item-section>
+    </q-item>
+    <q-item v-show="modDarkMode==='time' || modDarkMode ==='gps'">
+      <q-item-section>
+        <q-input
+          :readonly="modDarkMode === 'gps'"
           :value="getDarkTimespanInput"
           @input="setDarkTimespan"
           mask="##:## - ##:##"
@@ -126,7 +150,10 @@
           <template v-slot:prepend>
             <q-icon name="brightness_3" />
           </template>
-          <template v-slot:append>
+          <template
+            v-slot:append
+            v-if="modDarkMode === 'time'"
+          >
             <q-icon
               name="access_time"
               class="cursor-pointer"
@@ -141,6 +168,7 @@
                   rounded-borders
                   no-border
                   no-footer
+                  :hour12="!$q.lang.date.format24h"
                   :inner-color="$q.dark.isActive ? 'grey-9':'white'"
                   :inner-text-color="$q.dark.isActive ? 'grey-2':'grey-8'"
                   v-model="modDarkTimespan"
@@ -205,12 +233,13 @@
 <script>
 import { colors } from 'quasar'
 import { qcolor } from 'src/utils'
-
 import LangSelect from './LangSelect'
-import { Component as QScroller } from '@quasar/quasar-ui-qscroller'
+import { QScroller } from '@quasar/quasar-ui-qscroller'
+import { gpsMixin } from 'components/mixins'
 
 export default {
   name: 'UiSettings',
+  mixins: [gpsMixin],
   components: {
     'lang-select': LangSelect,
     'q-scroller': QScroller
@@ -220,8 +249,8 @@ export default {
   },
   computed: {
     getAvailThemeColors () {
-      let selectList = []
-      for (let entry of this.$store.getters['temp/getAvailThemeColors']) {
+      const selectList = []
+      for (const entry of this.$store.getters['temp/getAvailThemeColors']) {
         selectList.push({ label: this.$i18n.t('colors.' + entry), value: entry, icon: 'color_lens', color: entry })
       }
       return selectList
@@ -240,17 +269,6 @@ export default {
           StatusBar.backgroundColorByHexString(qcolor.toHex(this.$store.getters['common/getThemeColor']))
         }
       }
-    },
-    getAvailPages () {
-      let selectList = []
-      for (let entry of this.$store.getters['temp/getAvailPages']) {
-        selectList.push({ label: this.$i18n.t('pages.' + entry.title), value: entry.path, icon: entry.icon })
-      }
-      return selectList
-    },
-    modStartPage: {
-      get () { return this.$store.getters['common/getStartPage'] },
-      set (val) { this.$store.commit('common/setStartPage', val) }
     },
     getDarkModeOptions () {
       return this.$store.getters['common/getDarkModeOptions'].map(el => ({ label: this.$t('ui.darkMode_' + el), value: el }))
@@ -274,6 +292,14 @@ export default {
       get () { return this.$store.getters['common/getDarkEndTime'] },
       set (val) { this.$store.commit('common/setDarkEndTime', val) }
     },
+    modDarkLong: {
+      get () { return this.$store.getters['common/getDarkLong'] },
+      set (val) { this.$store.commit('common/setDarkLong', val) }
+    },
+    modDarkLat: {
+      get () { return this.$store.getters['common/getDarkLat'] },
+      set (val) { this.$store.commit('common/setDarkLat', val) }
+    },
     modBackToTop: {
       get () { return this.$store.getters['common/isBacktoTop'] },
       set (val) { this.$store.commit('common/setBackToTop', val) }
@@ -296,7 +322,7 @@ export default {
   methods: {
     setDarkTimespan (val) {
       this.lmodDarkTimespanInput = val
-      if (val.length == 13 && this.validateTime(val)) {
+      if (val.length === 13 && this.validateTime(val)) {
         this.timespanError = false
         const st = val.split(' - ')
         this.$store.commit('common/setDarkStartTime', st[0])
@@ -317,15 +343,22 @@ export default {
       return false
     },
     isValidTime (time) {
-      let parts = time.split(':')
+      const parts = time.split(':')
       if (parts.length === 2) {
-        let hour = parseInt(parts[0], 10)
-        let minute = parseInt(parts[1], 10)
+        const hour = parseInt(parts[0], 10)
+        const minute = parseInt(parts[1], 10)
         if (hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
           return true
         }
       }
       return false
+    },
+    async getLongLat () {
+      const res = await this.getGpsPosition()
+      if (res) {
+        this.$store.commit('common/setDarkLong', res.longitude)
+        this.$store.commit('common/setDarkLat', res.latitude)
+      }
     }
   }
 }

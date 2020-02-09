@@ -1,5 +1,6 @@
 const WebSocket = require('ws')
 const EventEmitter = require('events')
+const log = require('electron-log');
 
 // import { Loading, QSpinnerGears } from 'quasar'
 
@@ -23,9 +24,6 @@ function disconnect () {
     if (isConnected()) { closeRequested = true }
     ws.close(1000)
     ws = null
-    // go to connect page, disable autoConnect
-    storeCommit('temp/setConnectedState', false)
-    router({ name: 'connect', params: { autoConnect: false } })
   }
 }
 
@@ -40,6 +38,36 @@ function send (data) {
   }
 }
 
+//
+// Send to Hyperion, will skip the send if currently not connected
+// A newline is appended to split the commands (e.g. send more than one cmd at a time in one websocket package)
+// @param data     JSON   The data to send
+//
+async function sendAsync (data) {
+  if (ws !== null && isConnected()) {
+
+    return new Promise((resolve, reject) => {
+      let cmd = data.command
+      let subc = data.subcommand
+      if (subc)
+        cmd = `${cmd}-${subc}`
+      let func = (e) => {
+        const rdata = JSON.parse(e.data)
+        if (rdata.command == cmd) {
+          removeEventListener('message', func)
+          resolve(rdata)
+        }
+      }
+      // after 5 sec we resolve false
+      setTimeout(() => { resolve(false); removeEventListener('message', func) }, 5000)
+      addEventListener('message', func)
+
+      ws.send(JSON.stringify(data) + '\n')
+    })
+
+  }
+}
+
 function connect (newUrl) {
   if (ws !== null) {
     if (isConnected()) { closeRequested = true }
@@ -48,7 +76,7 @@ function connect (newUrl) {
   }
 
   // reconnect means undefined newUrl
-  if (newUrl !== undefined) {
+  if (newUrl !== undefined && newUrl !== null) {
     // reset ssl, if the WebScoket fails with exception or without (CERT_ERR) there is no reset
     ssl = false
     url = newUrl
@@ -68,7 +96,7 @@ function connect (newUrl) {
     // if (document.location.protocol == 'https:') { ssl = true }
   }
 
-  if (process.env.DEV) { console.log('Connecting to socket:', url) }
+  if (process.env.DEV) { log.info('Connecting to socket: ' + url) }
 
   try {
     ws = ssl ? new WebSocket('wss://' + url) : new WebSocket('ws://' + url)
@@ -124,14 +152,14 @@ function _onclose (event) {
   // catch requested closes
   if (closeRequested) {
     closeRequested = false
-    console.log('Force disconnected')
+    log.info('Force disconnected')
     return
   }
   // we probably reconnect
   if (maxRecAttempts > currentRecAttempts) {
     // it may be required to delay the attempts
     let now = new Date().getTime()
-    let delay = ((now - lastConnectionTryTime) < 1000) ? 2000 : 0
+    let delay = ((now - lastConnectionTryTime) < 1000) ? 2000 : 250
     setTimeout(connect, delay)
     return
   }
@@ -140,8 +168,6 @@ function _onclose (event) {
 
   // dispatch the event
   wsEmitter.emit('close', event)
-  // navigate back to connect page
-  router('/connect')
 }
 function _onerror (event) {
   // emits all day long with close
@@ -155,9 +181,6 @@ function storeCommit (path, val) {
   wsEmitter.emit('storecommit', { path: path, value: val })
 }
 
-function router (path, val) {
-  wsEmitter.emit('router', { path: path, value: val })
-}
 function notify (type, msg, icon) {
   wsEmitter.emit('notify', { type: type, msg: msg, icon: icon })
 }
@@ -182,7 +205,7 @@ function _resetRecAttempts () {
   currentRecAttempts = 0
 }
 
-export { connect, disconnect, send, addEventListener, removeEventListener }
+export { connect, disconnect, send, sendAsync, addEventListener, removeEventListener }
 
 /*
 ISSUE: The new WebSocket statement does not work inside class. How can this be added?
@@ -213,9 +236,6 @@ export class NodeWebSocket extends Websocket {
   }
   storeCommit (path, val) {
     this.wsEvents.emit('storecommit', { path: path, value: val })
-  }
-  router (path, val) {
-    this.wsEvents.emit('router', { path: path, value: val })
   }
   notify (type, msg, icon) {
     this.wsEvents.emit('notify', { type: type, msg: msg, icon: icon })

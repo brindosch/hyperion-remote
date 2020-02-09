@@ -49,16 +49,8 @@ export const resetLastToken = (state, newSate) => {
   state.storedConnections[0].token = ''
 }
 
-export const setAutoConnect = (state, newState) => {
-  state.autoConnect = newState
-}
-
 export const setAutoDisconnect = (state, newState) => {
   state.autoDisconnect = newState
-}
-
-export const setAutoLogin = (state, newState) => {
-  state.autoLogin = newState
 }
 
 export const deleteStoredConnection = (state, newState) => {

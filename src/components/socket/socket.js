@@ -2,23 +2,22 @@ import { notify, EventBus } from '../../utils'
 import { i18n } from '../../boot/i18n'
 
 let sstore = null
-let srouter = null
 let initialized = false
 let ws = null
+// This tan will be ignored on response success failure
+const TAN_SKIP = 5
 
-export function init (store, nrouter, wsBridge) {
+export function init (store, wsBridge) {
   // get the wsBridge interface
   ws = wsBridge
 
-  // store & router access
+  // store access
   sstore = store
-  srouter = nrouter
   // add event listeners
   ws.addEventListener('open', _onopen)
   ws.addEventListener('close', _onclose)
   ws.addEventListener('message', _onmessage)
   ws.addEventListener('storecommit', _onstorecommit)
-  ws.addEventListener('router', _onrouter)
   ws.addEventListener('notify', _onnotify)
 }
 
@@ -28,12 +27,14 @@ export const connect = (url) => {
 
 export const disconnect = () => {
   ws.disconnect()
+  // we can't wait for the socket store commit
+  sstore.commit('temp/setConnectedState', false)
   _softReset()
 }
 
 // Data request methods
 export const getServerInfo = () => {
-  send('serverinfo', undefined, { subscribe: ['components-update', 'effects-update', 'adjustment-update', 'instance-update', 'leds-update', 'token-update'] }) // "plugins-update"
+  send('serverinfo', undefined, { subscribe: ['components-update', 'effects-update', 'adjustment-update', 'instance-update', 'leds-update', 'token-update', 'priorities-update'] }) // "plugins-update"
 }
 export const getSysInfo = () => {
   send('sysinfo')
@@ -51,21 +52,20 @@ export const setTokenAuthRequired = () => {
 export const logout = () => {
   send('authorize', 'logout')
   sstore.commit('api/setLoginState', false)
-  srouter.replace({ name: 'login', params: { autoLogin: false } }).catch(() => { })
 }
-export const login = (pw) => {
-  send('authorize', 'login', { password: pw })
+export const login = async (password) => {
+  return sendAsync('authorize', 'login', { password, tan: TAN_SKIP })
 }
-export const loginToken = (tok) => {
-  send('authorize', 'login', { token: tok })
+export const loginToken = async (token) => {
+  return sendAsync('authorize', 'login', { token, tan: TAN_SKIP })
 }
 
 export const requestToken = (comment, id) => {
-  send('authorize', 'requestToken', { comment: comment, id: id })
+  send('authorize', 'requestToken', { comment, id, tan: TAN_SKIP })
 }
 
 export const cancelRequestToken = (comment, id) => {
-  send('authorize', 'requestToken', { comment: comment, id: id, accept: false })
+  send('authorize', 'requestToken', { comment, id, accept: false })
 }
 
 export const setCompState = (component, state) => {
@@ -99,11 +99,17 @@ export const setClear = (priority) => {
   priority = (priority === undefined) ? sstore.getters['common/getPriority'] : priority
   send('clear', undefined, { priority })
 }
+export const setPriority = (priority) => {
+  send('sourceselect', undefined, { priority })
+}
+export const setPriorityAutoSelect = (auto) => {
+  send('sourceselect', undefined, { auto })
+}
 export const setLogEnable = (state) => {
   if (sstore.getters['api/getLoginState']) { send('logging', (state ? 'start' : 'stop')) }
 }
 export const setInstance = (instance) => {
-  send('instance', 'switchTo', { instance })
+  send('instance', 'switchTo', { instance, tan: TAN_SKIP })
 }
 export const setInstanceState = (newState, instance) => {
   const subc = newState ? 'startInstance' : 'stopInstance'
@@ -202,45 +208,25 @@ export const startApiInit = (authHandled) => {
 
 // Handles the response from 'adminRequired' and (token) 'required' auth tests
 export const handleAuthRequired = (required) => {
-  if (required) {
-    srouter.replace('login').catch(() => { })
-  } else {
-    // if no auth is required, we skip the login page
+  if (!required) {
+    // if no auth is required, we skip the login
     sstore.commit('api/setLoginState', true)
     startApiInit(true)
   }
-}
-// Handle the success/failure of a 'login' command. May be token or password based
-export const handleAuthResponse = (data) => {
-  if (data.success) {
-    const pw = data.info.password
-    // update password or token. Be aware, login with password returns a session token
-    let type = pw ? 'password' : 'token'
-    let epw = pw ? data.info.password : data.info.token
-    sstore.dispatch('connection/setLastPassword', { pw: epw, type: type }).catch(e => console.error(e.message))
-    sstore.commit('api/setLoginState', true)
-    startApiInit(true)
-  } else {
-    // error during auth or api error. We do not know which one.
-    if (sstore.getters['common/getAdminAppMode']) {
-      sstore.commit('connection/resetLastPassword')
-    } else {
-      sstore.commit('connection/resetLastToken')
-    }
-    notify.error(i18n.t('login.failed'), 'fas fa-sign-in-alt')
-  }
+  // Login is possible at this point
+  sstore.commit('api/setLoginReady', true)
 }
 
 // called by onclose and disconnect() to partly reset app state
 function _softReset () {
   sstore.commit('api/resetLogEntries')
+  sstore.commit('api/setLoginReady', false)
   sstore.commit('api/setLoginState', false)
   initialized = false
 }
 
 function _onmessage (msg) {
   let data = null
-  // parse
   try {
     data = JSON.parse(msg.data)
   } catch (e) {
@@ -249,8 +235,8 @@ function _onmessage (msg) {
   }
   if (process.env.DEV || sstore.getters['common/getDebugState']) console.log('RECEIVE', data)
   // eval success
-  if (typeof (data.success) !== 'undefined' && !data.success && data.command !== 'instance-switchTo' && data.command !== 'authorize-login' && data.command !== 'authorize-requestToken') {
-    notify.error(i18n.t('conn.respFailure') + ': cmd: ' + data.command + ': ' + JSON.stringify(data.error), 'wifi')
+  if (typeof data.success !== 'undefined' && !data.success && data.tan !== TAN_SKIP) {
+    notify.error(`${i18n.t('conn.respFailure')}: CMD:${data.command} Error:${JSON.stringify(data.error)}`, 'wifi')
     return
   }
 
@@ -261,12 +247,12 @@ function _onmessage (msg) {
     case 'config-getschema': sstore.commit('api/setServerSchema', data.info); break
     case 'config-geconfig': sstore.commit('api/setServerConfig', data.info); break
     case 'serverinfo': sstore.commit('api/setServerInfo', data.info)
-      // goto last page - init finalized!
-      initialized = true; srouter.replace(sstore.getters['temp/getLastPage']).catch(() => { }); break
+      // init finalized!
+      initialized = true; break
     // auth commands
-    case 'authorize-adminRequired': sstore.commit('api/setAdminAuthRequired', data.info.adminRequired); handleAuthRequired(data.info.adminRequired); break
-    case 'authorize-tokenRequired': sstore.commit('api/setTokenAuthRequired', data.info.required); handleAuthRequired(data.info.required); break
-    case 'authorize-login': handleAuthResponse(data); break
+    case 'authorize-adminRequired': handleAuthRequired(data.info.adminRequired); break
+    case 'authorize-tokenRequired': handleAuthRequired(data.info.required); break
+    //case 'authorize-login': handled in Login.vue
     // admin commands
     case 'authorize-getTokenList': sstore.commit('api/setTokenList', data.info); break
     case 'token-update': sstore.commit('api/setTokenList', data.data); break
@@ -280,6 +266,7 @@ function _onmessage (msg) {
     case 'leds-update': sstore.commit('api/updateLeds', data.data.leds); break
     case 'plugins-update': sstore.commit('api/updatePlugins', data.data); break
     case 'instance-update': handleInstanceUpdate('update', data.data); break
+    case 'priorities-update': sstore.commit('api/updatePriorities', data.data); break
     // logging
     case 'logging-update': sstore.commit('api/updateLog', data.result.messages); break
     case 'logging-stop': sstore.commit('api/resetLogEntries'); break
@@ -305,10 +292,6 @@ function _onstorecommit (ev) {
   sstore.commit(ev.data.path, ev.data.value)
 }
 
-function _onrouter (ev) {
-  srouter.replace(ev.data.path).catch(() => { })
-}
-
 function _onnotify (ev) {
   if (ev.data.type === 'error') {
     notify.error(i18n.t(ev.data.msg), ev.data.icon)
@@ -330,4 +313,12 @@ export function send (command, subcommand, data, tan = 1) {
 
   if (process.env.DEV || sstore.getters['common/getDebugState']) console.log('SEND', obj)
   ws.send(obj)
+}
+
+export async function sendAsync (command, subcommand, data, tan = 1) {
+  let obj = { command, subcommand, tan }
+  if (data) { Object.assign(obj, data) }
+
+  if (process.env.DEV || sstore.getters['common/getDebugState']) console.log('SENDAS', obj)
+  return ws.sendAsync(obj)
 }

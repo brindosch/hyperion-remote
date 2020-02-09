@@ -92,9 +92,8 @@
                         <div>
                           <q-color
                             :value="initialPickerColor"
-                            @input="modColor(currIndex, currColorIndex, $event)"
+                            @change="modColor(currIndex, currColorIndex, $event)"
                             format-model="hex"
-                            no-header
                             no-footer
                           />
                         </div>
@@ -116,7 +115,7 @@
                             <q-item
                               clickable
                               v-close-popup
-                              @click.stop.prevent="addColor(idx,col)"
+                              @click.stop="addColor(idx,col)"
                               :key="idc"
                             >
                               <q-item-section side>
@@ -150,7 +149,7 @@
                       class="cursor-pointer"
                       :class="{'zoom-2':colorDrag}"
                       size="sm"
-                      @click.stop.prevent="removeEntryAt(idx)"
+                      @click.stop="removeEntryAt(idx)"
                     />
 
                   </draggable>
@@ -164,9 +163,9 @@
         <q-card-actions align="right">
           <q-btn
             flat
-            label="Add Entry"
+            :label="$t('label.add')"
             color="primary"
-            @click.stop.prevent="addEntry"
+            @click.stop="addEntry"
           />
           <q-btn
             flat
@@ -236,6 +235,7 @@ import draggable from 'vuedraggable'
 import { getRandomHash } from 'components/mixins'
 import { colors } from 'quasar'
 const { hexToRgb } = colors
+import { EventBus } from 'src/utils'
 
 export default {
   name: 'FavouriteColors',
@@ -257,6 +257,12 @@ export default {
       initialPickerColor: '#fff'
     }
   },
+  created () {
+    EventBus.$on('favcolorsedit', this.openEditDialog)
+  },
+  beforeDestroy () {
+    EventBus.$off('favcolorsedit', this.openEditDialog)
+  },
   computed: {
     dragOptions () {
       return {
@@ -274,9 +280,6 @@ export default {
           pull: false
         }
       }
-    },
-    isDarkTheme () {
-      return this.$store.getters['common/isDarkTheme']
     }
   },
   methods: {
@@ -325,6 +328,9 @@ export default {
     },
     onRemove (e, i) {
       if (e.oldIndex === 0) { this.removeEntryAt(i) }
+    },
+    openEditDialog () {
+      this.showEditDialog = true
     }
   }
 }

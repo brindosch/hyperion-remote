@@ -1,0 +1,392 @@
+{
+    "adjustment": [
+        {
+            "backlightColored": false,
+            "backlightThreshold": 0,
+            "blue": [
+                0,
+                0,
+                255
+            ],
+            "brightness": 100,
+            "brightnessCompensation": 100,
+            "cyan": [
+                0,
+                255,
+                255
+            ],
+            "gammaBlue": 1.5,
+            "gammaGreen": 1.5,
+            "gammaRed": 1.5,
+            "green": [
+                0,
+                255,
+                0
+            ],
+            "id": "default",
+            "magenta": [
+                255,
+                0,
+                255
+            ],
+            "red": [
+                255,
+                0,
+                0
+            ],
+            "white": [
+                255,
+                255,
+                255
+            ],
+            "yellow": [
+                255,
+                255,
+                0
+            ]
+        }
+    ],
+    "components": [
+        {
+            "enabled": true,
+            "name": "ALL"
+        },
+        {
+            "enabled": true,
+            "name": "SMOOTHING"
+        },
+        {
+            "enabled": true,
+            "name": "BLACKBORDER"
+        },
+        {
+            "enabled": false,
+            "name": "FORWARDER"
+        },
+        {
+            "enabled": false,
+            "name": "BOBLIGHTSERVER"
+        },
+        {
+            "enabled": false,
+            "name": "GRABBER"
+        },
+        {
+            "enabled": false,
+            "name": "V4L"
+        },
+        {
+            "enabled": true,
+            "name": "LEDDEVICE"
+        }
+    ],
+    "effects": [],
+    "grabbers": {
+        "available": [
+            "v4l2",
+            "framebuffer",
+            "x11",
+            "qt"
+        ]
+    },
+    "hostname": "ubuntu",
+    "imageToLedMappingType": "multicolor_mean",
+    "instance": [
+        {
+            "friendly_name": "My First Instance",
+            "instance": 0,
+            "running": true
+        }
+    ],
+    "ledDevices": {
+        "available": [
+            "adalight",
+            "apa102",
+            "apa104",
+            "atmo",
+            "atmoorb",
+            "dmx",
+            "fadecandy",
+            "file",
+            "hyperionusbasp",
+            "karate",
+            "lightpack",
+            "lpd6803",
+            "lpd8806",
+            "multilightpack",
+            "nanoleaf",
+            "p9813",
+            "paintpack",
+            "philipshue",
+            "piblaster",
+            "rawhid",
+            "sedu",
+            "sk6812spi",
+            "sk6822spi",
+            "tinkerforge",
+            "tpm2",
+            "tpm2net",
+            "udpartnet",
+            "udpe131",
+            "udph801",
+            "udpraw",
+            "ws2801",
+            "ws2812spi"
+        ]
+    },
+    "leds": [
+        {
+            "hmax": 0.0909,
+            "hmin": 0,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.1818,
+            "hmin": 0.0909,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.2727,
+            "hmin": 0.1818,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.3636,
+            "hmin": 0.2727,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.4545,
+            "hmin": 0.3636,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.5455,
+            "hmin": 0.4545,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.6364,
+            "hmin": 0.5455,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.7273,
+            "hmin": 0.6364,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.8182,
+            "hmin": 0.7273,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 0.9091,
+            "hmin": 0.8182,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 1,
+            "hmin": 0.9091,
+            "vmax": 0.08,
+            "vmin": 0
+        },
+        {
+            "hmax": 1,
+            "hmin": 0.95,
+            "vmax": 0.2,
+            "vmin": 0
+        },
+        {
+            "hmax": 1,
+            "hmin": 0.95,
+            "vmax": 0.4,
+            "vmin": 0.2
+        },
+        {
+            "hmax": 1,
+            "hmin": 0.95,
+            "vmax": 0.6,
+            "vmin": 0.4
+        },
+        {
+            "hmax": 1,
+            "hmin": 0.95,
+            "vmax": 0.8,
+            "vmin": 0.6
+        },
+        {
+            "hmax": 1,
+            "hmin": 0.95,
+            "vmax": 1,
+            "vmin": 0.8
+        },
+        {
+            "hmax": 1,
+            "hmin": 0.9231,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.9231,
+            "hmin": 0.8462,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.8462,
+            "hmin": 0.7692,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.7692,
+            "hmin": 0.6923,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.6923,
+            "hmin": 0.6154,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.6154,
+            "hmin": 0.5385,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.5385,
+            "hmin": 0.4615,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.4615,
+            "hmin": 0.3846,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.3846,
+            "hmin": 0.3077,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.3077,
+            "hmin": 0.2308,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.2308,
+            "hmin": 0.1538,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.1538,
+            "hmin": 0.0769,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.0769,
+            "hmin": 0,
+            "vmax": 1,
+            "vmin": 0.92
+        },
+        {
+            "hmax": 0.05,
+            "hmin": 0,
+            "vmax": 1,
+            "vmin": 0.8
+        },
+        {
+            "hmax": 0.05,
+            "hmin": 0,
+            "vmax": 0.8,
+            "vmin": 0.6
+        },
+        {
+            "hmax": 0.05,
+            "hmin": 0,
+            "vmax": 0.6,
+            "vmin": 0.4
+        },
+        {
+            "hmax": 0.05,
+            "hmin": 0,
+            "vmax": 0.4,
+            "vmin": 0.2
+        },
+        {
+            "hmax": 0.05,
+            "hmin": 0,
+            "vmax": 0.2,
+            "vmin": 0
+        }
+    ],
+    "priorities": [
+        {
+            "active": true,
+            "componentId": "COLOR",
+            "origin": "Browser App@::ffff:192.168.0.96",
+            "priority": 50,
+            "value": {
+                "HSL": [
+                    0,
+                    1,
+                    0.5000076293945312
+                ],
+                "RGB": [
+                    0,
+                    51,
+                    255
+                ]
+            },
+            "visible": true
+        },
+        {
+            "active": true,
+            "componentId": "EFFECT",
+            "origin": "System",
+            "owner": "Warm mood blobs",
+            "priority": 254,
+            "visible": false
+        }
+    ],
+    "priorities_autoselect": true,
+    "sessions": [
+        {
+            "address": "192.168.0.233",
+            "domain": "local.",
+            "host": "ubuntu",
+            "name": "ubuntu:8090",
+            "port": 8090,
+            "type": "_hyperiond-http._tcp."
+        },
+        {
+            "address": "192.168.0.233",
+            "domain": "local.",
+            "host": "ubuntu",
+            "name": "ubuntu:8092",
+            "port": 8092,
+            "type": "_hyperiond-http._tcp."
+        }
+    ],
+    "videomode": "2D"
+}

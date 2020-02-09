@@ -20,7 +20,13 @@
   -ms-user-select text
   user-select text
 
+// overwrite color palette based on theme
+darkColors(){
+  --q-color-negative: #ff6722
+}
+
 // Dark and light design definitions
+// probably add more color defintions for these modes: https://github.com/quasarframework/quasar/issues/5609
 body.body--light
   background $grey-1
   color $grey-10
@@ -34,6 +40,11 @@ body.body--dark
   background $dark
   .q-menu 
     background $grey-9
+  // colorpicker background
+  .q-color-picker
+    background $grey-9
+  darkColors()
+
 
 // other changes
 .q-drawer
@@ -44,7 +55,6 @@ body.body--dark
   background inherit
 .inset-shadow-1
   box-shadow: 0 5px 7px -7px rgba(0,0,0,0.7) inset !important
-
 // transform zooming classes
 .zoom-2
   transform scale(1.2)
@@ -52,7 +62,19 @@ body.body--dark
 .q-tooltip
   font-size 90%
   max-width 500px
-
+// nicer header for QColor
+// As of https://github.com/quasarframework/quasar/issues/5659
+.q-color-picker
+  margin 15px 15px 0px 15px
+  box-shadow none
+  border-radius: 0
+.q-color-picker__sliders
+  margin-top 3px
+.q-color-picker__header-content
+  .q-tabs
+    display none
+.q-color-picker__header
+  height 36px
 // #########
 // FIXES
 // #########

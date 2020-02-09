@@ -1,25 +1,15 @@
+import enums from './enums'
+
 export const setConnectedState = (state, newState) => {
-  state.connected = newState
-  // if connected, we are no longer in connecting state
-  if (newState) { state.connecting = false }
+  state.connectState = newState ? enums.conState.CONNECTED : enums.conState.DISCONNECTED
 }
 
 export const setConnectingState = (state, newState) => {
-  state.connecting = newState
-  // if we are connecting, we aren't connected
-  if (newState) { state.connected = false }
+  state.connectState = newState ? enums.conState.CONNECTING : enums.conState.DISCONNECTED
 }
 
 export const setInitialConnected = (state, newState) => {
   state.initialConnected = newState
-}
-
-export const setLastPage = (state, newState) => {
-  state.lastPage = newState
-}
-
-export const resetLastPage = (state, newState) => {
-  state.lastPage = null
 }
 
 export const setActiveInstance = (state, newState) => {
@@ -33,3 +23,34 @@ export const setLastLedColors = (state, newState) => {
 export const setPreventAutoDisconnect = (state, newState) => {
   state.preventAutoDisconnect = newState
 }
+
+export const openLoginDialog = (state, newState) => {
+  state.openLoginDialog = newState
+}
+
+export const openConnectDialog = (state, newState) => {
+  state.openConnectDialog = newState
+}
+
+export const openTokenHandler = (state, newState) => {
+  state.openTokenHandler = newState
+}
+
+export const setBtnMoreEntries = (state, newState) => {
+  state.btnMoreEntries = newState
+}
+
+export const ledStreamRequest = (state, newState) => {
+  if (newState.state && !state.ledStreamRequest.includes(newState.uuid))
+    state.ledStreamRequest.push(newState.uuid)
+  else if (!newState.state && state.ledStreamRequest.includes(newState.uuid))
+    state.ledStreamRequest.splice(state.ledStreamRequest.indexOf(newState.uuid), 1)
+}
+
+export const imageStreamRequest = (state, newState) => {
+  if (newState.state && !state.imageStreamRequest.includes(newState.uuid))
+    state.imageStreamRequest.push(newState.uuid)
+  else if (!newState.state && state.imageStreamRequest.includes(newState.uuid))
+    state.imageStreamRequest.splice(state.imageStreamRequest.indexOf(newState.uuid), 1)
+}
+

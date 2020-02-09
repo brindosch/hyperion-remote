@@ -7,10 +7,10 @@ export default ({ Vue, store, router }) => {
   // Use WebSocket threaded - ws.worker.js if supported | as fallback window websocket
   if (window.Worker) {
     console.log('Use Worker WebSocket')
-    socket.init(store, router, workerWs)
+    socket.init(store, workerWs)
   } else if (window.WebSocket) {
     console.log('Use Window WebSocket')
-    socket.init(store, router, windowWs)
+    socket.init(store, windowWs)
   } else {
     console.error('No WebSocket supported! FATAL!')
   }

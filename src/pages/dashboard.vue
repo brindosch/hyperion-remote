@@ -13,11 +13,6 @@ export default {
   data () {
     return {
     }
-  },
-  computed: {
-    isDarkTheme () {
-      return this.$store.getters['common/isDarkTheme']
-    }
   }
 }
 </script>

@@ -1,69 +1,51 @@
 <template>
-  <div>
-    <div style="position: relative">
-      <q-resize-observer @resize="onResize" />
-      <canvas
-        ref="ledCanvas"
-        class="shadow-8"
-        style="position: absolute; left: 0; top: 0;; z-index: 3"
-      ></canvas>
-      <canvas
-        ref="imageCanvas"
-        class="shadow-8"
-        style="position: absolute; left: 0; top: 0;; z-index: 2"
-      ></canvas>
-      <div ref="flowHelper"></div>
-      <q-menu context-menu>
-        <q-list dense>
-          <q-item
-            tag="label"
-            clickable
-            v-close-popup
-          >
-            <q-item-section>
-              {{$t('btn.toggleLeds')}}
-            </q-item-section>
-            <q-item-section side>
-              <q-toggle
-                @input="toggleLedsStream"
-                :value="streamingLeds"
-              ></q-toggle>
-            </q-item-section>
-          </q-item>
-          <q-item
-            tag="label"
-            clickable
-            v-close-popup
-          >
-            <q-item-section>
-              {{$t('btn.toggleImage')}}
-            </q-item-section>
-            <q-item-section side>
-              <q-toggle
-                @input="toggleImageStream"
-                :value="streamingImage"
-              ></q-toggle>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-menu>
-    </div>
-    <div class="q-mt-md">
-      <q-btn
-        class="q-ma-xs"
-        :color="streamingLeds ? 'green' : 'red'"
-        @click="toggleLedsStream"
-        :label="$t('btn.toggleLeds')"
-        icon="far fa-lightbulb"
-      />
-      <q-btn
-        class="q-ma-xs"
-        :color="streamingImage ? 'green' : 'red'"
-        @click="toggleImageStream"
-        :label="$t('btn.toggleImage')"
-        icon="far fa-image"
-      />
-    </div>
+  <div class="relative-position">
+    <q-resize-observer @resize="onResize" />
+    <canvas
+      ref="ledCanvas"
+      class="shadow-8 absolute-top-left"
+      style="z-index: 3"
+    ></canvas>
+    <canvas
+      ref="imageCanvas"
+      class="shadow-8 absolute-top-left"
+      style="z-index: 2"
+    ></canvas>
+    <div ref="flowHelper"></div>
+    <q-menu context-menu>
+      <q-list dense>
+        <q-item
+          tag="label"
+          clickable
+          v-close-popup
+        >
+          <q-item-section>
+            {{$t('btn.toggleLeds')}}
+          </q-item-section>
+          <q-item-section side>
+            <q-toggle
+              @input="toggleLedsStream"
+              :value="streamingLeds"
+            ></q-toggle>
+          </q-item-section>
+        </q-item>
+        <q-item
+          tag="label"
+          clickable
+          v-close-popup
+        >
+          <q-item-section>
+            {{$t('btn.toggleImage')}}
+          </q-item-section>
+          <q-item-section side>
+            <q-toggle
+              @input="toggleImageStream"
+              :value="streamingImage"
+            ></q-toggle>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-menu>
   </div>
 </template>
 
@@ -73,14 +55,16 @@ CanvasRenderingContext2D.prototype.Hclear = function () {
   this.clearRect(0, 0, this.canvas.width, this.canvas.height)
 }
 
-import { EventBus } from '../utils'
+import { EventBus } from 'src/utils'
+import { uid } from 'quasar'
 
 export default {
-  name: 'HLedVisual',
+  name: 'LedVisualization',
   data () {
     return {
       led2dctx: null,
       image2dctx: null,
+      uuid: uid(),
       paths2d: [],
       ledsLength: 1,
       streamingLeds: true,
@@ -105,8 +89,7 @@ export default {
     this.$store.commit('temp/setLastLedColors', this.lastLedColors)
   },
   computed: {
-    getLeds () { return this.$store.getters['api/getLeds'] },
-    isDarkTheme () { return this.$store.getters['common/isDarkTheme'] }
+    getLeds () { return this.$store.getters['api/getLeds'] }
   },
   watch: {
     getLeds () {
@@ -149,7 +132,7 @@ export default {
     },
     setImage (data) {
       clearInterval(this.imageResetTimer)
-      this.imageResetTimer = setTimeout(() => this.__resetImage(), 1000)
+      this.imageResetTimer = setTimeout(() => this.__resetImage(), 2000)
       let image = new Image()
       image.onload = () => {
         this.image2dctx.drawImage(image, 0, 0, this.image2dctx.canvas.width, this.image2dctx.canvas.height)
@@ -158,11 +141,13 @@ export default {
     },
     __setLedStreamState (state) {
       state ? EventBus.$on('ledcolors-ledstream-update', this.setLedColors) : EventBus.$off('ledcolors-ledstream-update', this.setLedColors)
-      this.$socket.setLedStream(state)
+      //this.$socket.setLedStream(state)
+      this.$store.commit('temp/ledStreamRequest', { uuid: this.uuid, state })
     },
     __setImageStreamState (state) {
       state ? EventBus.$on('ledcolors-imagestream-update', this.setImage) : EventBus.$off('ledcolors-imagestream-update', this.setImage)
-      this.$socket.setImageStream(state)
+      //this.$socket.setImageStream(state)
+      this.$store.commit('temp/imageStreamRequest', { uuid: this.uuid, state })
     },
     __update2dPaths () {
       this.paths2d = []

@@ -1,11 +1,8 @@
 <template>
-  <q-page
-    class="allow-select q-pa-md"
-    :class="{'text-grey-4':isDarkTheme}"
-  >
+  <q-page class="allow-select q-pa-md">
     <div>
       <img
-        :src="isDarkTheme ? 'statics/hyperion-logo-white.png' : 'statics/hyperion-logo.png'"
+        :src="$q.dark.isActive ? 'statics/hyperion-logo-white.png' : 'statics/hyperion-logo.png'"
         class="q-ma-sm"
         style="width:150px"
       />
@@ -27,11 +24,11 @@
           </tr>
           <tr>
             <td>{{$t('about.homepage')}}</td>
-            <td @click="openURL('https://hyperion-project.org')"><span style="cursor:pointer;color:lightblue">www.hyperion-project.org</span></td>
+            <td @click="openUrl('https://hyperion-project.org')"><span style="cursor:pointer;color:lightblue">www.hyperion-project.org</span></td>
           </tr>
           <tr>
             <td>{{$t('about.support')}}</td>
-            <td @click="openURL('https://hyperion-project.org')"><span style="cursor:pointer;color:lightblue">www.hyperion-project.org</span></td>
+            <td @click="openUrl('https://hyperion-project.org')"><span style="cursor:pointer;color:lightblue">www.hyperion-project.org</span></td>
           </tr>
         </table>
         <q-separator style="margin:10px 0" />
@@ -80,14 +77,13 @@
           </q-item-section>
           <q-item-section side>
             <q-btn
-              :class="{'text-white':isDarkTheme}"
               round
               small
               flat
               icon="more_vert"
             >
               <q-menu>
-                <q-list :bordered="!isDarkTheme">
+                <q-list>
                   <q-item
                     tag="label"
                     clickable
@@ -119,14 +115,10 @@
         </q-item>
         <div class="allow-select q-pa-md">
           <div
-            :class="{'text-grey-6':isDarkTheme}"
             style="max-height:500px;overflow-y: auto"
             ref="log_scroller"
           >
-            <div
-              v-show="isLogEmpty"
-              :class="{'text-grey-4':isDarkTheme}"
-            >{{$t('system.logempty')}}
+            <div v-show="isLogEmpty">{{$t('system.logempty')}}
             </div>
             <div
               v-for="(entry,i) in getLog"
@@ -151,10 +143,11 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
+import { openUrlMixin } from 'components/mixins'
 
 export default {
   name: 'PageAbout',
+  mixins: [openUrlMixin],
   data () {
     return {
       showLogDialog: false,
@@ -169,7 +162,6 @@ export default {
     if (this.$store.getters['common/getAdminAppMode']) { this.$socket.setLogEnable(false) }
   },
   computed: {
-    isDarkTheme () { return this.$store.getters['common/isDarkTheme'] },
     sysInfo: {
       get () { return this.$store.getters['api/getSysInfo'] },
       set () { }
@@ -182,7 +174,7 @@ export default {
         },
         {
           td1: 'buildTime',
-          td2: process.env.BUILDDATE
+          td2: new Date(process.env.BUILDDATE).toLocaleString()
         },
         {
           td1: 'developer',
@@ -240,7 +232,6 @@ export default {
     }
   },
   methods: {
-    openURL,
     getColorByLevel (level) {
       switch (level) {
         case 'ERROR': return 'text-red'

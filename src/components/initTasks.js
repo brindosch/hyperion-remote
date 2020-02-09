@@ -1,15 +1,24 @@
-
+// https://github.com/udivankin/sunrise-sunset#readme
+import { getSunrise, getSunset } from 'sunrise-sunset-js';
 import { qcolor } from '../utils'
 import { colors } from 'quasar'
 import { langMixin } from 'components/mixins'
 
+let arrMix = [langMixin]
+
+if (process.env.MODE == 'pwa') {
+  import('components/mixins/appUpdate')
+    .then((comp) => {
+      arrayMix.push(comp.default)
+    })
+}
+
 export default {
   name: 'init',
-  mixins: [langMixin],
+  mixins: arrMix,
   data () {
     return {
       disconnectTimerId: null,
-      reconnect: false,
       backButtonTimer: null,
       darkModeTimer: null
     }
@@ -26,41 +35,72 @@ export default {
     })
   },
   watch: {
-    '$q.dark.isActive' (val) {
-      // Watch for platform based dark/light changes, apply if we are in the correct mode
-      // TODO: Test if this.$q.dark.set(true/false) have an impact on the AUTO functionality
-      if (this.$store.getters['common/getDarkMode'] === 'platform') {
-        this.$store.commit('common/setDarkTheme', val)
-        console.log(val ? 'Dark Watch: On dark mode' : 'Dark Watch: On light mode')
-      }
-    },
-    '$store.state.common.syncSettings.darkMode' (val) {
+    '$store.state.common.syncSettings.dark.mode' (val) {
       clearInterval(this.darkModeTimer)
-      if (val === 'time') {
+      if (['time', 'gps'].includes(val)) {
+        if (val === 'gps')
+          // recalc start and end time based on gps
+          this.calcGPSTime()
         this.updateDarkMode()
         this.darkModeTimer = setInterval(this.updateDarkMode, 1000 * 60)
       }
     },
-    '$store.state.common.syncSettings.darkTimespan' (val) {
-      if (this.$store.getters['common/getDarkMode'] === 'time') {
+    '$store.state.common.syncSettings.dark.startTime' (val) {
+      if (['time', 'gps'].includes(this.$store.getters['common/getDarkMode'])) {
         this.updateDarkMode()
+      }
+    },
+    '$store.state.common.syncSettings.dark.endTime' (val) {
+      if (['time', 'gps'].includes(this.$store.getters['common/getDarkMode'])) {
+        this.updateDarkMode()
+      }
+    },
+    '$store.state.common.syncSettings.dark.lat' (val) {
+      if (this.$store.getters['common/getDarkMode'] == 'gps') {
+        this.calcGPSTime()
+      }
+    },
+    '$store.state.common.syncSettings.dark.long' (val) {
+      if (this.$store.getters['common/getDarkMode'] == 'gps') {
+        this.calcGPSTime()
+      }
+    },
+    '$store.state.temp.ledStreamRequest' (val) {
+      this.$socket.setLedStream(val.length > 0)
+    },
+    '$store.state.temp.imageStreamRequest' (val) {
+      this.$socket.setImageStream(val.length > 0)
+    },
+    '$store.state.api.loggedin' (val) {
+      if (val) {
+        if (this.$store.state.temp.imageStreamRequest.length > 0)
+          this.$socket.setImageStream(true)
+        if (this.$store.state.temp.ledStreamRequest.length > 0)
+          this.$socket.setLedStream(true)
       }
     }
   },
   mounted () {
     this.setAppLang(this.$store.getters['common/getLang'])
 
-    // if we are in EMBED mode, force adminMode and autoConnect
-    if (process.env.EMBED) { this.$store.commit('common/setAdminAppMode', true); this.$store.commit('connection/setAutoConnect', true) }
+    // if we are in EMBED mode, force adminMode
+    if (process.env.EMBED) { this.$store.commit('common/setAdminAppMode', true) }
+    // Update Check for PWA TODO: Does this work? May be to slow
+    if (process.env.MODE == 'pwa') this.checkForAppUpdateAndAsk()
 
     // make sure Quasar dark plugin is properly set based on user setting
     this.$store.commit('common/setDarkMode', this.$store.getters['common/getDarkMode'])
-    // handle darkMode switch if time mode
-    if (this.$store.getters['common/getDarkMode'] === 'time') {
+    // handle darkMode switch if time/gps mode
+    if (['time', 'gps'].includes(this.$store.getters['common/getDarkMode'])) {
+      if (this.$store.getters['common/getDarkMode'] === 'gps')
+        // recalc start and end time based on gps
+        this.calcGPSTime()
       this.updateDarkMode()
       this.darkModeTimer = setInterval(this.updateDarkMode, 1000 * 60)
     }
 
+    // hide splash screens
+    this.__handlehideSplashes()
     this.__handleOriginName()
     this.__handleVisibility()
     this.__handleCordovaOnly()
@@ -74,22 +114,25 @@ export default {
       // app visible
       this.stopTimer()
       // check if reconnect required
-      if (this.reconnect) {
+      if (!this.$store.getters['temp/isConnected'] && this.$store.getters['connection/getLastAddress']) {
         this.$socket.connect()
-        this.reconnect = false
       }
-      // start darkModeTimer if time mode
-      if (this.$store.getters['common/getDarkMode'] === 'time') {
+      // start darkModeTimer if time/gps mode
+      // stop darkModeTimer
+      clearInterval(this.darkModeTimer)
+      if (['time', 'gps'].includes(this.$store.getters['common/getDarkMode'])) {
+        if (this.$store.getters['common/getDarkMode'] == 'gps')
+          this.calcGPSTime()
+        this.updateDarkMode()
         this.darkModeTimer = setInterval(this.updateDarkMode, 1000 * 60)
       }
     },
     onInvisible () {
       // app not visible
       const autoDisconnect = this.$store.getters['connection/getAutoDisconnect']
-      const connected = this.$store.getters['temp/getConnectedState']
       const prevDisconnect = this.$store.getters['temp/getPreventAutoDisconnect']
       // reset timer if possible and start new one if time is > 0 AND we are currently connected
-      if (!prevDisconnect && autoDisconnect && connected) {
+      if (!prevDisconnect && autoDisconnect) {
         this.stopTimer()
         // 10 seconds delay before disconnect
         this.disconnectTimerId = setTimeout(this.disconnect, 10 * 1000)
@@ -99,7 +142,6 @@ export default {
     },
     disconnect (context) {
       this.$socket.disconnect()
-      this.reconnect = true
     },
     stopTimer () {
       if (this.disconnectTimerId) {
@@ -130,7 +172,7 @@ export default {
           } else {
             console.error('setOriginName in initTasks has no value for this cordova platform', cordova.platformId)
           }
-        } else if (this.$q.platform.is.electron) {
+        } else if (window.electron) {
           origin = 'Desktop App'
         } else if (process.env.MODE === 'pwa') {
           origin = 'Web App'
@@ -156,10 +198,25 @@ export default {
         })
       }
     },
+    __handlehideSplashes () {
+      this.$nextTick(() => {
+        if (this.$q.platform.is.cordova) {
+          // Hide splashscreen on cordova after all childs have been rendered
+          navigator.splashscreen.hide()
+        }
+        else if (window.electron) {
+          // delay the show slightly
+          setTimeout(() => window.electron.ipc.send('hidesplash'), 250)
+        }
+      })
+    },
     __handleCordovaOnly () {
       this.$nextTick(() => {
-        // Hide splashscreen on cordova after all childs have been rendered
-        if (this.$q.platform.is.cordova) { navigator.splashscreen.hide() }
+
+        if (this.$q.platform.is.cordova) {
+          // Back button exit listener
+          document.addEventListener('backbutton', this.onBackKeyDown, false)
+        }
       })
 
       /* Cordova StatusBar color
@@ -168,18 +225,23 @@ export default {
       StatusBar.backgroundColorByHexString(qcolor.toHex(this.$store.getters['common/getThemeColor']))
     }
     */
-
-      // Back button exit listener
-      if (this.$q.platform.is.cordova) {
-        document.addEventListener('backbutton', this.onBackKeyDown, false)
-      }
+    },
+    calcGPSTime () {
+      const lat = this.$store.getters['common/getDarkLat']
+      const long = this.$store.getters['common/getDarkLong']
+      const eTime = getSunrise(lat, long)
+      const sTime = getSunset(lat, long)
+      const end = (('0' + eTime.getHours()).slice(-2)) + ':' + (('0' + eTime.getMinutes()).slice(-2))
+      const start = (('0' + sTime.getHours()).slice(-2)) + ':' + (('0' + sTime.getMinutes()).slice(-2))
+      this.$store.commit('common/setDarkStartTime', start)
+      this.$store.commit('common/setDarkEndTime', end)
     },
     updateDarkMode () {
       // Time based switch calc
       let dateNow = new Date()
       let startTime = parseInt(this.$store.getters['common/getDarkStartTime'].replace(':', ''))
       let endTime = parseInt(this.$store.getters['common/getDarkEndTime'].replace(':', ''))
-      let now = parseInt((dateNow.getHours() < 10 ? '0' + String(dateNow.getHours()) : String(dateNow.getHours())) + (dateNow.getMinutes() < 10 ? '0' + String(dateNow.getMinutes()) : String(dateNow.getMinutes())))
+      let now = parseInt((('0' + dateNow.getHours()).slice(-2)) + (('0' + dateNow.getMinutes()).slice(-2)))
 
       if ((startTime < endTime) ? ((now >= startTime) && (now <= endTime)) : ((now >= startTime) || (now <= endTime))) {
         if (!this.$q.dark.isActive) { this.$store.commit('common/setDark', true) }

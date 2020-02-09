@@ -25,14 +25,6 @@ export const getLastToken = (state) => {
   return state.storedConnections.length ? state.storedConnections[0].token : ''
 }
 
-export const getAutoConnect = (state) => {
-  return state.autoConnect
-}
-
 export const getAutoDisconnect = (state) => {
   return state.autoDisconnect
-}
-
-export const getAutoLogin = (state) => {
-  return state.autoLogin
 }

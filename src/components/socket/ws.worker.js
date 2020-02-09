@@ -20,9 +20,6 @@ class WorkerWebSocket extends Websocket {
   storeCommit (path, val) {
     this.postMessageToMain('storecommit', { path: path, value: val })
   }
-  router (path, val) {
-    this.postMessageToMain('router', { path: path, value: val })
-  }
   notify (type, msg, icon) {
     this.postMessageToMain('notify', { type: type, msg: msg, icon: icon })
   }

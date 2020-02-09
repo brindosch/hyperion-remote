@@ -48,7 +48,7 @@
           dark
           style="margin-top:25px"
           @click="login"
-          :label="$t('btn.login')"
+          :label="$t('label.login')"
         />
         <q-btn
           v-if="!getAdminAppMode"
@@ -138,10 +138,12 @@
 
 <script>
 import { notify, EventBus } from '../utils'
-import { openURL, uid } from 'quasar'
+import { uid } from 'quasar'
+import { openUrlMixin } from '../mixins'
 
 export default {
   name: 'PageLogin',
+  mixins: [openUrlMixin],
   data () {
     return {
       isPwd: true,
@@ -182,7 +184,7 @@ export default {
 
     // auto login
     // to prevent re-login on user requested logout, autoLogin is overwritten by router props
-    if (this.autoLogin && this.$store.getters['connection/getAutoLogin']) {
+    if (this.autoLogin) {
       this.getLoginCred(true)
     } else {
       // get login data without login
@@ -230,11 +232,11 @@ export default {
       return true
     },
     getLoginCred (login) {
-      let type = this.getAdminAppMode ? 'password' : 'token'
+      const type = this.getAdminAppMode ? 'password' : 'token'
       this.$store.dispatch('connection/getLastPassword', { type: type }).then((pw) => { this.password = pw; if (login) this.login(pw) })
     },
     createToken () {
-      let uuid = uid()
+      const uuid = uid()
       this.tokenId = uuid.slice(uuid.length - 5)
       this.tokenComment = this.$store.getters['common/getOriginName']
       this.$socket.requestToken(this.tokenComment, this.tokenId)
@@ -265,7 +267,7 @@ export default {
       } catch (error) {
         address = 'http://' + address
       }
-      openURL(address)
+      this.openURL(address)
     }
   }
 }

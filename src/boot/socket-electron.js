@@ -5,7 +5,7 @@ import * as electronWs from 'components/socket/wsElectronBridge'
 export default ({ Vue, store, router }) => {
   // Use node.js WebSocket implementation for electron (see file node-ws)
   console.log('Use Electron WebSocket')
-  socket.init(store, router, electronWs)
+  socket.init(store, electronWs)
 
   Vue.prototype.$socket = socket
 }

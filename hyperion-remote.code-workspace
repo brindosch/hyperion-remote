@@ -6,22 +6,10 @@
 	],
 	"settings": {
 		"editor.formatOnPaste": true,
-		"editor.formatOnSave": true,
-		"eslint.autoFixOnSave": true,
-		"eslint.validate": [
-			{
-				"language": "vue",
-				"autoFix": true
-			},
-			{
-				"language": "html",
-				"autoFix": true
-			},
-			{
-				"language": "javascript",
-				"autoFix": true
-			}
-		],
+		"editor.formatOnSave": false,
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": true
+		},
 		"javascript.format.insertSpaceBeforeFunctionParenthesis": true,
 		"javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
 		"javascript.format.placeOpenBraceOnNewLineForFunctions": false,
@@ -90,6 +78,8 @@
 	},
 	"extensions": {
 		"recommendations": [
+		"spmeesseman.vscode-taskexplorer",
+		"yzhang.markdown-all-in-one",
 			"formulahendry.auto-rename-tag",
 			"dbaeumer.vscode-eslint",
 			"CoenraadS.bracket-pair-colorizer",

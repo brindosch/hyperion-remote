@@ -24,11 +24,6 @@ wsWorker.addEventListener('message', function (e) {
       ev.data = e.data.value
       wsEvents.dispatchEvent(ev)
       break
-    case 'router':
-      ev = new Event('router')
-      ev.data = e.data.value
-      wsEvents.dispatchEvent(ev)
-      break
     case 'notify':
       ev = new Event('notify')
       ev.data = e.data.value
@@ -66,6 +61,32 @@ function send (data) {
   wsWorker.postMessage({ cmd: 'send', value: data })
 }
 /*
+ * Send to Hyperion, will skip the send if currently not connected
+ * A newline is appended to split the commands (e.g. send more than one cmd at a time in one websocket package)
+ * @param data     JSON   The data to send
+ */
+async function sendAsync (data) {
+  return new Promise((resolve, reject) => {
+    let cmd = data.command
+    let subc = data.subcommand
+    if (subc)
+      cmd = `${cmd}-${subc}`
+
+    let func = (e) => {
+      const rdata = JSON.parse(e.data)
+      if (rdata.command == cmd) {
+        removeEventListener('message', func)
+        resolve(rdata)
+      }
+    }
+    // after 5 sec we resolve false
+    setTimeout(() => { resolve(false); removeEventListener('message', func) }, 5000)
+    addEventListener('message', func)
+
+    wsWorker.postMessage({ cmd: 'send', value: data })
+  })
+}
+/*
  * Listen to websocket events, included are special events (see wsWorker)
  * @param type      The event name
  * @param callback  The method to callback
@@ -82,4 +103,4 @@ function removeEventListener (type, callback) {
   wsEvents.removeEventListener(type, callback)
 }
 
-export { connect, disconnect, send, addEventListener, removeEventListener }
+export { connect, disconnect, send, sendAsync, addEventListener, removeEventListener }

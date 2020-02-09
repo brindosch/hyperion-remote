@@ -18,6 +18,19 @@
       </q-tooltip>
     </q-item>
     <q-item
+      tag="label"
+      @click="checkAppUpdate"
+      v-if="showAppUpdate"
+      :disable="isAppUpdateRunning"
+    >
+      <q-item-section>
+        {{$t('service.appUpdate')}}
+      </q-item-section>
+      <q-tooltip :delay="1000">
+        {{$t('service.appUpdate_desc')}}
+      </q-tooltip>
+    </q-item>
+    <q-item
       clickable
       @click="openDialog"
     >
@@ -32,10 +45,19 @@
 </template>
 
 <script>
-import { dialog } from '../mixins'
+import { dialogMixin, restartMixin } from '../mixins'
+let arrayMix = [dialogMixin, restartMixin]
+
+if (process.env.MODE == 'pwa') {
+  import('components/mixins/appUpdate')
+    .then((comp) => {
+      arrayMix.push(comp.default)
+    })
+}
+
 export default {
   name: 'ServiceSettings',
-  mixins: [dialog],
+  mixins: arrayMix,
   data () {
     return {}
   },
@@ -43,11 +65,21 @@ export default {
     modDebugState: {
       get () { return this.$store.getters['common/getDebugState'] },
       set (val) { this.$store.commit('common/setDebugState', val) }
+    },
+    showAppUpdate () {
+      return process.env.MODE == 'pwa'
     }
   },
   methods: {
-    openDialog () {
-      this.openConfirmDialog({ title: this.$t('service.resetAppData'), msg: this.$t('service.resetAppData_desc') }).onOk(() => { window && window.localStorage && window.localStorage.clear() && window.location.reload() })
+    async openDialog () {
+      const res = await this.openConfirmDialog({ title: this.$t('service.resetAppData'), msg: this.$t('service.resetAppData_desc') })
+      if (res) {
+        window && window.localStorage && window.localStorage.clear()
+        this.restartApp()
+      }
+    },
+    async checkAppUpdate () {
+      this.checkForAppUpdateAndAsk()
     }
   }
 }

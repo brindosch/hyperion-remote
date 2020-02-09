@@ -28,13 +28,15 @@ function onSSDPResponse (headers, statusCode, rinfo) {
   }
 }
 
-function getResults () {
-  return ssdpList
-}
-
-function start () {
+async function getResults () {
   ssdpList = []
   client.search(HYPERION_ST)
+
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(ssdpList);
+    }, 3000)
+  })
 }
 
-export { start, getResults }
+export { getResults }

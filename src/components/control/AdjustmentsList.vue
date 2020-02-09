@@ -3,7 +3,7 @@
     class="flex-center"
     style="max-width:500px"
   >
-    <q-list :bordered="!isDarkTheme">
+    <q-list>
       <q-item-label header>
         {{$t('remote.adjust.subTitle')}}
       </q-item-label>
@@ -25,7 +25,7 @@
         v-for="(value, index) in getAdjustments"
         :key="index"
         v-show="currentSelectedIndex == index"
-        style="padding:10px"
+        class="q-pa-sm"
       >
         <q-item
           v-for="(key) in sortedKeys"
@@ -33,33 +33,26 @@
         >
           <q-item-section>
             <q-item-label>{{ Array.isArray(value[key]) ? $t('colors.'+key) : $t('remote.adjust.'+key) }}</q-item-label>
-            <q-input
+            <q-icon
               v-if="Array.isArray(value[key])"
-              spellcheck="false"
+              name="colorize"
+              class="cursor-pointer"
+              size="sm"
+              @click.stop.prevent="currColor = 'rgb('+value[key][0]+','+value[key][1]+','+value[key][2]+')'"
             >
-              <!-- :value="'rgb('+value[key][0]+','+value[key][1]+','+value[key][2]+')'" @input="setAdjustment(value['id'],key,$event)" -->
-              <template v-slot:append>
-                <q-icon
-                  name="colorize"
-                  class="cursor-pointer"
-                  :style="'color: rgb('+value[key][0]+','+value[key][1]+','+value[key][2]+')'"
-                >
-                  <q-popup-proxy
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-color
-                      :value="'rgb('+value[key][0]+','+value[key][1]+','+value[key][2]+')'"
-                      @input="setAdjustment(value['id'],key,$event)"
-                      format-model="rgb"
-                      style="min-width:300px;min-height:300px"
-                      no-header
-                      no-footer
-                    />
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
+              <q-popup-proxy
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-color
+                  :value="currColor"
+                  @input="setAdjustment(value['id'],key,$event)"
+                  @change="updateAdjustment(key,$event)"
+                  format-model="rgb"
+                  no-footer
+                />
+              </q-popup-proxy>
+            </q-icon>
             <q-slider
               v-else-if="key.startsWith('gamma')"
               :value="value[key]"
@@ -90,7 +83,7 @@
 </style>
 
 <script>
-import { throttle } from '../utils'
+import { throttle } from 'src/utils'
 import { colors } from 'quasar'
 const { textToRgb } = colors
 
@@ -100,7 +93,8 @@ export default {
     return {
       currentSelectedIndex: '0',
       sortedKeys: ['white', 'red', 'green', 'blue', 'magenta', 'yellow', 'cyan', 'gammaRed', 'gammaGreen', 'gammaBlue', 'brightness', 'brightnessCompensation'],
-      currentAdjustments: null
+      currentAdjustments: null,
+      currColor: 'rgb(0,0,0)'
     }
   },
   created () {
@@ -108,7 +102,6 @@ export default {
     this.sendAdjustment = throttle(this.sendAdjustment, 1000)
   },
   computed: {
-    isDarkTheme () { return this.$store.getters['common/isDarkTheme'] },
     getAdjustments () { return this.currentAdjustments },
     getIndexOptions () {
       let arr = []
@@ -120,10 +113,17 @@ export default {
     }
   },
   methods: {
-    setAdjustment (id, type, value) {
+    updateAdjustment (type, value) {
       const c = textToRgb(value)
       value = [c.r, c.g, c.b]
       this.currentAdjustments[this.currentSelectedIndex][type] = value
+    },
+    setAdjustment (id, type, value) {
+      if (typeof value == 'string') {
+        const c = textToRgb(value)
+        value = [c.r, c.g, c.b]
+      }
+      console.log(value)
       this.sendAdjustment(id, type, value)
     },
     sendAdjustment (id, type, value) {
