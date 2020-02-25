@@ -1,14 +1,14 @@
-# as of 3.11.2019 Github Actions just fires these release event actions: edited, published, released, deleted. Draft releases are missing created/unpublished
 name: Deploy
 on:
   release:
-    types: [edited]
+    types: [created]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.type }} (${{ matrix.os }})
     strategy:
+      fail-fast: false
       matrix:
         type: [electron]
         os: [ubuntu-latest, macOS-latest, windows-latest]

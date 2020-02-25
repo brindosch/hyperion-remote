@@ -1,4 +1,4 @@
-import { openFile } from "../../utils"
+import { openFile } from '../../utils'
 
 export default {
   name: 'dialogMixin',
@@ -43,7 +43,7 @@ export default {
         })
           .onOk(data => res(data))
           .onDismiss(() => res(false))
-      });
+      })
     },
     // Returns a promise with data or false
     // String callback is trimmed to get a false boolean eval on empty data
@@ -64,36 +64,34 @@ export default {
           color: 'primary'
         })
           .onOk(data => {
-            if (typeof data === 'string')
-              data = data.trim()
+            if (typeof data === 'string') { data = data.trim() }
             res(data)
           })
           .onDismiss(() => res(false))
-      });
+      })
     },
     // Returns a promise with files.
     // type: The file type. One of 'image','json','zip'
     // multiple: If the dialog should allow multiple file selections
     // files: An array of previous files or empty, Format: [{name,size,data,preview}]
     async openFileDialog ({ files, type, filter, multiple }) {
-
       // check type of dialog
-      if (!filter && !['image', 'json'/*, 'zip'*/].includes(type)) {
+      if (!filter && !['image', 'json'/*, 'zip' */].includes(type)) {
         this.$q.notify('No valid file type specified in openFileDialog')
         return
       }
       switch (type) {
         case 'image':
           filter = ['jpg', 'jpeg', 'png', 'gif']
-          break;
+          break
         case 'json':
           filter = ['json']
-          break;
+          break
         //  case 'zip':
         //    filter = ['zip']
         //   break;
         default:
-          break;
+          break
       }
 
       try {
@@ -102,7 +100,6 @@ export default {
         console.error(`openFileDialog: ${error.name} Error: ${error.message}`)
         this.$q.notify(`${error.name} Error: ${error.message}`)
       }
-
     },
     async _openQuasarConfirmDialog ({ title, msg }) {
       return new Promise((res, rej) => {
@@ -117,7 +114,7 @@ export default {
         })
           .onOk(() => res(true))
           .onDismiss(() => res(false))
-      });
+      })
     }
   }
 }

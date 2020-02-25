@@ -49,7 +49,7 @@ export default {
       if (size.width > 400) {
         size.width = 400
       }
-      let newWidth = size.width - 32
+      const newWidth = size.width - 32
       if (this.colorPicker === null) {
         // https://rakujira.jp/projects/iro/docs/guide.html#Getting-Started
         this.colorPicker = new iro.ColorPicker(this.$refs.m_colorpicker, {
@@ -58,7 +58,7 @@ export default {
           padding: 2,
           display: 'relative',
           sliderMargin: 14,
-          sliderHeight: 36
+          sliderSize: 36
         })
         // throttle the change events, fires also the last trigger
         this.colorPicker.on('input:change', this.sendColor)
