@@ -1,3 +1,10 @@
+## [0.4.8](https://github.com/brindosch/hyperion-remote/compare/v0.4.7...v0.4.8) (2020-03-22)
+
+
+### Bug Fixes
+
+* reduce electron windows builds for testing ([8811adb](https://github.com/brindosch/hyperion-remote/commit/8811adbab9be14a4cc0e273a0b843feffed4f199))
+
 ## [0.4.7](https://github.com/brindosch/hyperion-remote/compare/v0.4.6...v0.4.7) (2020-02-09)
 
 ## [0.4.6](https://github.com/brindosch/hyperion-remote/compare/v0.4.5...v0.4.6) (2019-11-27)
