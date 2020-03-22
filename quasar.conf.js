@@ -227,7 +227,8 @@ module.exports = function (ctx) {
             {
               target: 'zip',
               arch: [
-                'x64'
+                'x64',
+                'arm64'
               ]
             },
             {
