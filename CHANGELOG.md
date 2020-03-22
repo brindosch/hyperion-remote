@@ -1,3 +1,10 @@
+## [0.4.10](https://github.com/brindosch/hyperion-remote/compare/v0.4.9...v0.4.10) (2020-03-22)
+
+
+### Bug Fixes
+
+* enable nsis again ([2012ec1](https://github.com/brindosch/hyperion-remote/commit/2012ec18ab79ea2073ddc5db16710825a074e06c))
+
 ## [0.4.9](https://github.com/brindosch/hyperion-remote/compare/v0.4.8...v0.4.9) (2020-03-22)
 
 
