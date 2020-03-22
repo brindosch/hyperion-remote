@@ -1,3 +1,10 @@
+## [0.4.9](https://github.com/brindosch/hyperion-remote/compare/v0.4.8...v0.4.9) (2020-03-22)
+
+
+### Bug Fixes
+
+* not amused by github ([d0ee1d1](https://github.com/brindosch/hyperion-remote/commit/d0ee1d1de0e894a9da1ceacf72abfa5dc5f3601e))
+
 ## [0.4.8](https://github.com/brindosch/hyperion-remote/compare/v0.4.7...v0.4.8) (2020-03-22)
 
 
