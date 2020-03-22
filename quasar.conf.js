@@ -227,11 +227,10 @@ module.exports = function (ctx) {
             {
               target: 'zip',
               arch: [
-                'x64',
-                'ia32',
-                'arm64'
+                'x64'
               ]
-            },
+            }
+            /*
             {
               target: 'nsis',
               arch: [
@@ -239,6 +238,7 @@ module.exports = function (ctx) {
                 'ia32'
               ]
             }
+            */
           ]
         },
         nsis: {
