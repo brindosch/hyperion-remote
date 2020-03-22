@@ -229,16 +229,13 @@ module.exports = function (ctx) {
               arch: [
                 'x64'
               ]
-            }
-            /*
+            },
             {
               target: 'nsis',
               arch: [
-                'x64',
-                'ia32'
+                'x64'
               ]
             }
-            */
           ]
         },
         nsis: {

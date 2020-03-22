@@ -33,7 +33,7 @@ export default async function run () {
         const tfile = file.split('/').pop()
         for (const entry of blacklist) {
           if (tfile.includes(entry)) {
-            core.debug(`File <${tfile}> with path <${file}> blacklisted - skip`)
+            console.log(`File <${tfile}> with path <${file}> blacklisted - skip`)
             return false
           }
         }
@@ -52,7 +52,7 @@ export default async function run () {
             fmime = fileType(buffer).mime
           }
         }
-        core.debug('Upload ' + file + ' [size: ' + fsize + ', type:' + fmime + ']...')
+        console.log('Upload ' + file + ' [size: ' + fsize + ', type:' + fmime + ']...')
 
         // Upload a release asset
         // API Documentation: https://developer.github.com/v3/repos/releases/#upload-a-release-asset
@@ -77,12 +77,12 @@ export default async function run () {
        name: assetName,
        file: fs.readFileSync(assetPath)
      });
-   
+
      // Get the browser_download_url for the uploaded release asset from the response
      const {
        data: { browser_download_url: browserDownloadUrl }
      } = uploadAssetResponse;
-   
+
      // Set the output variable for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
      core.setOutput('browser_download_url', browserDownloadUrl);
      */
