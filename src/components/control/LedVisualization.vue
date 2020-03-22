@@ -133,7 +133,7 @@ export default {
     setImage (data) {
       clearInterval(this.imageResetTimer)
       this.imageResetTimer = setTimeout(() => this.__resetImage(), 2000)
-      let image = new Image()
+      const image = new Image()
       image.onload = () => {
         this.image2dctx.drawImage(image, 0, 0, this.image2dctx.canvas.width, this.image2dctx.canvas.height)
       }
@@ -141,21 +141,21 @@ export default {
     },
     __setLedStreamState (state) {
       state ? EventBus.$on('ledcolors-ledstream-update', this.setLedColors) : EventBus.$off('ledcolors-ledstream-update', this.setLedColors)
-      //this.$socket.setLedStream(state)
+      // this.$socket.setLedStream(state)
       this.$store.commit('temp/ledStreamRequest', { uuid: this.uuid, state })
     },
     __setImageStreamState (state) {
       state ? EventBus.$on('ledcolors-imagestream-update', this.setImage) : EventBus.$off('ledcolors-imagestream-update', this.setImage)
-      //this.$socket.setImageStream(state)
+      // this.$socket.setImageStream(state)
       this.$store.commit('temp/imageStreamRequest', { uuid: this.uuid, state })
     },
     __update2dPaths () {
       this.paths2d = []
-      let [width, height] = this.__getCanvasSize()
+      const [width, height] = this.__getCanvasSize()
       const leds = this.getLeds
 
       this.ledsLength = leds.length
-      for (let led of leds) {
+      for (const led of leds) {
         this.paths2d.push(this.__build2DPath(led.hmin * width, led.vmin * height, (led.hmax - led.hmin) * width, (led.vmax - led.vmin) * height, 5))
       }
       this.lastLedColors = (this.$store.getters['temp/getLastLedColors'] === null) ? Array(this.ledsLength * 3).fill(0) : this.$store.getters['temp/getLastLedColors']
@@ -241,10 +241,10 @@ export default {
       return [this.image2dctx.canvas.width, this.image2dctx.canvas.height]
     },
     __resetImage () {
-      let [width, height] = this.__getCanvasSize()
+      const [width, height] = this.__getCanvasSize()
       this.image2dctx.fillStyle = 'rgb(90,90,90)'
       this.image2dctx.fillRect(0, 0, width, height)
-      let image = new Image()
+      const image = new Image()
       image.onload = () => {
         this.image2dctx.drawImage(image, width * 0.5 - 126, height * 0.5 - 40)
       }

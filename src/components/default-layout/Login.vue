@@ -75,10 +75,7 @@
       v-model="showTokenDialog"
       @before-hide="stopActions"
     >
-      <q-card
-        class="text-white"
-        style="background: linear-gradient(rgb(32, 107, 173) 0%,  rgb(0, 150, 175) 100%)"
-      >
+      <q-card>
         <q-card-section>
           <div class="text-h6">{{$t('btn.createToken')}}</div>
         </q-card-section>
@@ -173,8 +170,7 @@ export default {
         this.$store.commit('common/setAdminAppMode', val)
         this.getLoginCred()
         this.$socket.logout()
-        if (!val && this.$route.path.includes('settings'))
-          this.$router.push('/').catch(() => { })
+        if (!val && this.$route.path.includes('settings')) { this.$router.push('/').catch(() => { }) }
       }
     },
     loginRequired () { return this.$store.getters['temp/isConnected'] && !this.$store.getters['api/getLoginState'] && this.$store.getters['api/getLoginReady'] }
@@ -203,8 +199,7 @@ export default {
       const admin = this.$store.getters['common/getAdminAppMode']
       let data
 
-      if (typeof (index) === 'string')
-        this.password = index
+      if (typeof (index) === 'string') { this.password = index }
 
       if (admin) {
         data = await this.$socket.login(this.password)
@@ -242,12 +237,12 @@ export default {
       return true
     },
     getLoginCred (login) {
-      let type = this.getAdminAppMode ? 'password' : 'token'
+      const type = this.getAdminAppMode ? 'password' : 'token'
       this.$store.dispatch('connection/getLastPassword', { type: type }).then((pw) => { this.password = pw; if (login) this.login(pw) })
     },
     createToken () {
       this.$store.commit('temp/setPreventAutoDisconnect', true)
-      let uuid = uid()
+      const uuid = uid()
       this.tokenId = uuid.slice(uuid.length - 5)
       this.tokenComment = this.$store.getters['common/getOriginName']
       this.$socket.requestToken(this.tokenComment, this.tokenId)
@@ -285,7 +280,7 @@ export default {
       } catch (error) {
         address = 'http://' + address
       }
-      this.openURL(address)
+      this.openUrl(address)
     },
     openDialog () {
       this.userRequested = true

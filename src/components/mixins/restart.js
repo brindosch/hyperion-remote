@@ -7,9 +7,9 @@ export default {
   },
   methods: {
     restartApp () {
-      if (window.electron)
+      if (window.electron) {
         window.electron.restartApp()
-      else {
+      } else {
         window.location.reload()
       }
     }

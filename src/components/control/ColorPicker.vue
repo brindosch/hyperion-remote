@@ -4,7 +4,7 @@
     <q-btn
       round
       unelevated
-      @click="requestClear"
+      @click.stop="requestClear"
       class="absolute-top-right"
       icon="clear"
     >

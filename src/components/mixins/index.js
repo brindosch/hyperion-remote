@@ -9,6 +9,7 @@ import openUrlMixin from './openUrl'
 import restartMixin from './restart'
 import copyToClipboardMixin from './copyToClipboard'
 import appUpdateMixin from './appUpdate'
+import semVerMixin from './semVer'
 
 export {
   undoredo,
@@ -22,5 +23,6 @@ export {
   gpsMixin,
   restartMixin,
   copyToClipboardMixin,
-  appUpdateMixin
+  appUpdateMixin,
+  semVerMixin
 }
