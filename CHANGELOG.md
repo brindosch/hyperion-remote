@@ -1,3 +1,10 @@
+## [0.4.11](https://github.com/brindosch/hyperion-remote/compare/v0.4.10...v0.4.11) (2020-03-22)
+
+
+### Bug Fixes
+
+* enable arm64 again ([51f4201](https://github.com/brindosch/hyperion-remote/commit/51f42016875c23b8daffb3c2be4c5b656621753d))
+
 ## [0.4.10](https://github.com/brindosch/hyperion-remote/compare/v0.4.9...v0.4.10) (2020-03-22)
 
 
