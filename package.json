@@ -130,7 +130,7 @@
     },
     "github": {
       "release": true,
-      "draft": false,
+      "draft": true,
       "releaseName": "Hyperion Remote ${version}"
     },
     "plugins": {
