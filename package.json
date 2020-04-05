@@ -129,7 +129,7 @@
       "requireCleanWorkingDir": false
     },
     "github": {
-      "release": true,
+      "release": false,
       "draft": true,
       "releaseName": "Hyperion Remote ${version}"
     },

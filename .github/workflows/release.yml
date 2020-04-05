@@ -2,7 +2,7 @@ name: Create Release
 on:
   push:
     tags:
-      - L*
+      - 'v*'
 
 jobs:
   build:
@@ -10,14 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+      - name: Get version of tag
+        run:
+         echo ::set-env name=GH_TAG::${GITHUB_REF/refs\/tags\//}
+         echo ::set-env name=CLEAN_VERSION::${GH_TAG/v/}
       - name: Create Release
         id: create_release
-        uses: actions/create-release@master
+        uses: actions/create-release@latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # The github actions secret won't fire a release event for other workflows
+        # https://github.com/actions/create-release/issues/52
+          GITHUB_TOKEN: ${{ secrets.GHA_PSA }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Hyperion Remote ${{ env.CLEAN_VERSION }}
+          body: Latest Release notes at [CHANGELOG.md](${{ github.event.repository.html_url}}/blob/master/CHANGELOG.md)
           draft: false
           prerelease: false
