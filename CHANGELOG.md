@@ -1,3 +1,10 @@
+## [0.4.14](https://github.com/brindosch/hyperion-remote/compare/v0.4.13...v0.4.14) (2020-04-05)
+
+
+### Bug Fixes
+
+* try to get a clean version ([c99b1b3](https://github.com/brindosch/hyperion-remote/commit/c99b1b38f3487bc022d0eee378df7f5049b7fc1e))
+
 ## [0.4.13](https://github.com/brindosch/hyperion-remote/compare/v0.4.12...v0.4.13) (2020-04-05)
 
 
