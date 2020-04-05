@@ -14,7 +14,7 @@ jobs:
       - name: Get version of tag
         run: |
          echo ::set-env name=GH_TAG::${GITHUB_REF/refs\/tags\//}
-         echo ::set-env name=CLEAN_VERSION::${GH_TAG/v/}
+         echo ::set-env name=CLEAN_VERSION::${GITHUB_REF/refs\/tags\/v/}
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
