@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Get version of tag
-        run:
+        run: |
          echo ::set-env name=GH_TAG::${GITHUB_REF/refs\/tags\//}
          echo ::set-env name=CLEAN_VERSION::${GH_TAG/v/}
       - name: Create Release
