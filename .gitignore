@@ -6,7 +6,10 @@ node_modules
 /src-cordova/platforms
 /src-cordova/plugins
 /src-cordova/www
-/src-capacitor/www
+# We don't need the entire www folder
+# But capacitor wants a index.html during dev and quasar won't re-create it
+src-capacitor/www/*
+!src-capacitor/www/index.html
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
