@@ -14,7 +14,7 @@
   },
   "private": true,
   "scripts": {
-    "yarn:install": "yarn && cd scripts && yarn",
+    "yarn:install": "yarn && cd scripts && yarn && cd ../src-capacitor && yarn",
     "dev:spa": "quasar dev",
     "dev:spaembed": "cross-env SPAEMBED=true quasar dev",
     "dev:electron": "quasar dev -m electron",

@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([[13],{"45c4":function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("q-page",[t("h5",[e._v("SOME TEXT HERE AS ADMIN")])])},u=[],c={name:"PageLedLayout",data:function(){return{}}},r=c,l=t("2877"),o=Object(l["a"])(r,a,u,!1,null,null,null);n["default"]=o.exports}}]);

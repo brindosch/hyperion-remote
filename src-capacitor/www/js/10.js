@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([[10],{"4cdf":function(n,e,t){"use strict";t.r(e);var a=function(){var n=this,e=n.$createElement,t=n._self._c||e;return t("q-page",[n._v("\n  Page content here\n")])},c=[],r={name:"PageIndex",data:function(){return{}}},u=r,l=t("2877"),o=Object(l["a"])(u,a,c,!1,null,null,null);e["default"]=o.exports}}]);
