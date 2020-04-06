@@ -17,6 +17,12 @@
         },
         "pwa": {
           "iconHash": "44ef14b107980b9c897b83519d19c58b"
+        },
+        "capacitor": {
+          "iconHash": "44ef14b107980b9c897b83519d19c58b",
+          "splashscreenHash": false,
+          "splashscreenType": "generate",
+          "backgroundColor": "#000074"
         }
       },
       "build": {
@@ -28,6 +34,12 @@
         },
         "pwa": {
           "iconHash": "44ef14b107980b9c897b83519d19c58b"
+        },
+        "capacitor": {
+          "iconHash": "44ef14b107980b9c897b83519d19c58b",
+          "splashscreenHash": false,
+          "splashscreenType": "generate",
+          "backgroundColor": "#000074"
         }
       }
     }

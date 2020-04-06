@@ -4,6 +4,9 @@
 
 module.exports = function (ctx) {
   return {
+    bin: {
+      windowsAndroidStudio: 'G:\\Programme\\AndroidStudio\\bin\\studio64.exe'
+    },
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     boot: [
@@ -184,6 +187,9 @@ module.exports = function (ctx) {
     cordova: {
       id: 'org.hyperion.project.remote'
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
+    },
+    capacitor: {
+
     },
     electron: {
       nodeIntegration: false,
