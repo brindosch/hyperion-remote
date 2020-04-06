@@ -3,7 +3,7 @@ How to prepare your System for development
 
 ### Linux
 This is the fastest and simplest solution for Ubuntu/Debian to install a recent version of node and npm and avoiding sudo command. npm and node is installed in home directory, no global messing. nvm allows you also to switch node versions quickly if required
- - Use NVM to install Node and Npm `wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash`
+ - Use [NVM](https://github.com/nvm-sh/nvm) to install Node and Npm `wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash`
  - logout/login with user account (may be required)
  - Install node/npm latest LTS through nvm  `nvm install --lts`
  - Install Yarn as global: `npm install -g yarn`
@@ -15,9 +15,9 @@ This is the fastest and simplest solution for Ubuntu/Debian to install a recent 
 
 ### Windows
 On Windows we use also NVM to install a local node/npm version in home directory and simple version switching
- - Install nvm [NVM Windows](https://github.com/coreybutler/nvm-windows)
+ - Install [NVM Windows](https://github.com/coreybutler/nvm-windows)
  - open cmd and type `nvm list available`. Remember version string of latest LTS version
- - install node/npm with: `nvm install 12.16.1` while writing this it was 12.16.1
+ - install node with: `nvm install 12.16.1` while writing this it was 12.16.1
  - Use the version: `nvm use 12.16.1`
  - Install Yarn as global: `npm install -g yarn`
  - Install Quasar cli as global `yarn global add @quasar/cli`
@@ -27,19 +27,58 @@ On Windows we use also NVM to install a local node/npm version in home directory
  - Start development: [Development](##Development)
 
 ### Capacitor Android
+We assume you have completed [Windows](###windows) or [Linux](###linux) instructions.
+
 Create a development setup to work with Capacitor for Android. Tested with Windows 7 64bit (04/2020)
 - Install [Android Studio](https://developer.android.com/studio) for your System (In this case version 3.6) with default path
 - **Don't update Gradle when Android Studio asks for**
 - Install [JDK 8](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
 - Open Android Studio `Tools->Sdk Manager`.
-- - `Sdk Platforms` minimum Android 5.0.
-- - `Sdk Tools` tick `Android SDK Build Tools` and `Android SDK Platform Tools`
-- - You can use your own device for testing or the emulator. Emulator: Install also the Android Emulator and Accelerator to test with a virtual device.
+  - `Sdk Platforms` minimum Android 5.0.
+  - `Sdk Tools` tick `Android SDK Build Tools` and `Android SDK Platform Tools`
+  - You can use your own device for testing or the emulator. Emulator: Install also the Android Emulator and Accelerator to test with a virtual device.
 - Start development: `yarn dev:ca-android`
 
 **Issues**
-- Quasar can't find Android Studio: Windows: Changed paths needs to be edited in `quasar.conf.js > bin > windowsAndroidStudio`)
-- JDK not found. Install JDK 8 or set `JAVA_HOME` env var to install path
+- Quasar can't find Android Studio
+   - Windows: Changed paths needs to be edited in `quasar.conf.js > bin > windowsAndroidStudio`)
+- JDK not found
+  - Install JDK 8
+  - Be sure `JAVA_HOME` points to the install path
+
+## Development
+Time for development. Navigate to project folder `cd hyperion-remote` if not already. If you use Visual Studio Code you can start all kind of tasks from `NPM SCRIPTS` list.
+ - SPA development: Start with `yarn dev:spa`
+ - Electron development: Start with `yarn dev:electron`
+ - Capacitor Android development: `yarn dev:ca-android`
+ - Cordova android development: Navigate to cordova project folder `cd hyprion-remote` and start with `quasar dev -m cordova -T android`. It might be better to start a AVD before, there seems also some bugs to refresh
+
+## Building
+To build deployable artifacts use
+- For SPA: `yarn build:spa`
+- For Electron: `yarn build:electron`
+- For Capacitor Android `yarn build:ca-android`
+- For Cordova Android: `quasar build -m cordova -T android`
+
+### Visual Studio Code
+Install Visual Studio Code and navigate to `File -> Open Workspace` and select `hyperion-remote.code-workspace` from the project folder. This workspace contains editor/extension settings and recommended extensions to install.
+- The Vetur extension requires vue-language-server, install it `yarn global add vue-language-server`
+- the editor will auto-format the code on save and ES-Lint rules will be applied.
+- Tuned regarding Vue.js/Quasar formatting.
+- Auto completion and inline help
+- dependencies up-to-date checks for `package.json` and more
+
+Start development: [Development](##Development)
+
+
+### Development Helper
+Tools which helps a lot
+- Browser Vue extension: [Vue Dev Tools](https://github.com/vuejs/vue-devtools)
+- Cordova Android: Open in Chrome the console and go to "more tools" -> "Remote devices" to get access to the app console output and a live screen mirroring
+
+### Tips and Tricks
+ - Show lint errors with `yarn run lint` (Ensure you are in project folder!)
+ - Auto fix (fixable!) lint errors by typing `yarn run lintfix` (Ensure you are in project folder!)
 
 ### Android Cordova
 Android development is done with Cordova. Requires a lot of disk space eg 10-30GB due to Android Studio and SDKS/AVD.
@@ -71,39 +110,6 @@ There are a bunch of details and flaws in between.
        }
    }
 ```
-
-## Development
-Time for development. We use the quasar cli to start devlopement server.
- - SPA development: Navigate to project folder `cd hyperion-remote` and start with `yarn dev:spa`
- - Electron development: Navigate to project folder `cd hyperion-remote` and start with `yarn dev:electron`
- - Cordova android development: Navigate to cordova project folder `cd hyprion-remote` and start with `quasar dev -m cordova -T android`. It might be better to start a AVD before, there seems also some bugs to refresh
-
-### Visual Studio Code
-Install Visual Studio Code and navigate to `File -> Open Workspace` and select `hyperion-remote.code-workspace` from the project folder. This workspace contains editor/extension settings and recommended extensions to install.
-**The "Vetur" extension requires "vue-language-server", install it `yarn global add vue-language-server` **
-After installing all extensions
-- the editor will auto-format the code on save and ES-Lint rules will be applied.
-- Tuned regarding Vue.js/Quasar formatting.
-- Auto completion and inline help
-- dependencies up-to-date checks for `package.json` and more
-
-Start development: [Development](##Development)
-
-
-### Development Helper
-Tools which helps a lot
-- Browser Vue extension: [Vue Dev Tools](https://github.com/vuejs/vue-devtools)
-- Cordova Android: Open in Chrome the console and go to "more tools" -> "Remote devices" to get access to the app console output and a live screen mirroring
-
-## Building
-To build code for production use
-- For SPA: `yarn build:spa`
-- For Electron: `yarn build:electron`
-- For Cordova Android: `quasar build -m cordova -T android`
-
-### Tips and Tricks
- - Show lint errors with `yarn run lint` (Ensure you are in project folder!)
- - Auto fix (fixable!) lint errors by typing `yarn run lintfix` (Ensure you are in project folder!)
 
 #### (Cordova Android) Shipped Android WebViews per version based on Chrome version
 Since 5.0 it's possible to update the WebView through Play Store but the update is often disabled by smartphone sellers. Also not Play Store licenced device will lack updates. So it's pretty relativ that the latest WebView is installed. Currently used is crosswalk as baked in webview with 52
