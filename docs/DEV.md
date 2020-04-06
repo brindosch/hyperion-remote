@@ -9,22 +9,37 @@ This is the fastest and simplest solution for Ubuntu/Debian to install a recent 
  - Install Yarn as global: `npm install -g yarn`
  - Install Quasar cli as global `yarn global add @quasar/cli`
  - Go to project folder `cd hyperion-remote`
- - Install project dependencies `yarn install`
+ - Install project dependencies `yarn yarn:install`
  - Setup an Editor, recommended with included workspace (settings) file: [Visual Studio Code](###VisualStudioCode)
  - Start development: [Development](##Development)
 
 ### Windows
-On Windows we use also NVM to install a local node/npm version in home directory
+On Windows we use also NVM to install a local node/npm version in home directory and simple version switching
  - Install nvm [NVM Windows](https://github.com/coreybutler/nvm-windows)
  - open cmd and type `nvm list available`. Remember version string of latest LTS version
- - install node/npm with: `nvm install 10.16.3` while writing this it was 10.16.3
- - Use the version: `nvm use 10.16.3`
+ - install node/npm with: `nvm install 12.16.1` while writing this it was 12.16.1
+ - Use the version: `nvm use 12.16.1`
  - Install Yarn as global: `npm install -g yarn`
  - Install Quasar cli as global `yarn global add @quasar/cli`
  - Go to project folder (might be a different path!) `cd hyperion-remote`
- - Install project dependencies `yarn install`
+ - Install project dependencies `yarn yarn:install`
  - Setup an Editor, recommended with included workspace (settings) file: [Visual Studio Code](###VisualStudioCode)
  - Start development: [Development](##Development)
+
+### Capacitor Android
+Create a development setup to work with Capacitor for Android. Tested with Windows 7 64bit (04/2020)
+- Install [Android Studio](https://developer.android.com/studio) for your System (In this case version 3.6) with default path
+- **Don't update Gradle when Android Studio asks for**
+- Install [JDK 8](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
+- Open Android Studio `Tools->Sdk Manager`.
+- - `Sdk Platforms` minimum Android 5.0.
+- - `Sdk Tools` tick `Android SDK Build Tools` and `Android SDK Platform Tools`
+- - You can use your own device for testing or the emulator. Emulator: Install also the Android Emulator and Accelerator to test with a virtual device.
+- Start development: `yarn dev:ca-android`
+
+**Issues**
+- Quasar can't find Android Studio: Windows: Changed paths needs to be edited in `quasar.conf.js > bin > windowsAndroidStudio`)
+- JDK not found. Install JDK 8 or set `JAVA_HOME` env var to install path
 
 ### Android Cordova
 Android development is done with Cordova. Requires a lot of disk space eg 10-30GB due to Android Studio and SDKS/AVD.

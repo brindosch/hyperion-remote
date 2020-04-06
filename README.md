@@ -72,7 +72,7 @@
  -  - Add Color pattern effect?
 
 ## Development instructions
- - [Development](./.github/DEV.md)
+ - [Development](./docs/DEV.md)
 
 ## Commits
 We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for changelog creation.
