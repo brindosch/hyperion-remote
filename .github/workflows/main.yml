@@ -23,9 +23,9 @@ jobs:
             npm install -g yarn
             yarn yarn:install
             yarn build:${{ matrix.type }}
-        - name: Uname OS
+        - name: sysctl
           run: |
-            uname -s | tr '[:upper:]' '[:lower:]'
+            sysctl -n hw.ncpu
           shell: bash
   build-ca-android:
     runs-on: ubuntu-latest
