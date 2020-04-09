@@ -91,7 +91,8 @@
 			"mrmlnc.vscode-attrs-sorter",
 			"octref.vetur",
 			"dariofuzinato.vue-peek",
-			"vscode-icons-team.vscode-icons"
+      "vscode-icons-team.vscode-icons",
+      "editorconfig.editorconfig"
 		]
 	}
 }

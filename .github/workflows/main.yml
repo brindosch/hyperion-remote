@@ -23,6 +23,10 @@ jobs:
             npm install -g yarn
             yarn yarn:install
             yarn build:${{ matrix.type }}
+        - name: Uname OS
+          run: |
+            uname -s | tr '[:upper:]' '[:lower:]'
+          shell: bash
   build-ca-android:
     runs-on: ubuntu-latest
     name: Android (ca)
