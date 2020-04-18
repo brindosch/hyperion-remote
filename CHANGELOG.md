@@ -1,3 +1,10 @@
+## [0.4.15](https://github.com/brindosch/hyperion-remote/compare/v0.4.14...v0.4.15) (2020-04-18)
+
+
+### Bug Fixes
+
+* gradlew x bit ([b198313](https://github.com/brindosch/hyperion-remote/commit/b198313f106c5286f12abc4e8dbedb67e5455c6e))
+
 ## [0.4.14](https://github.com/brindosch/hyperion-remote/compare/v0.4.13...v0.4.14) (2020-04-05)
 
 
