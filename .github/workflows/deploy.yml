@@ -81,7 +81,7 @@ jobs:
       - name: Signing APK
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: /dist/capacitor/android/apk/release
+          releaseDirectory: dist/capacitor/android/apk/release
           signingKeyBase64: ${{ secrets.REMOTE_ANDR_SIGNING_KEY }}
           alias: ${{ secrets.REMOTE_ANDR_ALIAS }}
           keyStorePassword: ${{ secrets.REMOTE_ANDR_KEY_STORE_PASSWORD }}
