@@ -217,7 +217,7 @@
       </q-menu>
 
       <vue-draggable-resizable
-        class="flex flex-center"
+        class="flex flex-center absolute"
         :class="{'lle-visibility':!isVisible(i),'cursor-pointer': isVisible(i) ,'lle-default': currentActive != i}"
         class-name-active="lle-active"
         class-name-handle="editor-handle"
@@ -393,14 +393,14 @@ export default {
       this.storeUndoItem(this.frameLeds)
 
       // drag has no width/height in emit
-      let width = this.frameLeds[i].width
-      let height = this.frameLeds[i].height
+      const width = this.frameLeds[i].width
+      const height = this.frameLeds[i].height
 
       this.$set(this.frameLeds, i, Object.assign({}, this.frameLeds[i], { x, y }))
       this.$set(this.currLeds, i, this.calcFrameLedToLed({ x, y, width, height }))
     },
     calcFrameLedsToLed () {
-      let cLeds = []
+      const cLeds = []
       this.frameLeds.forEach(fled => {
         cLeds.push(this.calcFrameLedToLed(fled))
       })
@@ -417,7 +417,7 @@ export default {
       return { hmin, hmax, vmin, vmax, name }
     },
     calcLedsToFrame () {
-      let fLeds = []
+      const fLeds = []
       this.currLeds.forEach(led => {
         fLeds.push(this.calcLedToFrameLed(led))
       })
@@ -437,8 +437,7 @@ export default {
     async resetLayout (skipDialog) {
       if (!skipDialog) {
         const res = await this.openConfirmDialog({ title: this.$t('conf.layout.reset'), msg: this.$t('conf.layout.confResetMsg') })
-        if (res)
-          this._performReset()
+        if (res) { this._performReset() }
         return
       }
       this._performReset()
@@ -486,7 +485,7 @@ export default {
     async handleLedName () {
       if (this.lastActive === -1) { return }
       const la = this.lastActive
-      let data = await this.openPromptDialog({ title: this.$t('conf.layout.ledName'), msg: this.$t('conf.layout.ledNameMsg', { lednr: this.lastActive + 1 }) })
+      const data = await this.openPromptDialog({ title: this.$t('conf.layout.ledName'), msg: this.$t('conf.layout.ledNameMsg', { lednr: this.lastActive + 1 }) })
 
       if (data) {
         this.storeUndoItem(this.frameLeds)

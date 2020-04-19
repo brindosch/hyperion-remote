@@ -1,6 +1,6 @@
 {
   "name": "hyperion-remote",
-  "version": "0.4.14",
+  "version": "0.4.16",
   "description": "Hyperion Remote Application",
   "author": {
     "name": "brindosch",
@@ -8,8 +8,8 @@
   },
   "private": true,
   "dependencies": {
-    "@capacitor/android": "^2.0.0",
-    "@capacitor/cli": "^2.0.0",
-    "@capacitor/core": "^2.0.0"
+    "@capacitor/android": "^2.0.1",
+    "@capacitor/cli": "^2.0.1",
+    "@capacitor/core": "^2.0.1"
   }
 }
