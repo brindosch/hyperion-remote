@@ -8,7 +8,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.type }} (${{ matrix.os }})
     strategy:
-      fail-fast: false
       matrix:
         type: [electron]
         os: [ubuntu-latest, macOS-latest, windows-latest]
@@ -93,10 +92,14 @@ jobs:
 #          packageName: org.hyperion.project.remote
 #          releaseFile: ${{ env.SIGNED_RELEASE_FILE }}
 #          track: alpha
+      - name: Get the version
+        run: echo ::set-env name=CLEAN_VERSION::${GITHUB_REF/refs\/tags\/v/}
+      - name: Rename APK
+        run: mv dist/capacitor/android/apk/release/app-release-unsigned-signed.apk dist/capacitor/android/apk/release/Hyperion-Remote-${{ env.CLEAN_VERSION }}-android.apk
       - name: Upload Release Artifacts
         uses: ./.github/actions/upload-release-asset
         with:
-          glob_pattern: '**/*-signed.apk'
+          glob_pattern: '**/*Hyperion-Remote*.apk'
           upload_url: ${{ github.event.release.upload_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
