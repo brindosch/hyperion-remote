@@ -1,0 +1,10 @@
+{
+  "params": {
+    "include":["all"],
+    "icon":"./scripts/icon-gen/default-icon.png",
+    "quality":12,
+    "background":"./scripts/icon-gen/default-bg.png",
+    "splashscreenIconRatio":40
+  },
+  "assets": []
+}

@@ -75,6 +75,7 @@ Start development: [Development](##Development)
 Tools which helps a lot
 - Browser Vue extension: [Vue Dev Tools](https://github.com/vuejs/vue-devtools)
 - Cordova Android: Open in Chrome the console and go to "more tools" -> "Remote devices" to get access to the app console output and a live screen mirroring
+- [Quasar Icon generator](https://quasar.dev/icongenie/installation): `yarn global add @quasar/icongenie`
 
 ### Tips and Tricks
  - Show lint errors with `yarn run lint` (Ensure you are in project folder!)
@@ -99,7 +100,7 @@ There are a bunch of details and flaws in between.
  - Setup PATH varible (`set ANDROID_HOME=C:\<installation location>\android-sdk` `set PATH=%PATH%;%ANDROID_HOME%\tools;%ANDROID_HOME%\platform-tools`) (Not Android Studio folder! Use sdk folder)
   - Just JDK 1.8 supported (no 1.9) while writing this
  - You need to Start Android Studio once and initiate a new project, as it needs to download further build tools and AVD.
- - Create a new AVD device with SDK Android 4.4  if you want to use the emulator.
+ - Create a new AVD device with SDK Android 5 if you want to use the emulator.
  - Check if setup was correct: `cordova requirements android` (inside src-cordova folder)
  - Note: Crasswalk issue with Android Studio 3.0 CPU missmatch when testing against real device. [Solution] (https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview/issues/203#issuecomment-369201185)
  - Note: With crosswalk 23 (WebView 52) added; there is a error that 2 files aren't found and the build fails [Link](https://stackoverflow.com/questions/49162538/cordova-build-android-unable-to-find-attribute-androidfontvariationsettings-a). Add this at `platforms/android/build.gradle` inside allprojects{} obj
