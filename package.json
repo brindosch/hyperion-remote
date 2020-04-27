@@ -34,7 +34,7 @@
     "lint": "eslint --ext .js,.vue src",
     "lintfix": "eslint --fix --ext .js,.vue src",
     "icon:verify": "icongenie verify",
-    "icon:gen-def": "icongenie generate -p ./scripts/icon-gen/default-profile.json",
+    "icon:gen-def": "icongenie generate -p ./scripts/icon-gen",
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {

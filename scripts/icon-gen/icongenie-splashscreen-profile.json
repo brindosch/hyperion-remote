@@ -1,0 +1,13 @@
+{
+  "params": {
+    "include": [
+      "all"
+    ],
+    "filter":"splashscreen",
+    "icon": "./scripts/icon-gen/splash-icon.png",
+    "quality": 12,
+    "background": "./scripts/icon-gen/default-bg.png",
+    "splashscreenIconRatio": 75
+  },
+  "assets": []
+}
