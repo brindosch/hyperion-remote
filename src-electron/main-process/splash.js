@@ -22,8 +22,8 @@ export function createSplash (top) {
     splash.show()
   })
 
-  splash.loadURL(process.env.DEV ? path.resolve(__dirname, '..', '..', 'src', 'statics', 'electron-splash.html') : path.resolve(__dirname, 'statics', 'electron-splash.html'))
-
+  // splash.loadURL(process.env.DEV ? path.resolve(__dirname, '..', '..', 'src', 'statics', 'electron-splash.html') : path.resolve(__dirname, 'statics', 'electron-splash.html'))
+  splash.loadURL(process.env.DEV ? path.resolve(__dirname, 'statics/electron-splash.html') : path.resolve(__dirname, 'electron-splash.html'))
   return splash
 }
 

@@ -1,6 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = function (ctx) {
   return {
@@ -196,8 +197,8 @@ module.exports = function (ctx) {
       bundler: 'builder', // or 'packager'
 
       extendWebpack (cfg) {
-        // do something with Electron main process Webpack cfg
-        // chainWebpack also available besides this extendWebpack
+        // Copy splashscreen to dist
+        cfg.plugins.push(new CopyWebpackPlugin([{ from: './src-electron/main-process/statics/electron-splash.html', to: '' }]))
       },
 
       packager: {
