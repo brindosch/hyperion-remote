@@ -10,6 +10,8 @@
   "dependencies": {
     "@capacitor/android": "^2.0.1",
     "@capacitor/cli": "^2.0.1",
-    "@capacitor/core": "^2.0.1"
-  }
+    "@capacitor/core": "^2.0.1",
+    "jetifier": "^1.6.5"
+  },
+  "postinstall": "jetifier"
 }
