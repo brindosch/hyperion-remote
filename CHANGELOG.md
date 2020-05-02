@@ -1,3 +1,10 @@
+## [0.4.18](https://github.com/brindosch/hyperion-remote/compare/v0.4.17...v0.4.18) (2020-05-02)
+
+
+### Bug Fixes
+
+* Update package name according do capacitor docs ([704ba6d](https://github.com/brindosch/hyperion-remote/commit/704ba6dbb872130ed627ecd491d380ba9c6e65b3))
+
 ## [0.4.17](https://github.com/brindosch/hyperion-remote/compare/v0.4.16...v0.4.17) (2020-04-30)
 
 ## [0.4.16](https://github.com/brindosch/hyperion-remote/compare/v0.4.15...v0.4.16) (2020-04-18)
