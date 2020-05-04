@@ -108,14 +108,14 @@ export default {
       const droppedFiles = e.dataTransfer.files
       if (!droppedFiles) return
       try {
-        await parseFiles({ files: this.files, filter: this.filter, multiple: this.multiple, newFiles: [...droppedFiles] })
+        this.files = await parseFiles({ files: this.files, filter: this.filter, multiple: this.multiple, newFiles: [...droppedFiles] })
       } catch (error) {
         console.error(`DropZone: ${error.name} Error: ${error.message}`)
         this.$q.notify(`${error.name} Error: ${error.message}`)
       }
     },
     async addClickFile (e) {
-      await this.openFileDialog({ files: this.files, filter: this.filter, multiple: this.multiple })
+      this.files = await this.openFileDialog({ files: this.files, filter: this.filter, multiple: this.multiple })
     },
     removeFile (file) {
       this.files = this.files.filter(f => {

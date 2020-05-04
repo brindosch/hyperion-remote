@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import { copyToClipboard } from 'quasar'
-import { copyToClipboardMixin } from '../mixins'
+
+import { clipboardMixin } from '../mixins'
 export default {
   name: 'CopyToClipboard',
-  mixins: [copyToClipboardMixin],
+  mixins: [clipboardMixin],
   props: {
     data: String
   },

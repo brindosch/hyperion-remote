@@ -7,7 +7,7 @@ import gpsMixin from './gps'
 import { stringToNumber } from './other'
 import openUrlMixin from './openUrl'
 import restartMixin from './restart'
-import copyToClipboardMixin from './copyToClipboard'
+import clipboardMixin from './clipboard'
 import appUpdateMixin from './appUpdate'
 import semVerMixin from './semVer'
 
@@ -22,7 +22,7 @@ export {
   openUrlMixin,
   gpsMixin,
   restartMixin,
-  copyToClipboardMixin,
+  clipboardMixin,
   appUpdateMixin,
   semVerMixin
 }

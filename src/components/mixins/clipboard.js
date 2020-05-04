@@ -1,7 +1,10 @@
 import { copyToClipboard } from 'quasar'
+import { Plugins } from '@capacitor/core'
+
+const { Clipboard } = Plugins
 
 export default {
-  name: 'copyToClipBoardMixin',
+  name: 'clipboardMixin',
   data () {
     return {
 
@@ -18,12 +21,26 @@ export default {
           this.$q.notify({ color: 'negative', message: this.$t('utils.copyToClipboardFail', [`: ${error}`]) })
         })
     },
+    async readFromClipboard () {
+      if (this.$q.platform.is.capacitor) {
+        const res = await Clipboard.read()
+        return res.value
+      } else if (this.$q.platform.is.electron) {
+        return window.electron.readFromClipboard()
+      } else {
+        await navigator.clipboard.readText()
+      }
+    },
     async __copyToClipboard (data) {
       let res
       if (window.electron) {
         res = new Promise((resolve, reject) => {
           window.electron.copyToClipboard(data)
           resolve(true)
+        })
+      } else if (this.$q.platform.is.capacitor) {
+        Clipboard.write({
+          string: data
         })
       } else {
         res = await copyToClipboard(data)

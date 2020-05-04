@@ -14,6 +14,7 @@ module.exports = function (ctx) {
       'i18n',
       'axios',
       'notify-defaults',
+      'capacitor',
       ctx.mode.electron ? 'socket-electron' : 'socket'
     ],
     css: [
@@ -27,6 +28,7 @@ module.exports = function (ctx) {
     ],
     supportIE: false,
     build: {
+      devtool: ctx.dev ? 'source-map' : '',
       scopeHoisting: true,
       vueRouterMode: 'history',
       publicPath: JSON.stringify(process.env.SPAEMBED) ? '/next/' : undefined,

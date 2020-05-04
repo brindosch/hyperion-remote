@@ -49,7 +49,7 @@
         <q-item
           clickable
           exact
-          to="/"
+          to="/dashboard"
         >
           <q-item-section avatar>
             <q-icon name="dashboard" />
@@ -111,6 +111,17 @@
           </q-item-section>
           <q-item-section>
             {{$t('pages.about')}}
+          </q-item-section>
+        </q-item>
+        <q-item
+          clickable
+          to="/test"
+        >
+          <q-item-section avatar>
+            <q-icon name="info" />
+          </q-item-section>
+          <q-item-section>
+            Test
           </q-item-section>
         </q-item>
       </q-list>
@@ -191,7 +202,7 @@ export default {
   },
   mounted () {
     // set status bar color for this layout
-    let hc = qcolor.toHex(this.$store.getters['common/getThemeColor'])
+    const hc = qcolor.toHex(this.$store.getters['common/getThemeColor'])
     this.$q.addressbarColor.set(hc)
     if (this.$q.platform.is.cordova && cordova.platformId === 'android') {
       // eslint-disable-next-line no-undef

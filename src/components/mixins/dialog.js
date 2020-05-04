@@ -1,4 +1,7 @@
 import { openFile } from '../../utils'
+import { Plugins } from '@capacitor/core'
+
+const { Modals } = Plugins
 
 export default {
   name: 'dialogMixin',
@@ -13,7 +16,13 @@ export default {
       try {
         if (window.electron) {
           res = await window.electron.openConfirmDialog({ title, msg, cancelLabel: this.$q.lang.label.cancel, okLabel: this.$t('label.yes') })
-          res = (res.response != 0)
+          res = (res.response !== 0)
+        } else if (this.$q.platform.is.capacitor) {
+          res = await Modals.confirm({
+            title: title,
+            message: msg
+          })
+          res = res.value
         } else {
           res = this._openQuasarConfirmDialog({ title, msg })
         }
@@ -25,30 +34,45 @@ export default {
       return res
     },
     // Returns a promise with data or false
+    // type: one of 'text' | 'number' | 'textfield'
+    // model: initial value
     // String callback is trimmed to get a false boolean eval on empty data
     async openPromptDialog ({ title, msg, type, model }) {
-      return new Promise((res, rej) => {
-        this.$q.dialog({
+      // capacitor just accepts text
+      if (type === 'text' && this.$q.platform.is.capacitor) {
+        const res = await Modals.prompt({
           title: title,
           message: msg,
-          cancel: true,
-          prompt: {
-            model: model,
-            type: type
-          },
-          ok: true,
-          'no-esc-dismiss': true,
-          'no-backdrop-dismiss': true,
-          color: 'primary'
+          inputText: model
         })
-          .onOk(data => res(data))
-          .onDismiss(() => res(false))
-      })
+        return res.value
+      } else {
+        return new Promise((resolve, reject) => {
+          this.$q.dialog({
+            title: title,
+            message: msg,
+            cancel: true,
+            prompt: {
+              model: model,
+              type: type
+            },
+            ok: true,
+            'no-esc-dismiss': true,
+            'no-backdrop-dismiss': true,
+            color: 'primary'
+          })
+            .onOk(data => {
+              if (typeof data === 'string') { data = data.trim() }
+              resolve(data)
+            })
+            .onDismiss(() => resolve(false))
+        })
+      }
     },
     // Returns a promise with data or false
     // String callback is trimmed to get a false boolean eval on empty data
     async openSelectionDialog ({ title, msg, type, model, items }) {
-      return new Promise((res, rej) => {
+      return new Promise((resolve, reject) => {
         this.$q.dialog({
           title: title,
           message: msg,
@@ -65,9 +89,9 @@ export default {
         })
           .onOk(data => {
             if (typeof data === 'string') { data = data.trim() }
-            res(data)
+            resolve(data)
           })
-          .onDismiss(() => res(false))
+          .onDismiss(() => resolve(false))
       })
     },
     // Returns a promise with files.
@@ -95,14 +119,15 @@ export default {
       }
 
       try {
-        await openFile({ files, filter, multiple })
+        files = await openFile({ files, filter, multiple })
       } catch (error) {
         console.error(`openFileDialog: ${error.name} Error: ${error.message}`)
         this.$q.notify(`${error.name} Error: ${error.message}`)
       }
+      return files
     },
     async _openQuasarConfirmDialog ({ title, msg }) {
-      return new Promise((res, rej) => {
+      return new Promise((resolve, reject) => {
         this.$q.dialog({
           title: title,
           message: msg,
@@ -112,8 +137,8 @@ export default {
           'no-backdrop-dismiss': true,
           color: 'primary'
         })
-          .onOk(() => res(true))
-          .onDismiss(() => res(false))
+          .onOk(() => resolve(true))
+          .onDismiss(() => resolve(false))
       })
     }
   }

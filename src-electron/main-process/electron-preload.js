@@ -36,6 +36,9 @@ window.electron = {
   copyToClipboard (string) {
     clipboard.writeText(string)
   },
+  readFromClipboard () {
+    return clipboard.readText()
+  },
   async openConfirmDialog ({ title, msg, cancelLabel, okLabel }) {
     // https://electronjs.org/docs/api/dialog#dialogshowmessageboxbrowserwindow-options
     return dialog.showMessageBox(BrowserWindow.getFocusedWindow(), { title, message: msg, type: 'question', buttons: [cancelLabel, okLabel] })
@@ -97,6 +100,7 @@ window.electron = {
         if (multiple) { files.push({ data, preview, name, size }) } else { files.splice(0, 1, { data, preview, name, size }) }
       }
     }
+    return files
   },
   minimize () {
     BrowserWindow.getFocusedWindow().minimize()

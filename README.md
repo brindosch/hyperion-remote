@@ -52,17 +52,17 @@
    - ~Use native dialogs? (Create wrapper)~ Just confirm Dialog
    - Apply "debug" switch on app start? config reading
 - Capacitor
-   - Visibility Tests,
-   - splashscreen
+   - ~Visibility Tests,~
+   - ~splashscreen~
    - back button behaviour
    - Statusbar Color (android)
-   - initTasks Origin adjustment
+   - ~initTasks Origin adjustment~
    - SSDP (mixin)
    - app reload(?) for debug mode? (mixin)
-   - GPS (mixin)
-   - openConfirmDialog (mixin)
-   - copyToClipboard (mixin)
-   - openUrl (mixin)
+   - GPS (mixin) (real device data test)
+   - ~openConfirmDialog (mixin)~
+   - ~copyToClipboard (mixin)~
+   - ~openUrl (mixin)~
    - ScreenCapture
    - openFileDialog (json,image)
    - camera capture

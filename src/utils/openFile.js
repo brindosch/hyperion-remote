@@ -3,11 +3,10 @@ import { readFile } from './readFile'
 
 async function openFileBrowser ({ filter, multiple }) {
   return new Promise((resolve, reject) => {
-    let input = document.createElement('input')
+    const input = document.createElement('input')
     input.setAttribute('type', 'file')
     input.setAttribute('accept', filter.map((ext) => `.${ext}`).join(','))
-    if (multiple)
-      input.setAttribute('multiple', true)
+    if (multiple) { input.setAttribute('multiple', true) }
     input.click()
     input.addEventListener('change', (evt) => {
       resolve(evt.path[0].files)
@@ -26,7 +25,7 @@ async function openFileBrowser ({ filter, multiple }) {
 // multiple: If true you can add more than one file
 export async function parseFiles ({ files, newFiles, filter, multiple }) {
   for (const file of newFiles) {
-    if (!files.find((el) => el.name == file.name && el.size == file.size)) {
+    if (!files.find((el) => el.name === file.name && el.size === file.size)) {
       for (const ext of filter) {
         // filter against allowed file types. TODO: Use MimeType detection based on magic numbers
         if (file.type.includes(ext)) {
@@ -38,14 +37,12 @@ export async function parseFiles ({ files, newFiles, filter, multiple }) {
             preview = data
           }
           const obj = { name: file.name, type: file.type, size: file.size, preview, data }
-          if (multiple)
-            files.push(obj)
-          else
-            files.splice(0, 1, obj)
+          if (multiple) { files.push(obj) } else { files.splice(0, 1, obj) }
         }
       }
     }
   }
+  return files
 }
 
 // open Browser file dialog/electron dialog and reads the file(s)
@@ -54,12 +51,11 @@ export async function parseFiles ({ files, newFiles, filter, multiple }) {
 // multiple: If true the user can select multiple files
 export async function openFile ({ files, filter, multiple }) {
   if (window.electron) {
-    return await window.electron.openFileDialog({ files, filter, multiple })
+    await window.electron.openFileDialog({ files, filter, multiple })
   } else {
     const newFiles = await openFileBrowser({ filter, multiple })
-    return await parseFiles({ files, newFiles, filter, multiple })
+    await parseFiles({ files, newFiles, filter, multiple })
   }
 }
-
 
 export default { openFile }
