@@ -953,6 +953,11 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.4.tgz#cc764f92161cfb2199edf67ec1df181481014ac3"
   integrity sha512-BMwO3PruqnobOmaGBM/st2qfOekbAvoZqeGVjGOcLW4cEQAFlz7FRDoWS+xWV4yHoi32ecpWp+mciTg/9pEalA==
 
+"@ionic/pwa-elements@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@ionic/pwa-elements/-/pwa-elements-1.5.2.tgz#fa09df335edac62b48f350c38b12647310f1b967"
+  integrity sha512-OMa+el4XjnAx22P6S8CN2GGEfDgMkuwOxE5x5Cd/6ZDfcZKRuP//l4+JLF4YBvfvyPPHvaQLI+Ies7H2OTmAuA==
+
 "@irojs/iro-core@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@irojs/iro-core/-/iro-core-1.0.0.tgz#8cbd19c699c59f70b3c3a773fb7ca2985de5f367"

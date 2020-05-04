@@ -38,6 +38,7 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@ionic/pwa-elements": "^1.5.2",
     "@jaames/iro": "^5.1.7",
     "@quasar/app": "^1.7.4",
     "@quasar/extras": "^1.6.4",
