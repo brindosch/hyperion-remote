@@ -14,7 +14,7 @@ This is the fastest and simplest solution for Ubuntu/Debian to install a recent 
  - Start development: [Development](##Development)
 
 ### Windows
-On Windows we use also NVM to install a local node/npm version in home directory and simple version switching
+On Windows we use also NVM to install a local node/npm version in home directory
  - Install [NVM Windows](https://github.com/coreybutler/nvm-windows)
  - open cmd and type `nvm list available`. Remember version string of latest LTS version
  - install node with: `nvm install 12.16.1` while writing this it was 12.16.1
@@ -23,7 +23,7 @@ On Windows we use also NVM to install a local node/npm version in home directory
  - Install Quasar cli as global `yarn global add @quasar/cli`
  - Go to project folder (might be a different path!) `cd hyperion-remote`
  - Install project dependencies `yarn yarn:install`
- - Setup an Editor, recommended with included workspace (settings) file: [Visual Studio Code](###VisualStudioCode)
+ - Setup an Editor, recommended with included workspace (settings) file: [Visual Studio Code](###Visual-Studio-Code)
  - Start development: [Development](##Development)
 
 ### Capacitor Android

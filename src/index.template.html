@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <% if (htmlWebpackPlugin.options.ctx.prod) { %>
+  <% if (htmlWebpackPlugin.options.ctx.prod && !htmlWebpackPlugin.options.ctx.mode.pwa) { %>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src *">
   <% } %>
   <meta name="format-detection" content="telephone=no">
@@ -64,7 +64,20 @@
 </head>
 
 <body class="non-selectable-alias">
-  <% if (!htmlWebpackPlugin.options.ctx.mode.electron) { %>
+  <!-- Hack around github.io vue router routing, for pwa mode only https://dev.to/quasar/publish-your-quasar-spa-on-github-io-with-history-mode-20h2 -->
+    <% if (htmlWebpackPlugin.options.ctx.mode.pwa) { %>
+  <script>
+    (function () {
+      let redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      if (redirect && redirect !== location.href) {
+        history.replaceState(null, null, redirect);
+      }
+    })();
+  </script>
+    <% } %>
+  <!-- no script info -->
+  <% if (htmlWebpackPlugin.options.ctx.mode.spa || htmlWebpackPlugin.options.ctx.mode.pwa) { %>
   <noscript>
     <div
       style="position:fixed; top:0px; right:0px; text-align:center; width:100%; height:100%; background: linear-gradient(to bottom, #1e2f48 0%,#206bad 52%,#206bad 52%,#00bdce 99%)">

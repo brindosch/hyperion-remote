@@ -46,6 +46,9 @@ module.exports = function (ctx) {
       // extractCSS: false,
       // useNotifier: false,
       extendWebpack (cfg) {
+        // Copy github.io 404html to dist
+        // eslint-disable-next-line no-unused-expressions
+        ctx.mode.pwa ? cfg.plugins.push(new CopyWebpackPlugin([{ from: './src/assets/404.html', to: '' }])) : null
         /* Disable linter
           cfg.module.rules.push({
             enforce: 'pre',

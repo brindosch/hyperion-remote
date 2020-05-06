@@ -1,5 +1,5 @@
 import { copyToClipboard } from 'quasar'
-import { Plugins } from '@capacitor/core'
+import { Plugins } from 'app/src-capacitor/node_modules/@capacitor/core'
 
 const { Clipboard } = Plugins
 

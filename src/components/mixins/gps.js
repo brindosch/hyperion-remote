@@ -1,6 +1,6 @@
 import openUrlMixin from './openUrl'
 import dialogMixin from './dialog'
-import { Plugins } from '@capacitor/core'
+import { Plugins } from 'app/src-capacitor/node_modules/@capacitor/core'
 
 const { Geolocation } = Plugins
 

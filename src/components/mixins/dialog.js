@@ -1,5 +1,5 @@
 import { openFile } from '../../utils'
-import { Plugins } from '@capacitor/core'
+import { Plugins } from 'app/src-capacitor/node_modules/@capacitor/core'
 
 const { Modals } = Plugins
 
@@ -34,12 +34,14 @@ export default {
       return res
     },
     // Returns a promise with data or false
-    // type: one of 'text' | 'number' | 'textfield'
+    // type: one of 'text' | 'number' | 'textarea' (capacitor just text)
     // model: initial value
     // String callback is trimmed to get a false boolean eval on empty data
     async openPromptDialog ({ title, msg, type, model }) {
       // capacitor just accepts text
-      if (type === 'text' && this.$q.platform.is.capacitor) {
+      const typeText = !type || type === 'text'
+      console.log(type, model, typeText)
+      if (typeText && this.$q.platform.is.capacitor) {
         const res = await Modals.prompt({
           title: title,
           message: msg,
@@ -69,8 +71,11 @@ export default {
         })
       }
     },
-    // Returns a promise with data or false
-    // String callback is trimmed to get a false boolean eval on empty data
+    // Show a selection dialog. A radio is single selection while other multi
+    // type: one of 'radio' | 'checkbox' | 'toggle'
+    // mode: Start value of selection: String 'op1' for radio, array ['op1'] with one entry for other
+    // items: The data for selection [ { label: 'Option 1', value: 'op1' }, { label: 'Option 2', value: 'op2' }, { label: 'Option 3', value: 'op3' } ]
+    // retuns a string with the selected option(s) comma delimited or boolean false on abort.
     async openSelectionDialog ({ title, msg, type, model, items }) {
       return new Promise((resolve, reject) => {
         this.$q.dialog({

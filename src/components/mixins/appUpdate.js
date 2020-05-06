@@ -13,7 +13,7 @@ export default {
       return this.checkForAppUpdateRunner
     },
     showAppUpdate () {
-      return process.env.MODE == 'pwa'
+      return process.env.MODE === 'pwa'
     }
   },
   methods: {
@@ -21,9 +21,11 @@ export default {
     // PWA: Installs automatically, but a page reload is required
     async checkForAppUpdateAndAsk () {
       const res = await this.checkForAppUpdate()
+      console.log('Result from checkForAppUpdate', res)
       if (res) {
         const diares = this.openConfirmDialog({ title: this.$t('app.updateAvail'), msg: this.$t('app.updateAvailMsg') })
         if (diares) {
+          console.log('init do app update', res)
           this.doAppUpdate()
         }
       } else {
@@ -35,7 +37,7 @@ export default {
     async checkForAppUpdate () {
       this.checkForAppUpdateRunner = true
       let res = false
-      if (process.env.MODE == 'pwa') {
+      if (process.env.MODE === 'pwa') {
         res = await this.__checkPWAUpdate()
       } else {
         console.error('appUpdate.js CheckForUpdate NotImplemented for this platfomr')
@@ -45,9 +47,9 @@ export default {
     },
     async __checkPWAUpdate () {
       if ('serviceWorker' in navigator) {
-        let results = []
-        let registrations = await navigator.serviceWorker.getRegistrations()
-        for (let registration of registrations) {
+        const results = []
+        const registrations = await navigator.serviceWorker.getRegistrations()
+        for (const registration of registrations) {
           const res = await this.__checkPWARegistration(registration)
           results.push(res)
         }
@@ -57,25 +59,30 @@ export default {
     },
     async __checkPWARegistration (registration) {
       return new Promise((resolve, reject) => {
-        registration.onupdatefound(() => {
+        // check if there is a pending registration that waits to take over
+        if (registration.waiting) { resolve(true) }
+        console.log('REG', registration)
+        // prepare for update check
+        registration.addEventListener('updatefound', () => {
           // a new service worker being installed
           console.log('a new service worker being installed')
-          let installingWorker = registration.installing
+          const installingWorker = registration.installing
           // listen for state changes
+          console.log('Service worker installing', installingWorker)
           installingWorker.onstatechange((e) => {
             console.log(`service worker at installing state change to: ${e.target.state}`)
-            if (e.target.state === 'installed')
-              resolve(true)
+            if (e.target.state === 'installed') { resolve(true) }
           })
         })
-        console.log('Call sw registration update()')
+        // trigger update
+        console.log('Check for service worker update')
         registration.update()
         // after 5 sec we timeout
         setTimeout(() => { resolve(false) }, 1000 * 5)
       })
     },
     async doAppUpdate () {
-      if (process.env.MODE == 'pwa') {
+      if (process.env.MODE === 'pwa') {
         window.location.reload(true)
       } else {
         console.error('appUpdate.js doAppUpdate NotImplemented for this platform')
