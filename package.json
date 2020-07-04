@@ -34,15 +34,15 @@
     "lint": "eslint --ext .js,.vue src",
     "lintfix": "eslint --fix --ext .js,.vue src",
     "icon:verify": "icongenie verify",
-    "icon:gen-def": "icongenie generate -p ./scripts/icon-gen",
+    "icon:gen-def": "icongenie generate -p ./scripts/icon-gen --skip-trim",
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
     "@ionic/pwa-elements": "^1.5.2",
     "@jaames/iro": "^5.1.8",
-    "@quasar/app": "^1.8.4",
     "@quasar/extras": "^1.7.0",
     "axios": "^0.19.2",
+    "core-js": "3.0.0",
     "electron-log": "^4.1.2",
     "electron-updater": "^4.3.1",
     "global": "^4.4.0",
@@ -59,7 +59,8 @@
     "ws": "^7.2.5"
   },
   "devDependencies": {
-    "@quasar/quasar-app-extension-qscroller": "^1.0.8",
+    "@quasar/app": "2.0.1",
+    "@quasar/quasar-app-extension-qscroller": "^1.0.9",
     "@release-it/conventional-changelog": "^1.1.4",
     "@vue/eslint-config-standard": "^5.1.2",
     "babel-eslint": "^10.1.0",
@@ -81,6 +82,7 @@
     "release-it": "^13.5.8",
     "standard-version": "^7.1.0",
     "webpack": "^4.43.0",
+    "workbox-webpack-plugin": "5.0.0",
     "worker-loader": "^2.0.0"
   },
   "engines": {
@@ -89,9 +91,15 @@
     "yarn": ">= 1.6.0"
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 11"
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
   ],
   "standard-version": {
     "types": [

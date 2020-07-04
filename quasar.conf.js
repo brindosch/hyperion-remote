@@ -26,7 +26,6 @@ module.exports = function (ctx) {
       'fontawesome-v5',
       'roboto-font'
     ],
-    supportIE: false,
     build: {
       devtool: ctx.dev ? 'source-map' : '',
       scopeHoisting: true,
@@ -34,12 +33,12 @@ module.exports = function (ctx) {
       publicPath: JSON.stringify(process.env.SPAEMBED) ? '/next/' : undefined,
       rtl: true,
       env: {
-        VERSION: JSON.stringify(require('./package.json').version),
+        VERSION: require('./package.json').version,
         BUILDDATE: Date.now(),
         EMBED: JSON.stringify(process.env.SPAEMBED),
-        REPO_URL: JSON.stringify('https://github.com/brindosch/hyperion-remote/'), // with trailing slash
-        DOCS_URL: JSON.stringify('https://brindosch.github.io/'), // with trailing slash
-        SUPPORT_URL: JSON.stringify('https://github.com/brindosch/hyperion-remote/') // with trailing slash
+        REPO_URL: 'https://github.com/brindosch/hyperion-remote/', // with trailing slash
+        DOCS_URL: 'https://brindosch.github.io/', // with trailing slash
+        SUPPORT_URL: 'https://github.com/brindosch/hyperion-remote/' // with trailing slash
       },
       // gzip: true,
       // analyze: true,
@@ -48,7 +47,7 @@ module.exports = function (ctx) {
       extendWebpack (cfg) {
         // Copy github.io 404html to dist
         // eslint-disable-next-line no-unused-expressions
-        ctx.mode.pwa ? cfg.plugins.push(new CopyWebpackPlugin([{ from: './src/assets/404.html', to: '' }])) : null
+        ctx.mode.pwa ? cfg.plugins.push(new CopyWebpackPlugin({ patterns: [{ from: './src/assets/404.html', to: '' }] })) : null
         /* Disable linter
           cfg.module.rules.push({
             enforce: 'pre',
@@ -76,7 +75,14 @@ module.exports = function (ctx) {
     framework: {
       // iconSet: 'ionicons-v4',
       // lang: 'de', // Quasar language
-      // framework: 'all' --- includes everything; for dev only!
+      importStrategy: 'auto',
+      autoImportComponentCase: 'pascal', // or 'kebab' (default) or 'combined'
+      // For special cases outside of where auto-import "auto" can have an impact
+      // (like functional components as one of the examples),
+      // you can manually specify Quasar components/directives to be available everywhere:
+      //
+      // components: [],
+      // directives: [],
       components: [
         'QPageScroller',
         'QBtn',
@@ -163,27 +169,27 @@ module.exports = function (ctx) {
         theme_color: '#027be3',
         icons: [
           {
-            src: 'statics/icons/icon-128x128.png',
+            src: 'icons/icon-128x128.png',
             sizes: '128x128',
             type: 'image/png'
           },
           {
-            src: 'statics/icons/icon-192x192.png',
+            src: 'icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'statics/icons/icon-256x256.png',
+            src: 'icons/icon-256x256.png',
             sizes: '256x256',
             type: 'image/png'
           },
           {
-            src: 'statics/icons/icon-384x384.png',
+            src: 'icons/icon-384x384.png',
             sizes: '384x384',
             type: 'image/png'
           },
           {
-            src: 'statics/icons/icon-512x512.png',
+            src: 'icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png'
           }
@@ -203,7 +209,7 @@ module.exports = function (ctx) {
 
       extendWebpack (cfg) {
         // Copy splashscreen to dist
-        cfg.plugins.push(new CopyWebpackPlugin([{ from: './src-electron/main-process/statics/electron-splash.html', to: '' }]))
+        cfg.plugins.push(new CopyWebpackPlugin({ patterns: [{ from: './src-electron/main-process/statics/electron-splash.html', to: '' }] }))
       },
 
       packager: {

@@ -86,7 +86,7 @@
         </q-btn>
       </q-card-actions>
     </q-card>
-    <!--<img src="statics/footer_bg.png" style="position:fixed;bottom:0px"> -->
+    <!--<img src="footer_bg.png" style="position:fixed;bottom:0px"> -->
   </q-dialog>
 </template>
 

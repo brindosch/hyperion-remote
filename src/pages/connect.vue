@@ -7,7 +7,7 @@
       class="text-center"
       style="padding:20px; backdrop-filter: blur(10px);"
     >
-      <img src="statics/hyperion-logo-white.png" />
+      <img src="hyperion-logo-white.png" />
       <div v-if="$store.getters['temp/isEmbed']">
         <q-btn
           :label="$t('label.connect')"
@@ -98,7 +98,7 @@
         </q-list>
       </div>
     </div>
-    <!--<img src="statics/footer_bg.png" style="position:fixed;bottom:0px"> -->
+    <!--<img src="footer_bg.png" style="position:fixed;bottom:0px"> -->
   </q-page>
 </template>
 

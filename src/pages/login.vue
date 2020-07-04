@@ -7,7 +7,7 @@
       class="text-center"
       style="padding:20px; backdrop-filter: blur(10px);"
     >
-      <img src="statics/hyperion-logo-white.png" />
+      <img src="hyperion-logo-white.png" />
       <div style="margin-top:20px;">
         <q-input
           v-model="username"

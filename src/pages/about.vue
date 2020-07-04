@@ -2,7 +2,7 @@
   <q-page class="allow-select q-pa-md">
     <div>
       <img
-        :src="$q.dark.isActive ? 'statics/hyperion-logo-white.png' : 'statics/hyperion-logo.png'"
+        :src="$q.dark.isActive ? 'hyperion-logo-white.png' : 'hyperion-logo.png'"
         class="q-ma-sm"
         style="width:150px"
       />

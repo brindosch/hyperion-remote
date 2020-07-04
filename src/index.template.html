@@ -1,71 +1,71 @@
 <!DOCTYPE html>
-<html <% if (htmlWebpackPlugin.options.rtl) { %>dir="rtl" <% } %>lang="en">
+<html <% if (ctx.rtl) { %>dir="rtl" <% } %>lang="en">
 
 <head>
   <meta charset="utf-8">
-  <% if (htmlWebpackPlugin.options.ctx.prod && !htmlWebpackPlugin.options.ctx.mode.pwa) { %>
+  <% if (ctx.prod && !ctx.mode.pwa) { %>
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src *">
   <% } %>
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <meta name="viewport"
-    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (htmlWebpackPlugin.options.ctx.mode.cordova || htmlWebpackPlugin.options.ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>">
+    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>">
   <!-- Hide Chrome translation popup on tablet/phone due to different locale, lang attr update isn't fast enough; Disables also google-translate for webpages!-->
   <meta name="google" value="notranslate">
 
-  <title><%= htmlWebpackPlugin.options.productName %></title>
-  <meta name="description" content="<%= htmlWebpackPlugin.options.productDescription %>">
+  <title><%= productName %></title>
+  <meta name="description" content="<%= productDescription %>">
 
-  <link rel="icon" type="image/png" sizes="128x128" href="statics/icons/favicon-128x128.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="statics/icons/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="statics/icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="statics/icons/favicon-16x16.png">
-  <link rel="icon" type="image/ico" href="statics/icons/favicon.ico">
+  <link rel="icon" type="image/png" sizes="128x128" href="icons/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+  <link rel="icon" type="image/ico" href="favicon.ico">
   <!-- iPhone XR -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
-    href="statics/icons/apple-launch-828x1792.png">
+    href="icons/apple-launch-828x1792.png">
   <!-- iPhone X, XS -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
-    href="statics/icons/apple-launch-1125x2436.png">
+    href="icons/apple-launch-1125x2436.png">
   <!-- iPhone XS Max -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
-    href="statics/icons/apple-launch-1242x2688.png">
+    href="icons/apple-launch-1242x2688.png">
   <!-- iPhone 8, 7, 6s, 6 -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
-    href="statics/icons/apple-launch-750x1334.png">
+    href="icons/apple-launch-750x1334.png">
   <!-- iPhone 8 Plus, 7 Plus, 6s Plus, 6 Plus -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)"
-    href="statics/icons/apple-launch-1242x2208.png">
+    href="icons/apple-launch-1242x2208.png">
   <!-- iPhone 5 -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
-    href="statics/icons/apple-launch-640x1136.png">
+    href="icons/apple-launch-640x1136.png">
   <!-- iPad Mini, Air, 9.7" -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)"
-    href="statics/icons/apple-launch-1536x2048.png">
+    href="icons/apple-launch-1536x2048.png">
   <!-- iPad Pro 10.5" -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)"
-    href="statics/icons/apple-launch-1668x2224.png">
+    href="icons/apple-launch-1668x2224.png">
   <!-- iPad Pro 11" -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)"
-    href="statics/icons/apple-launch-1668x2388.png">
+    href="icons/apple-launch-1668x2388.png">
   <!-- iPad Pro 12.9" -->
   <link rel="apple-touch-startup-image"
     media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
-    href="statics/icons/apple-launch-2048x2732.png">
+    href="icons/apple-launch-2048x2732.png">
 </head>
 
 <body class="non-selectable-alias">
   <!-- Hack around github.io vue router routing, for pwa mode only https://dev.to/quasar/publish-your-quasar-spa-on-github-io-with-history-mode-20h2 -->
-    <% if (htmlWebpackPlugin.options.ctx.mode.pwa) { %>
+    <% if (ctx.mode.pwa) { %>
   <script>
     (function () {
       let redirect = sessionStorage.redirect;
@@ -77,11 +77,11 @@
   </script>
     <% } %>
   <!-- no script info -->
-  <% if (htmlWebpackPlugin.options.ctx.mode.spa || htmlWebpackPlugin.options.ctx.mode.pwa) { %>
+  <% if (ctx.mode.spa || ctx.mode.pwa) { %>
   <noscript>
     <div
       style="position:fixed; top:0px; right:0px; text-align:center; width:100%; height:100%; background: linear-gradient(to bottom, #1e2f48 0%,#206bad 52%,#206bad 52%,#00bdce 99%)">
-      <img style="margin-top:30px;" src="statics/hyperion-logo-white.png" />
+      <img style="margin-top:30px;" src="hyperion-logo-white.png" />
       <h3 style="color:white;margin-top:30px;">We are sorry, you need to enable Javascript to use the Hyperion App<h3>
     </div>
   </noscript>

@@ -5,7 +5,7 @@
       style="backdrop-filter: blur(10px);"
     >
       <p>
-        <img src="statics/hyperion-logo-white.png">
+        <img src="hyperion-logo-white.png">
       </p>
       <p class="text-white">Nope, this page doesn't exist</p>
       <q-btn

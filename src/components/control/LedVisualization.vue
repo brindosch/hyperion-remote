@@ -248,7 +248,7 @@ export default {
       image.onload = () => {
         this.image2dctx.drawImage(image, width * 0.5 - 126, height * 0.5 - 40)
       }
-      image.src = 'statics/hyperion-logo-white.png'
+      image.src = 'hyperion-logo-white.png'
     }
 
   }
