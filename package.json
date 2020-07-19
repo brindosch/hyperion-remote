@@ -80,7 +80,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "gh-release": "^3.5.0",
     "release-it": "^13.5.8",
-    "standard-version": "^7.1.0",
+    "standard-version": "^8.0.1",
     "webpack": "^4.43.0",
     "workbox-webpack-plugin": "5.0.0",
     "worker-loader": "^2.0.0"
