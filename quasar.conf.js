@@ -197,7 +197,6 @@ module.exports = function (ctx) {
       }
     },
     cordova: {
-      id: 'org.hyperion.project.remote'
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
     },
     capacitor: {
